@@ -1,0 +1,46 @@
+Axe	KEYWORD1
+AxePreset KEYWORD1
+AxeSystem	KEYWORD1
+init	KEYWORD2
+update	KEYWORD2
+refresh	KEYWORD2
+refreshNow	KEYWORD2
+requestPresetDetails	KEYWORD2
+sendPresetIncrement	KEYWORD2
+sendPresetDecrement	KEYWORD2
+sendSceneIncrement	KEYWORD2
+sendSceneDecrement	KEYWORD2
+sendPresetChange	KEYWORD2
+sendSceneChange	KEYWORD2
+requestFirmwareVersion	KEYWORD2
+requestPresetDetails	KEYWORD2
+requestTempo	KEYWORD2
+sendTap	KEYWORD2
+toggleTuner	KEYWORD2
+enableTuner	KEYWORD2
+disableTuner	KEYWORD2
+getCurrentPreset	KEYWORD2
+isTunerEngaged	KEYWORD2
+getTempo	KEYWORD2
+getFirmwareVersion	KEYWORD2
+getUsbVersion	KEYWORD2
+registerConnectionStatusCallback	KEYWORD2
+registerWaitingCallback	KEYWORD2
+registerPresetChangingCallback	KEYWORD2
+registerPresetChangeCallback	KEYWORD2
+registerSystemChangeCallback	KEYWORD2
+registerTapTempoCallback	KEYWORD2
+registerTunerDataCallback	KEYWORD2
+registerTunerStatusCallback	KEYWORD2
+
+AxePreset	KEYWORD1
+getPresetNumber
+getSceneNumber
+getPresetName
+getSceneName
+getEffectCount
+getEffectName
+getEffectTag
+isEffectBypassed
+isEffectSwitchable
+isComplete
