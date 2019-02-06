@@ -96,7 +96,6 @@ bool AxeSystem::isAxeSysEx(const byte *sysex, const unsigned length) {
 void AxeSystem::parseName(const byte *sysex, byte length, byte offset, char *buffer, byte size) {
 	memset(buffer, ' ', size);
 	byte count = 0;
-	//FIXME: TRUNCATES buf on '%', eg 164/4, '100% Amp...' -> '100'
   for (byte i = offset; i < length - 2 && count < size; i++) {
     if (sysex[i] == 0) break;
 		buffer[count++] = sysex[i];
