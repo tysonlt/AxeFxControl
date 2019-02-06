@@ -62,6 +62,14 @@ void AxeSystem::requestTempo() {
 	sendSysEx(8, (byte*) REQUEST_TEMPO_COMMAND_8_BYTES);
 }
 
+void AxeSystem::setTempo(byte tempo) {
+  byte command[8];
+	memcpy(command, REQUEST_TEMPO_COMMAND_8_BYTES, 8);
+	command[5] = tempo % BANK_SIZE;
+  command[6] = tempo / BANK_SIZE;
+	sendSysEx(8, (byte*) command);
+}
+
 /**
  * Send a tap-tempo pulse.
  */
@@ -81,8 +89,8 @@ void AxeSystem::toggleTuner() {
  * Turn the tuner on.
  */
 void AxeSystem::enableTuner() {
-	sendSysEx(6, (byte*) ENABLE_TUNER_COMMAND_7_BYTES);
 	_tunerEngaged = true;
+  sendSysEx(7, (byte*) ENABLE_TUNER_COMMAND_7_BYTES);
 	callTunerStatusCallback(_tunerEngaged);
 }
 
@@ -90,8 +98,8 @@ void AxeSystem::enableTuner() {
  * As expected, turn the tuner off.
  */
 void AxeSystem::disableTuner() {
-	sendSysEx(6, (byte*) DISABLE_TUNER_COMMAND_7_BYTES);
 	_tunerEngaged = false;
+  sendSysEx(7, (byte*) DISABLE_TUNER_COMMAND_7_BYTES);
 	callTunerStatusCallback(_tunerEngaged);
 }
 
