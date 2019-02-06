@@ -14,7 +14,7 @@ void setup() {
 	Axe.registerPresetChangeCallback(onPresetChange);
 
 	//ask for details of the current preset
-	// Axe.requestPresetDetails();
+	Axe.requestPresetDetails();
 
 }
 
@@ -27,6 +27,8 @@ void onPresetChange(AxePreset *preset) {
 
 	const size_t sz = 33;
 	char buf[sz];
+
+	//NOTE! Preset/scene names with % in them will not print to debug properly
 
 	//AxeSystem has notified that all requested information has arrived!
 	Serial.print("Preset number: ");
@@ -48,7 +50,7 @@ void onPresetChange(AxePreset *preset) {
 	Serial.println("Effects:");
 	const size_t tagSz = 10;
 	char tag[tagSz];
-	for (byte effect = 0; effect < preset->getEffectCount(); effect++) {
+	for (EffectIndex effect = 0; effect < preset->getEffectCount(); effect++) {
 		preset->copyEffectTag(effect, tag, tagSz);
 		char engaged = preset->isEffectBypassed(effect) ? ' ' : 'X';
 		snprintf(buf, sz, "%s [%c]", tag, engaged);
