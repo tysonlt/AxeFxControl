@@ -55,9 +55,6 @@ void AxeSystem::checkFirmware() {
   }
 }
 
-/**
- * Set connection status and call callbacks.
- */
 void AxeSystem::setSystemConnected(bool connected) {
 	bool oldStatus = _systemConnected;
 	_systemConnected = connected;
