@@ -36,24 +36,28 @@ void AxePreset::copySceneName(char *buffer, size_t max) {
 	snprintf(buffer, max, _sceneName);
 }
 
-void AxePreset::copyEffectName(byte index, char *buffer, size_t max) { 	
+void AxePreset::copyEffectName(EffectIndex index, char *buffer, size_t max) { 	
 	char tag[0];
 	EffectId effectId = _effectIdList[index];
 	copyEffectNameAndTag(effectId, buffer, max, tag, 0);
 }
 
-void AxePreset::copyEffectTag(byte index, char *buffer, size_t max) { 	
+void AxePreset::copyEffectTag(EffectIndex index, char *buffer, size_t max) { 	
 	char name[0];
 	EffectId effectId = _effectIdList[index];
 	copyEffectNameAndTag(effectId, name, 0, buffer, max);
 }
 
-bool AxePreset::isEffectSwitchable(byte index) {
+bool AxePreset::isEffectSwitchable(EffectIndex index) {
 	EffectId effectId = _effectIdList[index];
+	return isEffectSwitchable(effectId);
+}
+
+bool AxePreset::isEffectSwitchable(EffectId effectId) {
 	return isSwitchable(effectId);
 }
 
-bool AxePreset::isEffectBypassed(byte index) {
+bool AxePreset::isEffectBypassed(EffectIndex index) {
 	return _bypassedList[index];
 }
 
