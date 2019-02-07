@@ -28,6 +28,10 @@ void AxeSystem::registerTunerStatusCallback( void (*func)(bool) ) {
 	_tunerStatusCallback = func;
 }
 
+void AxeSystem::registerLooperStatusCallback( void (*func)(AxeLooper) ) {
+	_looperStatusCallback = func;
+}
+
 void AxeSystem::callConnectionStatusCallback(bool connected)  {
 	if (NULL != _connectionStatusCallback) {
 		(_connectionStatusCallback)(connected);
@@ -65,11 +69,16 @@ void AxeSystem::callTunerDataCallback(const char *note, const byte string, const
 	if (NULL != _tunerDataCallback) {
 		(_tunerDataCallback)(note, string, fineTune);
 	}
-}
+} 
 
+void AxeSystem::callLooperStatusCallback(AxeLooper *looper) {
+	if (NULL != _looperStatusCallback) {
+		(_looperStatusCallback)(*looper);
+	}
+}
+    
 void AxeSystem::callTunerStatusCallback(bool enabled) {
 	if (NULL != _tunerStatusCallback) {
 		(_tunerStatusCallback)(enabled);
 	}
 }
-    

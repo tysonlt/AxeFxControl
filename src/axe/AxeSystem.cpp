@@ -98,6 +98,7 @@ void AxeSystem::refresh(bool ignoreThrottle) {
 		setChanging();
 		requestPresetName();
 		requestTempo();
+		requestLooperStatus();
   } else {
 		#ifdef AXE_DEBUG
     DEBUGGER.println(F("refresh(): too soon or tuner engaged, ignoring refresh request"));
@@ -108,6 +109,7 @@ void AxeSystem::refresh(bool ignoreThrottle) {
 void AxeSystem::checkFirmware() {
   if (!_firmwareRequested) {
     requestFirmwareVersion();
+		requestLooperStatus();
     _firmwareRequested = true;
   }
 }

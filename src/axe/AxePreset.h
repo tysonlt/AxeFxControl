@@ -20,8 +20,6 @@ class AxePreset {
 		void copyPresetName(char *buffer, size_t max);
 		void copySceneName(char *buffer, size_t max);
 
-		AxeLooper& getLooper() { return _looper; }
-
 		void setEffects(const EffectId effectIdList[], const bool bypassedList[], const unsigned count);
 		void copyEffectName(EffectIndex index, char *buffer, size_t max);
 		void copyEffectTag(EffectIndex index, char *buffer, size_t max);
@@ -53,7 +51,6 @@ class AxePreset {
 		int _effectCount = -1;	
 		EffectId _effectIdList[MAX_EFFECTS];
 		bool _bypassedList[MAX_EFFECTS];
-		AxeLooper _looper;
 
 };
 

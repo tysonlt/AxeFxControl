@@ -77,7 +77,6 @@ void AxeSystem::onSystemExclusive(const byte *sysex, unsigned length) {
 					parseName(sysex, length, 8, buffer, AxePreset::MAX_PRESET_NAME);
 					_incomingPreset.setPresetName(buffer); 
 					_incomingPreset.setPresetNumber(number);
-					requestLooperStatus(); //HACK not checking in isComplete, so just query first
 					requestSceneName();
         	requestEffectDetails();
 					checkIncomingPreset();
@@ -88,13 +87,13 @@ void AxeSystem::onSystemExclusive(const byte *sysex, unsigned length) {
 			case SYSEX_REQUEST_SCENE_INFO: {
 				parseName(sysex, length, 7, buffer, AxePreset::MAX_SCENE_NAME);
 				_incomingPreset.setSceneName(buffer); 
-				_incomingPreset.setSceneNumber(sysex[6]);
+				_incomingPreset.setSceneNumber(sysex[6] + 1);
 				checkIncomingPreset();
 				break;
 			}
 	
 			case SYSEX_REQUEST_SCENE_NUMBER: {
-				_incomingPreset.setSceneNumber(sysex[6]);
+				_incomingPreset.setSceneNumber(sysex[6] + 1);
 				checkIncomingPreset();
 				break;
 			}
@@ -123,6 +122,15 @@ void AxeSystem::onSystemExclusive(const byte *sysex, unsigned length) {
 				break;
 			}
 
+			case SYSEX_REQUEST_LOOPER_STATUS: {
+				LooperStatus newStatus = sysex[6];
+				if (_looper.getStatus() != newStatus) {
+					_looper.setStatus(newStatus);
+					callLooperStatusCallback(&_looper);
+				}
+				break;
+			}
+
 			case SYSEX_REQUEST_EFFECT_BYPASS: {
 				/*
 				EffectId effectId = sysex[6] + (sysex[7] * BANK_SIZE);
@@ -130,11 +138,6 @@ void AxeSystem::onSystemExclusive(const byte *sysex, unsigned length) {
 				*/
 				//adding so it's not unhandled during debug...
 				//not much to do because Axe doesn't send status updates for this
-				break;
-			}
-
-			case SYSEX_REQUEST_LOOPER_STATUS: {
-				_incomingPreset.getLooper().setStatus(sysex[6]);
 				break;
 			}
 

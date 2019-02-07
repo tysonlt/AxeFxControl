@@ -17,6 +17,10 @@ class AxeSystem {
 
 	public:
 
+		AxeSystem() {
+			_looper.setAxeSystem(this);
+		}
+
 		void init();
 		void update();
 
@@ -35,6 +39,7 @@ class AxeSystem {
 		void enableEffect(EffectId);
 		void disableEffect(EffectId);
 		void requestLooperStatus();
+		void setLooperStatus(LooperStatus);
 
 		void sendPresetIncrement();
 		void sendPresetDecrement();
@@ -47,9 +52,13 @@ class AxeSystem {
 		bool isTunerEngaged() { return _tunerEngaged; }
 		Tempo getTempo() { return _tempo; }
 		AxePreset& getCurrentPreset() { return _preset; }
+		AxeLooper& getLooper() { return _looper; }
 		Version getFirmwareVersion() { return _firmwareVersion; }
 		Version getUsbVersion() { return _usbVersion; }
 
+		//TODO ControlLayout getCurrentControlLayout()
+		//TODO pluggable command scheme based on axe Version
+		
 		void setSysexTimout(unsigned long ms) { _sysexTimout = ms; }
 		void setTunerTimeout(unsigned long ms) { _tunerTimout = ms; }
 		void setStartupDelay(unsigned long ms) { _startupDelay = ms; }
@@ -62,6 +71,7 @@ class AxeSystem {
 		void registerTapTempoCallback(void (*func)());
 		void registerTunerDataCallback(void (*func)(const char *, const byte, const byte));
 		void registerTunerStatusCallback(void (*func)(bool));
+		void registerLooperStatusCallback(void (*func)(AxeLooper));
 
 	private:
 		
@@ -91,11 +101,13 @@ class AxeSystem {
 		void callSystemChangeCallback();
 		void callTunerDataCallback(const char *note, const byte string, const byte fineTune);
 		void callTunerStatusCallback(bool enabled);
+		void callLooperStatusCallback(AxeLooper*);
 
 		bool isValidPresetNumber(int preset);
 		bool isValidSceneNumber(int scene); 
 		void intToMidiBytes(int, byte*, byte*);
 		AxePreset _preset, _incomingPreset;
+		AxeLooper _looper;
 		Version _firmwareVersion;
 		Version _usbVersion;
 		byte _tempo;
@@ -119,6 +131,7 @@ class AxeSystem {
 		void (*_systemChangeCallback)();
 		void (*_tunerStatusCallback)(bool);
 		void (*_tunerDataCallback)(const char *, const byte, const byte);
+		void (*_looperStatusCallback)(AxeLooper);
 
 	public:
 

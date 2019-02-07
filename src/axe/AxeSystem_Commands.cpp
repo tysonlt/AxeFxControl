@@ -39,6 +39,13 @@ void AxeSystem::requestLooperStatus() {
 	sendSysEx(7, (byte*) REQUEST_LOOPER_STATUS_COMMAND_7_BYTES);
 }
 
+void AxeSystem::setLooperStatus(LooperStatus status) {
+	byte command[7];
+	memcpy(command, REQUEST_LOOPER_STATUS_COMMAND_7_BYTES, 7);
+	command[5] = status;
+	sendSysEx(7, (byte*) command);
+}
+
 void AxeSystem::requestTempo() {
 	sendSysEx(8, (byte*) REQUEST_TEMPO_COMMAND_8_BYTES);
 }

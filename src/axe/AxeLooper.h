@@ -1,12 +1,16 @@
 #pragma once
 
+#include <Arduino.h>
+
 typedef byte LooperStatus;
 
+class AxeSystem;
 class AxeLooper {
 
 	public:
 
 		void setStatus(LooperStatus status) { _status = status; }
+		LooperStatus getStatus() { return _status; }
 
 		bool isRecord() 		{ return _status & LOOPER_RECORD; }
 		bool isPlay() 			{ return _status & LOOPER_PLAY; }
@@ -14,6 +18,15 @@ class AxeLooper {
 		bool isOnce() 			{ return _status & LOOPER_ONCE; }
 		bool isReverse() 		{ return _status & LOOPER_REVERSE; }
 		bool isHalfSpeed() 	{ return _status & LOOPER_HALF_SPEED; }
+
+		void record();
+		void play();
+		void overdub();
+		void once();
+		void reverse();
+		void halfSpeed();
+
+		void setAxeSystem(AxeSystem *axe) { _axe = axe; }
 
 	public:
 
@@ -26,6 +39,9 @@ class AxeLooper {
 
 	private:
 
+		void addStatus(LooperStatus status);
+
 		LooperStatus _status;
+		AxeSystem *_axe;
 
 };
