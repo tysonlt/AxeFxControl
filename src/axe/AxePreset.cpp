@@ -9,6 +9,7 @@ void AxePreset::setSceneName(char *buffer) {
 }
 
 void AxePreset::setEffects(const EffectId effectIdList[], const bool bypassedList[], const unsigned count) {
+	_effectCount = 0;
 	for (unsigned i=0; i < count && i < MAX_EFFECTS; i++) {
 		if (AxeEffect::isSwitchable(effectIdList[i])) {
 			_effectIdList[_effectCount] = effectIdList[i];

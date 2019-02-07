@@ -35,6 +35,10 @@ void AxeSystem::sendSceneChange(byte scene) {
 	sendSysEx(7, (byte*) command);
 }
 
+void AxeSystem::requestLooperStatus() {
+	sendSysEx(7, (byte*) REQUEST_LOOPER_STATUS_COMMAND_7_BYTES);
+}
+
 void AxeSystem::requestTempo() {
 	sendSysEx(8, (byte*) REQUEST_TEMPO_COMMAND_8_BYTES);
 }

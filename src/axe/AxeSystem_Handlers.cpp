@@ -77,6 +77,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, unsigned length) {
 					parseName(sysex, length, 8, buffer, AxePreset::MAX_PRESET_NAME);
 					_incomingPreset.setPresetName(buffer); 
 					_incomingPreset.setPresetNumber(number);
+					requestLooperStatus(); //HACK not checking in isComplete, so just query first
 					requestSceneName();
         	requestEffectDetails();
 					checkIncomingPreset();
@@ -127,7 +128,13 @@ void AxeSystem::onSystemExclusive(const byte *sysex, unsigned length) {
 				EffectId effectId = sysex[6] + (sysex[7] * BANK_SIZE);
 				bool bypassed = sysex[8];
 				*/
-				//...not much to do because Axe doesn't send status updates for this
+				//adding so it's not unhandled during debug...
+				//not much to do because Axe doesn't send status updates for this
+				break;
+			}
+
+			case SYSEX_REQUEST_LOOPER_STATUS: {
+				_incomingPreset.getLooper().setStatus(sysex[6]);
 				break;
 			}
 
@@ -166,11 +173,9 @@ void AxeSystem::processEffectDump(const byte *sysex, unsigned length) {
     bool bypassed = !!(status & 1); 
     if (msb) effectId |= 128;
 
-    if (_preset.isEffectSwitchable(effectId)) {
-      effectIds[count] = effectId;
-      effectBypassed[count] = bypassed;
-      count++;
-    }
+		effectIds[count] = effectId;
+		effectBypassed[count] = bypassed;
+		count++;
 
 	}
 

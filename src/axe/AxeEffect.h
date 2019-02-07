@@ -2,8 +2,9 @@
 
 typedef unsigned EffectId;
 
-//enum is below to match line numbers :)
+class AxeEffect {
 
+//enum is below to match line numbers 
 
 
 
@@ -199,13 +200,11 @@ enum EFFECT_ID_ {
 	ID_PRESET_FC,
 };
 
-class AxeEffect {
-
 	public:
 
 		static void copyEffectNameAndTag(EffectId effectId, char *name, byte szName, char *tag,	byte szTag) {
-			switch (effectId) {
 
+			switch (effectId) {
 				case ID_COMP1:
 					snprintf(name, szName, "COMP1");
 					snprintf(tag, szTag, "CMP1");
@@ -704,7 +703,7 @@ class AxeEffect {
 					break;
 				case ID_PLEX1:
 					snprintf(name, szName, "PLEX1");
-					snprintf(tag, szTag, "PX1");
+					snprintf(tag, szTag, "PLX1");
 					break;
 				case ID_PLEX2:
 					snprintf(name, szName, "PLEX2");

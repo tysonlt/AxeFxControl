@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include "AxePreset.h"
 #include "AxeEffect.h"
+#include "AxeLooper.h"
 #include "utility/MIDI.h"
 #include "../AxeFxControl.h"
 
@@ -33,6 +34,7 @@ class AxeSystem {
 		void disableTuner();
 		void enableEffect(EffectId);
 		void disableEffect(EffectId);
+		void requestLooperStatus();
 
 		void sendPresetIncrement();
 		void sendPresetDecrement();
@@ -148,6 +150,7 @@ class AxeSystem {
 		const static byte SYSEX_REQUEST_SCENE_NUMBER 				= 0x0C;
 		const static byte SYSEX_REQUEST_PRESET_INFO 				= 0x0D;
 		const static byte SYSEX_REQUEST_SCENE_INFO 					= 0x0E;
+		const static byte SYSEX_REQUEST_LOOPER_STATUS 			= 0x0F;
 		const static byte SYSEX_TAP_TEMPO_PULSE 						= 0x10;
 		const static byte SYSEX_TUNER 											= 0x11;
 		const static byte SYSEX_EFFECT_DUMP 								= 0x13;
@@ -211,6 +214,12 @@ class AxeSystem {
 				SYSEX_MANUFACTURER_BYTE1,	SYSEX_MANUFACTURER_BYTE2,
 				SYSEX_MANUFACTURER_BYTE3,	SYSEX_AXE_VERSION,
 				SYSEX_TUNER,							SYSEX_TUNER_OFF,
+				SYSEX_CHECKSUM_PLACEHOLDER};
+
+		const byte REQUEST_LOOPER_STATUS_COMMAND_7_BYTES[7] = {
+				SYSEX_MANUFACTURER_BYTE1,  		SYSEX_MANUFACTURER_BYTE2,
+				SYSEX_MANUFACTURER_BYTE3,  		SYSEX_AXE_VERSION,
+				SYSEX_REQUEST_LOOPER_STATUS,  SYSEX_QUERY_BYTE,
 				SYSEX_CHECKSUM_PLACEHOLDER};
 
 };
