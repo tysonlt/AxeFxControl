@@ -43,6 +43,7 @@ void AxeSystem::requestTempo() {
 void AxeSystem::setTempo(Tempo tempo) {
   byte command[8];
 	memcpy(command, REQUEST_TEMPO_COMMAND_8_BYTES, 8);
+	byteToMidiBytes(tempo, &command[5], &command[6]);
 	command[5] = tempo % BANK_SIZE;
   command[6] = tempo / BANK_SIZE;
 	sendSysEx(8, (byte*) command);
