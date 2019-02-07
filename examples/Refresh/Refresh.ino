@@ -11,11 +11,10 @@ void setup() {
 	//register a callback so we know when preset details are available
 	Axe.registerPresetChangeCallback(onPresetChange);
 
-	//ask for details of the current preset
+	//ask for details to be refreshed every 3 seconds
 	Axe.enableRefresh(3000);
 
 }
-
 
 void loop() {
 	Axe.update();
