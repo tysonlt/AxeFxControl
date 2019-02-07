@@ -12,7 +12,16 @@ void AxeSystem::init() {
 }
 
 void AxeSystem::update() {
+	
 	checkMidi();
+
+	if (!_presetChanging && _refreshRate > 0) {
+		unsigned long now = millis();
+		if (now - _lastRefresh > _refreshRate) {
+			refresh();
+		}
+	}
+
 	if (MIDI.read()) {
 		if (MIDI.getType() == midi::ControlChange) {
 			onControlChange(MIDI.getChannel(), MIDI.getData1(), MIDI.getData2());
@@ -22,6 +31,7 @@ void AxeSystem::update() {
 			onSystemExclusive(MIDI.getSysExArray(), MIDI.getSysExArrayLength());
 		}
 	} 
+
 }
 
 void AxeSystem::sendPresetChange(const unsigned number) {
@@ -72,8 +82,18 @@ void AxeSystem::checkMidi() {
 
 //////// END MIDI CALLS ///////
 
+void AxeSystem::enableRefresh(unsigned long millis, unsigned long throttle) {
+	_refreshRate = millis;
+	_refreshThrottle = throttle;
+
+	Serial.println(_refreshRate);
+}
+
+
 void AxeSystem::refresh(bool ignoreThrottle) {
-  if (ignoreThrottle || (!_tunerEngaged && _lastRefresh > REFRESH_THROTTLE)) {
+	unsigned long now = millis();
+  if (ignoreThrottle || (!_tunerEngaged && (now - _lastRefresh) > _refreshThrottle)) {
+		_lastRefresh = now;
 		setChanging();
 		requestPresetName();
 		requestTempo();
@@ -101,12 +121,14 @@ void AxeSystem::setSystemConnected(bool connected) {
 
 void AxeSystem::checkTimers() {
 
-  if (_systemConnected && _lastSysexResponse > TIME_LIMIT_SYSEX) {
+	unsigned long now = millis();
+
+  if (_systemConnected && (now - _lastSysexResponse) > TIME_LIMIT_SYSEX) {
     _systemConnected = false;
     callConnectionStatusCallback(_systemConnected);
   }
 
-  if (_tunerEngaged && _lastTunerResponse > TIME_LIMIT_TUNER) {
+  if (_tunerEngaged && (now - _lastTunerResponse) > TIME_LIMIT_TUNER) {
     _tunerEngaged = false;
     callTunerStatusCallback(_tunerEngaged);
   }

@@ -32,7 +32,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, unsigned length) {
 
 	if (isAxeSysEx(sysex, length)) {
 
-		_lastSysexResponse = 0;
+		_lastSysexResponse = millis();
 
 		#ifdef AXE_DEBUG_SYSEX
 		char b[100];
@@ -71,7 +71,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, unsigned length) {
 			}
 	
 			case SYSEX_REQUEST_PRESET_INFO: {
-				_lastRefresh = 0;
+				_lastRefresh = millis();
 				int number = sysex[6] + (sysex[7] * BANK_SIZE);
 				if (true/*!_presetChanging || number == _preset.getPresetNumber()*/) {
 					parseName(sysex, length, 8, buffer, AxePreset::MAX_PRESET_NAME);
@@ -105,7 +105,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, unsigned length) {
 			}
 
 			case SYSEX_TUNER: {
-				_lastTunerResponse = 0;
+				_lastTunerResponse = millis();
 				if (!_tunerEngaged) {
 					_tunerEngaged = true;
 					callTunerStatusCallback(_tunerEngaged);
