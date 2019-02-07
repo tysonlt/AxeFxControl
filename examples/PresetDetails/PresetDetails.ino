@@ -40,18 +40,16 @@ void onPresetChange(AxePreset preset) {
 	Serial.print("Preset number: ");
 	Serial.println(preset.getPresetNumber());
 
-	Serial.print("Preset name: |");
+	Serial.print("Preset name: ");
 	preset.copyPresetName(buf, sz);
-	Serial.print(buf);
-	Serial.println("|");
+	Serial.println(buf);
 
 	Serial.print("Scene number: ");
 	Serial.println(preset.getSceneNumber());
 
-	Serial.print("Scene name: |");
+	Serial.print("Scene name: ");
 	preset.copySceneName(buf, sz);
-	Serial.print(buf);
-	Serial.println("|");
+	Serial.println(buf);
 
 	Serial.println("Effects:");
 	const size_t tagSz = 10;
