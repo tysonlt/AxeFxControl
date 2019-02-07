@@ -1,9 +1,8 @@
 #pragma once
 
+typedef unsigned EffectId;
 
-
-
-
+//enum is below to match line numbers :)
 
 
 
