@@ -1,15 +1,9 @@
 #include "AxeSystem.h"
 
-/**
- * Ask Axe to send us its firmware.
- */
 void AxeSystem::requestFirmwareVersion() {
 	sendSysEx(6, (byte*) REQUEST_FIRMWARE_VERSION_COMMAND_6_BYTES);
 }
 
-/**
- * Ask for the current preset name and number.
- */
 void AxeSystem::requestPresetName(int preset) {
   if (preset == -1) {
     sendSysEx(8, (byte*) REQUEST_PRESET_NAME_COMMAND_8_BYTES);
@@ -23,31 +17,18 @@ void AxeSystem::requestPresetName(int preset) {
   }
 }
 
-/**
- * Ask for the current scene name and number.
- */
 void AxeSystem::requestSceneName() {
 	sendSysEx(7, (byte*) REQUEST_SCENE_NAME_COMMAND_7_BYTES);
 }
 
-/**
- * Ask for just the scene number.
- */
 void AxeSystem::requestSceneNumber() {
 	sendSysEx(7, (byte*) REQUEST_SCENE_NUMBER_COMMAND_7_BYTES);
 }
 
-/**
- * Ask for list of effects for current preset.
- */ 
 void AxeSystem::requestEffectDetails() {
 	sendSysEx(6, (byte*) REQUEST_EFFECT_DUMP_6_BYTES);
 }
 
-
-/**
- * Send one-based scene change.
- */ 
 void AxeSystem::sendSceneChange(byte scene) {
 	byte command[7];
 	memcpy(command, REQUEST_SCENE_NUMBER_COMMAND_7_BYTES, 7);
@@ -55,9 +36,6 @@ void AxeSystem::sendSceneChange(byte scene) {
 	sendSysEx(7, (byte*) command);
 }
 
-/**
- * Ask for the current tempo.
- */
 void AxeSystem::requestTempo() {
 	sendSysEx(8, (byte*) REQUEST_TEMPO_COMMAND_8_BYTES);
 }
@@ -68,44 +46,32 @@ void AxeSystem::setTempo(byte tempo) {
 	command[5] = tempo % BANK_SIZE;
   command[6] = tempo / BANK_SIZE;
 	sendSysEx(8, (byte*) command);
+
+	//Axe won't notify us of this, so send a manual system change event
+	_tempo = tempo;
+	callSystemChangeCallback();
 }
 
-/**
- * Send a tap-tempo pulse.
- */
 void AxeSystem::sendTap() {
 	sendSysEx(6, (byte*) TAP_TEMPO_PULSE_COMMAND_6_BYTES);
 }
 
-/**
- * Switch tuner state.
- */ 
 void AxeSystem::toggleTuner() {
 	_tunerEngaged ? disableTuner() : enableTuner();
-	callTunerStatusCallback(_tunerEngaged);
 }
 
-/**
- * Turn the tuner on.
- */
 void AxeSystem::enableTuner() {
 	_tunerEngaged = true;
   sendSysEx(7, (byte*) ENABLE_TUNER_COMMAND_7_BYTES);
 	callTunerStatusCallback(_tunerEngaged);
 }
 
-/**
- * As expected, turn the tuner off.
- */
 void AxeSystem::disableTuner() {
 	_tunerEngaged = false;
   sendSysEx(7, (byte*) DISABLE_TUNER_COMMAND_7_BYTES);
 	callTunerStatusCallback(_tunerEngaged);
 }
 
-/**
- * Move up one preset.
- */
 void AxeSystem::sendPresetIncrement() {
   int number = _preset.getPresetNumber();
   if (isValidPresetNumber(number)) {
@@ -116,9 +82,6 @@ void AxeSystem::sendPresetIncrement() {
   }
 }
 
-/**
- * Move down one preset.
- */
 void AxeSystem::sendPresetDecrement() {
   int number = _preset.getPresetNumber();
   if (isValidPresetNumber(number)) {
@@ -131,9 +94,6 @@ void AxeSystem::sendPresetDecrement() {
   }
 }
 
-/**
- * Move up one scene.
- */
 void AxeSystem::sendSceneIncrement() {
   byte number = _preset.getSceneNumber();
   if (isValidSceneNumber(number)) {
@@ -144,9 +104,6 @@ void AxeSystem::sendSceneIncrement() {
   }
 }
 
-/**
- * Move down one scene.
- */
 void AxeSystem::sendSceneDecrement() {
   byte number = _preset.getSceneNumber();
   if (isValidSceneNumber(number)) {
