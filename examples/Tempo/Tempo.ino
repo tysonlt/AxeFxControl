@@ -8,7 +8,7 @@ void setup() {
 }
 
 void loop() {
-  for (byte tempo = AxeSystem::TEMPO_MIN; tempo <= AxeSystem::TEMPO_MAX; tempo++) {
+  for (Tempo tempo = AxeSystem::TEMPO_MIN; tempo <= AxeSystem::TEMPO_MAX; tempo++) {
     Axe.setTempo(tempo);
     delay(1000);
   }

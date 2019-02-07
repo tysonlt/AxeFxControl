@@ -6,6 +6,8 @@
 #include "utility/elapsedMillis.h"
 #include "../AxeFxControl.h"
 
+typedef byte Tempo;
+
 struct Version {
 	byte major, minor;
 };
@@ -23,12 +25,12 @@ class AxeSystem {
 		void sendSceneIncrement();
 		void sendSceneDecrement();
 		void sendPresetChange(const unsigned preset);
-		void sendSceneChange(const byte newScene);
+		void sendSceneChange(const byte scene);
 
 		void requestPresetDetails() { requestPresetName(); }
 		void requestFirmwareVersion();		
 		void requestTempo();
-		void setTempo(byte tempo);
+		void setTempo(Tempo tempo);
 		void sendTap();
 		void toggleTuner();
 		void enableTuner();
@@ -36,7 +38,7 @@ class AxeSystem {
 
 		bool isPresetChanging() { return _presetChanging; }
 		bool isTunerEngaged() { return _tunerEngaged; }
-		unsigned getTempo() { return _tempo; }
+		Tempo getTempo() { return _tempo; }
 		AxePreset* getCurrentPreset() { return &_preset; }
 		Version getFirmwareVersion() { return _firmwareVersion; }
 		Version getUsbVersion() { return _usbVersion; }
