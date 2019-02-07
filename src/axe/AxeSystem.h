@@ -3,7 +3,6 @@
 #include <Arduino.h>
 #include "AxePreset.h"
 #include "utility/MIDI.h"
-#include "utility/elapsedMillis.h"
 #include "../AxeFxControl.h"
 
 typedef byte Tempo;
@@ -18,6 +17,9 @@ class AxeSystem {
 
 		void init();
 		void update();
+
+		// Update preset details every millis. Don't refresh if another sysex was received within throttle interval.
+		void enableRefresh(unsigned long millis = REFRESH_INTERVAL, unsigned long throttle = REFRESH_THROTTLE);
 		void refresh(bool ignoreThrottle = false);
 
 		void sendPresetIncrement();
@@ -95,7 +97,9 @@ class AxeSystem {
 		bool _systemConnected = false;
 		bool _presetChanging = false;
 		bool _midiReady = false;
-		elapsedMillis _lastSysexResponse, _lastTunerResponse, _lastRefresh;
+		unsigned long _refreshRate = 0;
+		unsigned long _refreshThrottle = 0;
+		unsigned long _lastSysexResponse = 0, _lastTunerResponse = 0, _lastRefresh = 0;
 
 		void (*_connectionStatusCallback)(bool);
 		void (*_tapTempoCallback)();
