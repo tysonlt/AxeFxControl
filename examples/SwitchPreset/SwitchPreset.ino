@@ -15,9 +15,9 @@ void loop() {
 	}
 	
 	Axe.sendPresetChange(preset);
-	delay(1000);
+	delay(350);
 	
-	preset++;
+	preset += 11;
 
 }
 
