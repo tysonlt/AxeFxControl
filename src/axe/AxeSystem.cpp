@@ -9,6 +9,7 @@ void AxeSystem::init() {
 	if (_startupDelay > 0) { 
 		delay(_startupDelay);
 	}
+	while (Serial1.available()) Serial1.read();
 	MIDI.begin(MIDI_CHANNEL_OMNI);
 	MIDI.turnThruOff();
 	_midiReady = true;
@@ -73,10 +74,6 @@ void AxeSystem::sendSysEx(const byte length, byte *sysex) {
 	DEBUGGER.println();
 	#endif
 	
-	#ifdef SYSEX_THROTTLE
-	delay(SYSEX_THROTTLE);
-	#endif
-
 	MIDI.sendSysEx(length, sysex);
 
 }
