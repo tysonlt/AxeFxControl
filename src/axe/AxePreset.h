@@ -22,13 +22,14 @@ class AxePreset{
 		void setPresetName(char *buffer);
 		void setSceneName(char *buffer);
 
-		unsigned getEffectCount() { return _effectCount; }
 		void setEffects(const EffectId effectIdList[], const bool bypassedList[], const unsigned count);
 		void copyEffectName(EffectIndex index, char *buffer, size_t max);
 		void copyEffectTag(EffectIndex index, char *buffer, size_t max);
 		bool isEffectSwitchable(EffectIndex index);
 		bool isEffectSwitchable(EffectId effectId);
 		bool isEffectBypassed(EffectIndex index);
+		unsigned getEffectCount() { return _effectCount; }
+		EffectId getEffectId(EffectIndex index) { return _effectIdList[index] ;}
 
 		void reset();	
 		bool isComplete();
@@ -41,7 +42,7 @@ class AxePreset{
 		const static byte MAX_EFFECT_NAME 	= 20;
 		const static byte MAX_EFFECT_TAG 		= 5;
 
-	// private:
+	private:
 
 		const static byte EFFECT_NAME_SIZE = 21;
 		const static byte EFFECT_TAG_SIZE = 6;
