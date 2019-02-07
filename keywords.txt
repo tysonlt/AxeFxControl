@@ -3,8 +3,8 @@ AxePreset KEYWORD1
 AxeSystem	KEYWORD1
 init	KEYWORD2
 update	KEYWORD2
+enableRefresh KEYWORD2
 refresh	KEYWORD2
-refreshNow	KEYWORD2
 requestPresetDetails	KEYWORD2
 sendPresetIncrement	KEYWORD2
 sendPresetDecrement	KEYWORD2
@@ -34,13 +34,13 @@ registerTunerDataCallback	KEYWORD2
 registerTunerStatusCallback	KEYWORD2
 
 AxePreset	KEYWORD1
-getPresetNumber
-getSceneNumber
-getPresetName
-getSceneName
-getEffectCount
-getEffectName
-getEffectTag
-isEffectBypassed
-isEffectSwitchable
-isComplete
+getPresetNumber	KEYWORD2
+getSceneNumber	KEYWORD2
+getPresetName	KEYWORD2
+getSceneName	KEYWORD2
+getEffectCount	KEYWORD2
+getEffectName	KEYWORD2
+getEffectTag	KEYWORD2
+isEffectBypassed	KEYWORD2
+isEffectSwitchable	KEYWORD2
+isComplete	KEYWORD2
