@@ -28,6 +28,7 @@ class AxeSystem {
 		void requestPresetDetails() { requestPresetName(); }
 		void requestFirmwareVersion();		
 		void requestTempo();
+		void setTempo(byte tempo);
 		void sendTap();
 		void toggleTuner();
 		void enableTuner();
@@ -80,7 +81,6 @@ class AxeSystem {
 		bool isValidPresetNumber(int preset);
 		bool isValidSceneNumber(int scene); 
 
-		midi::MidiInterface<HardwareSerial> *_midi = nullptr;
 		AxePreset _preset, _incomingPreset;
 		Version _firmwareVersion;
 		Version _usbVersion;
@@ -106,6 +106,8 @@ class AxeSystem {
 		const static byte BANK_SIZE 												= 128;
 		const static byte MAX_BANKS 												= 4;
 		const static byte MAX_SCENES 												= 8;
+		const static byte TEMPO_MIN 												= 24;
+		const static byte TEMPO_MAX 												= 250;
 		constexpr static byte MAX_PRESETS 									= (byte) (MAX_BANKS * BANK_SIZE) - 1;
 
 	private:

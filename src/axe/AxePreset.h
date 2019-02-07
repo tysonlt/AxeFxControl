@@ -4,6 +4,7 @@
 #include "AxeEffect.h"
 
 typedef unsigned EffectId;
+typedef byte EffectIndex;
 
 class AxePreset{
 
@@ -23,10 +24,11 @@ class AxePreset{
 
 		unsigned getEffectCount() { return _effectCount; }
 		void setEffects(const EffectId effectIdList[], const bool bypassedList[], const unsigned count);
-		void copyEffectName(byte index, char *buffer, size_t max);
-		void copyEffectTag(byte index, char *buffer, size_t max);
-		bool isEffectSwitchable(byte index);
-		bool isEffectBypassed(byte index);
+		void copyEffectName(EffectIndex index, char *buffer, size_t max);
+		void copyEffectTag(EffectIndex index, char *buffer, size_t max);
+		bool isEffectSwitchable(EffectIndex index);
+		bool isEffectSwitchable(EffectId effectId);
+		bool isEffectBypassed(EffectIndex index);
 
 		void reset();	
 		bool isComplete();
