@@ -10,4 +10,7 @@
 #define TIME_LIMIT_SYSEX				REFRESH_INTERVAL + 3000 // after this, axe will be considered disconnected (needs realtime sysex!)
 #define TIME_LIMIT_TUNER				250 // after this, we will assume the tuner was disabled from the front panel (needs realtime sysex!)
 
+#define INIT_DELAY							1000 //Teesies seem to appreciate a delay before sending first sysex
+// #define SYSEX_THROTTLE					1 //delay before sending each sysex
+
 #include "axe/AxeSystem.h"

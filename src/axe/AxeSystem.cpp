@@ -6,6 +6,9 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 /////// BEGIN MIDI CALLS ///////
 
 void AxeSystem::init() {	
+	#ifdef INIT_DELAY
+	delay(INIT_DELAY);
+	#endif
 	MIDI.begin(MIDI_CHANNEL_OMNI);
 	MIDI.turnThruOff();
 	_midiReady = true;
@@ -68,6 +71,10 @@ void AxeSystem::sendSysEx(const byte length, byte *sysex) {
 		DEBUGGER.print(buf);
 	}
 	DEBUGGER.println();
+	#endif
+	
+	#ifdef SYSEX_THROTTLE
+	delay(SYSEX_THROTTLE);
 	#endif
 
 	MIDI.sendSysEx(length, sysex);
