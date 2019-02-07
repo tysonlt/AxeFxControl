@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include "AxePreset.h"
+#include "AxeEffect.h"
 #include "utility/MIDI.h"
 #include "../AxeFxControl.h"
 
@@ -22,13 +23,6 @@ class AxeSystem {
 		void enableRefresh(unsigned long millis = 3000, unsigned long throttle = 500);
 		void refresh(bool ignoreThrottle = false);
 
-		void sendPresetIncrement();
-		void sendPresetDecrement();
-		void sendSceneIncrement();
-		void sendSceneDecrement();
-		void sendPresetChange(const unsigned preset);
-		void sendSceneChange(const byte scene);
-
 		void requestPresetDetails() { requestPresetName(); }
 		void requestFirmwareVersion();		
 		void requestTempo();
@@ -37,6 +31,15 @@ class AxeSystem {
 		void toggleTuner();
 		void enableTuner();
 		void disableTuner();
+		void enableEffect(EffectId);
+		void disableEffect(EffectId);
+
+		void sendPresetIncrement();
+		void sendPresetDecrement();
+		void sendSceneIncrement();
+		void sendSceneDecrement();
+		void sendPresetChange(const unsigned preset);
+		void sendSceneChange(const byte scene);
 
 		bool isPresetChanging() { return _presetChanging; }
 		bool isTunerEngaged() { return _tunerEngaged; }
@@ -89,7 +92,7 @@ class AxeSystem {
 
 		bool isValidPresetNumber(int preset);
 		bool isValidSceneNumber(int scene); 
-		void byteToMidiBytes(byte, byte*, byte*);
+		void intToMidiBytes(int, byte*, byte*);
 		AxePreset _preset, _incomingPreset;
 		Version _firmwareVersion;
 		Version _usbVersion;
@@ -122,13 +125,15 @@ class AxeSystem {
 		const static byte MAX_SCENES 												= 8;
 		const static byte TEMPO_MIN 												= 24;
 		const static byte TEMPO_MAX 												= 250;
-		constexpr static byte MAX_PRESETS 									= (byte) (MAX_BANKS * BANK_SIZE) - 1;
+		constexpr static unsigned MAX_PRESETS 							= (MAX_BANKS * BANK_SIZE) - 1;
 
 	private:
 
 		const static byte BANK_CHANGE_CC 										= 0x00;
 		const static byte SYSEX_TUNER_ON 										= 0x01;
 		const static byte SYSEX_TUNER_OFF 									= 0x00;
+		const static byte SYSEX_EFFECT_BYPASS 							= 0x01;
+		const static byte SYSEX_EFFECT_ENABLE 							= 0x00;
 
 		const static byte SYSEX_MANUFACTURER_BYTE1 					= 0x00;
 		const static byte SYSEX_MANUFACTURER_BYTE2 					= 0x01;
