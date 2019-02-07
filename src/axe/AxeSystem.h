@@ -41,14 +41,14 @@ class AxeSystem {
 		bool isPresetChanging() { return _presetChanging; }
 		bool isTunerEngaged() { return _tunerEngaged; }
 		Tempo getTempo() { return _tempo; }
-		AxePreset* getCurrentPreset() { return &_preset; }
+		AxePreset& getCurrentPreset() { return _preset; }
 		Version getFirmwareVersion() { return _firmwareVersion; }
 		Version getUsbVersion() { return _usbVersion; }
 
 		void registerConnectionStatusCallback(void (*func)(bool));
 		void registerWaitingCallback(void (*func)());
 		void registerPresetChangingCallback(void (*func)(int));
-		void registerPresetChangeCallback(void (*func)(AxePreset *preset));
+		void registerPresetChangeCallback(void (*func)(AxePreset));
 		void registerSystemChangeCallback(void (*func)());
 		void registerTapTempoCallback(void (*func)());
 		void registerTunerDataCallback(void (*func)(const char *, const byte, const byte));
@@ -78,14 +78,14 @@ class AxeSystem {
 		void callConnectionStatusCallback(bool connected);	
 		void callTapTempoCallback();
 		void callPresetChangingCallback(int presetNumber);
-		void callPresetChangeCallback(AxePreset *preset);
+		void callPresetChangeCallback(AxePreset*);
 		void callSystemChangeCallback();
 		void callTunerDataCallback(const char *note, const byte string, const byte fineTune);
 		void callTunerStatusCallback(bool enabled);
 
 		bool isValidPresetNumber(int preset);
 		bool isValidSceneNumber(int scene); 
-
+		void byteToMidiBytes(byte, byte*, byte*);
 		AxePreset _preset, _incomingPreset;
 		Version _firmwareVersion;
 		Version _usbVersion;
@@ -104,7 +104,7 @@ class AxeSystem {
 		void (*_connectionStatusCallback)(bool);
 		void (*_tapTempoCallback)();
 		void (*_presetChangingCallback)(const int);
-		void (*_presetChangeCallback)(AxePreset*);
+		void (*_presetChangeCallback)(AxePreset);
 		void (*_systemChangeCallback)();
 		void (*_tunerStatusCallback)(bool);
 		void (*_tunerDataCallback)(const char *, const byte, const byte);
@@ -132,9 +132,11 @@ class AxeSystem {
 		const static byte SYSEX_CHECKSUM_PLACEHOLDER 				= 0x00;
 
 		const static byte SYSEX_REQUEST_FIRMWARE 						= 0x08;
+		const static byte SYSEX_REQUEST_EFFECT_BYPASS 			= 0x0A;
+		const static byte SYSEX_REQUEST_EFFECT_CHANNEL 			= 0x0B;
+		const static byte SYSEX_REQUEST_SCENE_NUMBER 				= 0x0C;
 		const static byte SYSEX_REQUEST_PRESET_INFO 				= 0x0D;
 		const static byte SYSEX_REQUEST_SCENE_INFO 					= 0x0E;
-		const static byte SYSEX_REQUEST_SCENE_NUMBER 				= 0x0C;
 		const static byte SYSEX_TAP_TEMPO_PULSE 						= 0x10;
 		const static byte SYSEX_TUNER 											= 0x11;
 		const static byte SYSEX_EFFECT_DUMP 								= 0x13;
@@ -151,6 +153,13 @@ class AxeSystem {
 				SYSEX_MANUFACTURER_BYTE1, SYSEX_MANUFACTURER_BYTE2,
 				SYSEX_MANUFACTURER_BYTE3, SYSEX_AXE_VERSION,
 				SYSEX_EFFECT_DUMP,        SYSEX_CHECKSUM_PLACEHOLDER};
+
+		const byte REQUEST_EFFECT_BYPASSED_COMMAND_9_BYTES[9] = {
+				SYSEX_MANUFACTURER_BYTE1,  		SYSEX_MANUFACTURER_BYTE2,
+				SYSEX_MANUFACTURER_BYTE3,  		SYSEX_AXE_VERSION,
+				SYSEX_REQUEST_EFFECT_BYPASS, 	SYSEX_QUERY_BYTE,
+				SYSEX_QUERY_BYTE,          		SYSEX_QUERY_BYTE,
+				SYSEX_CHECKSUM_PLACEHOLDER};
 
 		const byte REQUEST_PRESET_NAME_COMMAND_8_BYTES[8] = {
 				SYSEX_MANUFACTURER_BYTE1,  SYSEX_MANUFACTURER_BYTE2,
