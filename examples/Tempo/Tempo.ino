@@ -4,13 +4,18 @@ AxeSystem Axe;
 
 void setup() {
   Serial.begin(9600);
-  Axe.init();
+	Axe.registerSystemChangeCallback(onSystemChange);
 }
 
 void loop() {
   for (byte tempo = AxeSystem::TEMPO_MIN; tempo <= AxeSystem::TEMPO_MAX; tempo++) {
     Axe.setTempo(tempo);
-    Serial.println(tempo);
     delay(1000);
   }
+	Axe.update();
+}
+
+void onSystemChange() {
+    Serial.print("TEMPO is now: ");
+		Serial.println(Axe.getTempo());
 }

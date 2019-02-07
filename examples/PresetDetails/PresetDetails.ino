@@ -8,8 +8,6 @@ void setup() {
 	Serial.begin(9600);
 	// while (!Serial);
 
-	Axe.init();
-	
 	//register a callback so we know when preset details are available
 	Axe.registerPresetChangeCallback(onPresetChange);
 

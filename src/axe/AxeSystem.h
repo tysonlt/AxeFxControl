@@ -52,6 +52,7 @@ class AxeSystem {
 
 	private:
 		
+		void checkMidi();
 		void checkFirmware();
 		void checkTimers();
 		void checkIncomingPreset();
@@ -91,6 +92,7 @@ class AxeSystem {
 		bool _tunerEngaged = false;
 		bool _systemConnected = false;
 		bool _presetChanging = false;
+		bool _midiReady = false;
 		elapsedMillis _lastSysexResponse, _lastTunerResponse, _lastRefresh;
 
 		void (*_connectionStatusCallback)(bool);

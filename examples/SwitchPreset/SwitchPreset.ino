@@ -4,7 +4,6 @@ AxeSystem Axe;
 
 void setup() {
 	Serial.begin(9600);
-	Axe.init();
 	Axe.registerPresetChangingCallback(onPresetChanging);
 }
 
