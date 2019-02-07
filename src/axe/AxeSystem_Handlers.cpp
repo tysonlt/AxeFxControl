@@ -106,14 +106,19 @@ void AxeSystem::onSystemExclusive(const byte *sysex, unsigned length) {
 
 			case SYSEX_TUNER: {
 				_lastTunerResponse = millis();
-				if (!_tunerEngaged) {
+				if (!_tunerEngaged && ++_tunerIncomingCount > _tunerTriggerThreshold) { 
 					_tunerEngaged = true;
+					_tunerIncomingCount = 0;
 					callTunerStatusCallback(_tunerEngaged);
 				}
-				byte note = sysex[6];
-				byte string = sysex[7];
-				byte fineTune = sysex[8];
-				callTunerDataCallback(_notes[note], string, fineTune);
+
+				if (_tunerEngaged) {
+					byte note = sysex[6];
+					byte string = sysex[7];
+					byte fineTune = sysex[8];
+					callTunerDataCallback(_notes[note], string, fineTune);
+				}
+
 				break;
 			}
 
@@ -137,6 +142,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, unsigned length) {
 }
 
 // TODO: need to prioritise which effects are shown in order
+// If assuming naked amps pack it gets a lot easier :)
 void AxeSystem::processEffectDump(const byte *sysex, unsigned length) {
 
 	unsigned count = 0;

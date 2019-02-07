@@ -101,6 +101,7 @@ class AxeSystem {
 		bool _systemConnected = false;
 		bool _presetChanging = false;
 		bool _midiReady = false;
+		byte _tunerIncomingCount = 0, _tunerTriggerThreshold = 5;
 		unsigned long _startupDelay = 1000;
 		unsigned long _refreshRate = 0, _refreshThrottle = 500;
 		unsigned long _sysexTimout = 2000, _tunerTimout = 250;

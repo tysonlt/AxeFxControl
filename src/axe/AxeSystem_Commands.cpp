@@ -63,6 +63,7 @@ void AxeSystem::toggleTuner() {
 
 void AxeSystem::enableTuner() {
 	_tunerEngaged = true;
+	_lastTunerResponse = millis(); //reset timer
   sendSysEx(7, (byte*) ENABLE_TUNER_COMMAND_7_BYTES);
 	callTunerStatusCallback(_tunerEngaged);
 }
