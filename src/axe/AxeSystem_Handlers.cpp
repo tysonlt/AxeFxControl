@@ -118,7 +118,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, unsigned length) {
 			}
 
 			default: {
-				#ifdef AXE_DEBUG
+				#ifdef AXE_DEBUG_SYSEX
 				DEBUGGER.println(F("******** AxeSystem::onSystemExclusive(): UNHANDLED SYSEX: "));
 				char d[100];
 				for (unsigned i=1; i<length-1; i++) {
