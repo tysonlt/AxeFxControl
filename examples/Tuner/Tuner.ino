@@ -1,10 +1,14 @@
 #include <AxeFxControl.h>
 
-AxeSystem Axe;
+/**
+ * Turn realtime sysex on for this to work.
+ */ 
 
-elapsedMillis timer = 0;
+AxeSystem Axe;
+unsigned long timer;
 
 void setup() {
+	timer = millis();
 	Axe.registerTunerDataCallback(onTunerData);
 	Axe.registerTunerStatusCallback(onTunerStatus);
 }
@@ -14,9 +18,10 @@ void loop() {
 	Axe.update();
 
 	//don't use delay in the main loop or we will miss updates from axe
-	if (timer > 3000) {
+	unsigned long now = millis();
+	if (now - timer > 3000) {
 		Axe.toggleTuner();
-		timer = 0;
+		timer = now;
 	}
 
 }

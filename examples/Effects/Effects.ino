@@ -1,6 +1,7 @@
 #include <AxeFxControl.h>
 
 AxeSystem Axe;
+bool presetRequested = false;
 
 void setup() {
 
@@ -17,7 +18,9 @@ void setup() {
 }
 
 void loop() {
+
 	Axe.update();
+
 }
 
 void onPresetChange(AxePreset preset) {
