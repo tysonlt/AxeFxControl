@@ -18,8 +18,8 @@ class AxeSystem {
 		void init();
 		void update();
 
-		// Update preset details every millis. Don't refresh if another sysex was received within throttle interval.
-		void enableRefresh(unsigned long millis = REFRESH_INTERVAL, unsigned long throttle = REFRESH_THROTTLE);
+		// Update preset details every millis. Don't refresh if another preset request was received within throttle interval.
+		void enableRefresh(unsigned long millis = 3000, unsigned long throttle = 500);
 		void refresh(bool ignoreThrottle = false);
 
 		void sendPresetIncrement();
@@ -44,6 +44,10 @@ class AxeSystem {
 		AxePreset& getCurrentPreset() { return _preset; }
 		Version getFirmwareVersion() { return _firmwareVersion; }
 		Version getUsbVersion() { return _usbVersion; }
+
+		void setSysexTimout(unsigned long ms) { _sysexTimout = ms; }
+		void setTunerTimeout(unsigned long ms) { _tunerTimout = ms; }
+		void setStartupDelay(unsigned long ms) { _startupDelay = ms; }
 
 		void registerConnectionStatusCallback(void (*func)(bool));
 		void registerWaitingCallback(void (*func)());
@@ -97,8 +101,9 @@ class AxeSystem {
 		bool _systemConnected = false;
 		bool _presetChanging = false;
 		bool _midiReady = false;
-		unsigned long _refreshRate = 0;
-		unsigned long _refreshThrottle = 0;
+		unsigned long _startupDelay = 1000;
+		unsigned long _refreshRate = 0, _refreshThrottle = 500;
+		unsigned long _sysexTimout = 2000, _tunerTimout = 250;
 		unsigned long _lastSysexResponse = 0, _lastTunerResponse = 0, _lastRefresh = 0;
 
 		void (*_connectionStatusCallback)(bool);

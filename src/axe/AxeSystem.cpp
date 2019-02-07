@@ -6,9 +6,9 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 /////// BEGIN MIDI CALLS ///////
 
 void AxeSystem::init() {	
-	#ifdef INIT_DELAY
-	delay(INIT_DELAY);
-	#endif
+	if (_startupDelay > 0) { 
+		delay(_startupDelay);
+	}
 	MIDI.begin(MIDI_CHANNEL_OMNI);
 	MIDI.turnThruOff();
 	_midiReady = true;
@@ -92,10 +92,7 @@ void AxeSystem::checkMidi() {
 void AxeSystem::enableRefresh(unsigned long millis, unsigned long throttle) {
 	_refreshRate = millis;
 	_refreshThrottle = throttle;
-
-	Serial.println(_refreshRate);
 }
-
 
 void AxeSystem::refresh(bool ignoreThrottle) {
 	unsigned long now = millis();
@@ -130,12 +127,12 @@ void AxeSystem::checkTimers() {
 
 	unsigned long now = millis();
 
-  if (_systemConnected && (now - _lastSysexResponse) > TIME_LIMIT_SYSEX) {
+  if (_systemConnected && (now - _lastSysexResponse) > (_sysexTimout + _refreshRate)) {
     _systemConnected = false;
     callConnectionStatusCallback(_systemConnected);
   }
 
-  if (_tunerEngaged && (now - _lastTunerResponse) > TIME_LIMIT_TUNER) {
+  if (_tunerEngaged && (now - _lastTunerResponse) > _tunerTimout) {
     _tunerEngaged = false;
     callTunerStatusCallback(_tunerEngaged);
   }
