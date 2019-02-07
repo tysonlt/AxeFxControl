@@ -22,7 +22,7 @@ void loop() {
 
 void onPresetChange(AxePreset preset) {
 
-	const size_t sz = 33;
+	const size_t sz = 150;
 	char buf[sz];
 
 	//NOTE! Preset/scene names with % in them will not print to debug properly
@@ -40,6 +40,18 @@ void onPresetChange(AxePreset preset) {
 
 	Serial.print("Scene name: ");
 	preset.copySceneName(buf, sz);
+	Serial.println(buf);
+
+	Serial.print("Looper status: ");
+	snprintf(buf, sz, 
+		"record[%d] play[%d] overdub[%d] once[%d] reverse[%d] halfspeed[%d]",
+		preset.getLooper().isRecord(),
+		preset.getLooper().isPlay(),
+		preset.getLooper().isOverdub(),
+		preset.getLooper().isOnce(),
+		preset.getLooper().isReverse(),
+		preset.getLooper().isHalfSpeed()
+	);
 	Serial.println(buf);
 
 	Serial.println("Effects:");

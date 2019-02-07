@@ -15,7 +15,7 @@ void setup() {
 	//request current preset
 	Axe.requestPresetDetails();
 
-	Axe.enableRefresh(2000);
+	Axe.enableRefresh(5000);
 
 }
 
