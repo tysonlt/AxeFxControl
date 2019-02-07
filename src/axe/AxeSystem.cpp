@@ -168,14 +168,14 @@ void AxeSystem::setChanging() {
 }
 
 bool AxeSystem::isValidPresetNumber(int preset) {
-  return preset >= 0 && preset <= MAX_PRESETS;
+  return preset >= 0 && preset <= (int) MAX_PRESETS;
 }
 
 bool AxeSystem::isValidSceneNumber(int scene) { 
 	return scene >= 0 && scene <= MAX_SCENES; 
 }
 
-void AxeSystem::byteToMidiBytes(byte number, byte *byte1, byte *byte2) {
+void AxeSystem::intToMidiBytes(int number, byte *byte1, byte *byte2) {
 	*byte1 = number % BANK_SIZE;
 	*byte2 = number / BANK_SIZE;
 }
