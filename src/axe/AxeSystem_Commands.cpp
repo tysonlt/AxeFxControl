@@ -1,4 +1,5 @@
 #include "AxeSystem.h"
+#include "AxeEffect.h"
 
 void AxeSystem::requestFirmwareVersion() {
 	sendSysEx(6, (byte*) REQUEST_FIRMWARE_VERSION_COMMAND_6_BYTES);
@@ -9,10 +10,8 @@ void AxeSystem::requestPresetName(int preset) {
     sendSysEx(8, (byte*) REQUEST_PRESET_NAME_COMMAND_8_BYTES);
   } else {
     byte command[8];
-    byte bank = preset / BANK_SIZE;
     memcpy(command, REQUEST_PRESET_NAME_COMMAND_8_BYTES, 8);
-    command[5] = preset - (bank * BANK_SIZE);
-    command[6] = bank;
+    intToMidiBytes(preset, &command[5], &command[6]);
     sendSysEx(8, (byte*) command);
   }
 }
@@ -43,9 +42,7 @@ void AxeSystem::requestTempo() {
 void AxeSystem::setTempo(Tempo tempo) {
   byte command[8];
 	memcpy(command, REQUEST_TEMPO_COMMAND_8_BYTES, 8);
-	byteToMidiBytes(tempo, &command[5], &command[6]);
-	command[5] = tempo % BANK_SIZE;
-  command[6] = tempo / BANK_SIZE;
+	intToMidiBytes(tempo, &command[5], &command[6]);
 	sendSysEx(8, (byte*) command);
 
 	//Axe won't notify us of this, so send a manual system change event
@@ -72,6 +69,22 @@ void AxeSystem::disableTuner() {
 	_tunerEngaged = false;
   sendSysEx(7, (byte*) DISABLE_TUNER_COMMAND_7_BYTES);
 	callTunerStatusCallback(_tunerEngaged);
+}
+
+void AxeSystem::enableEffect(EffectId effectId) {
+  byte command[9];
+	memcpy(command, REQUEST_EFFECT_BYPASSED_COMMAND_9_BYTES, 9);
+	intToMidiBytes(effectId, &command[5], &command[6]);
+	command[7] = SYSEX_EFFECT_ENABLE;
+	sendSysEx(9, (byte*) command);
+}
+
+void AxeSystem::disableEffect(EffectId effectId) {
+	byte command[9];
+	memcpy(command, REQUEST_EFFECT_BYPASSED_COMMAND_9_BYTES, 9);
+	intToMidiBytes(effectId, &command[5], &command[6]);
+	command[7] = SYSEX_EFFECT_BYPASS;
+	sendSysEx(9, (byte*) command);
 }
 
 void AxeSystem::sendPresetIncrement() {

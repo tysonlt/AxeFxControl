@@ -122,6 +122,15 @@ void AxeSystem::onSystemExclusive(const byte *sysex, unsigned length) {
 				break;
 			}
 
+			case SYSEX_REQUEST_EFFECT_BYPASS: {
+				/*
+				EffectId effectId = sysex[6] + (sysex[7] * BANK_SIZE);
+				bool bypassed = sysex[8];
+				*/
+				//...not much to do because Axe doesn't send status updates for this
+				break;
+			}
+
 			default: {
 				#ifdef AXE_DEBUG_SYSEX
 				DEBUGGER.println(F("******** AxeSystem::onSystemExclusive(): UNHANDLED SYSEX: "));
