@@ -3,7 +3,6 @@
 #include <Arduino.h>
 #include "AxeEffect.h"
 
-typedef unsigned EffectId;
 typedef byte EffectIndex;
 
 class AxePreset{
