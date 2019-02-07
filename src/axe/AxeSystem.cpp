@@ -1,5 +1,6 @@
 #include "AxeSystem.h"
 
+//TODO: would like more control over this...
 MIDI_CREATE_DEFAULT_INSTANCE();
 
 /////// BEGIN MIDI CALLS ///////
@@ -7,9 +8,11 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 void AxeSystem::init() {	
 	MIDI.begin(MIDI_CHANNEL_OMNI);
 	MIDI.turnThruOff();
+	_midiReady = true;
 }
 
 void AxeSystem::update() {
+	checkMidi();
 	if (MIDI.read()) {
 		if (MIDI.getType() == midi::ControlChange) {
 			onControlChange(MIDI.getChannel(), MIDI.getData1(), MIDI.getData2());
@@ -23,6 +26,8 @@ void AxeSystem::update() {
 
 void AxeSystem::sendPresetChange(const unsigned number) {
 
+	checkMidi();
+
   byte bank = number / BANK_SIZE;
   byte patch = number - (BANK_SIZE * bank);
 
@@ -32,6 +37,37 @@ void AxeSystem::sendPresetChange(const unsigned number) {
 	setChanging();
 	callPresetChangingCallback(number);
 
+}
+
+void AxeSystem::sendSysEx(const byte length, byte *sysex) {
+
+	checkMidi();
+
+	byte sum = 0xF0;
+	for (int i=0; i<length-1; ++i) {
+		sum ^= sysex[i];
+	}
+	sysex[length-1] = (sum & 0x7F);
+
+	#ifdef AXE_DEBUG_SYSEX
+	char buf[100];
+	snprintf(buf, 100, "AxeSystem::sendSysEx(0x%02X):         ", sysex[4]);
+	DEBUGGER.print(buf);
+	for (unsigned i=0; i<length; i++) {
+		snprintf(buf, 6, "0x%02X ", sysex[i]);
+		DEBUGGER.print(buf);
+	}
+	DEBUGGER.println();
+	#endif
+
+	MIDI.sendSysEx(length, sysex);
+
+}
+
+void AxeSystem::checkMidi() {
+	if (!_midiReady) {
+		init();
+	}
 }
 
 //////// END MIDI CALLS ///////
@@ -101,28 +137,6 @@ void AxeSystem::parseName(const byte *sysex, byte length, byte offset, char *buf
 		buffer[count++] = sysex[i];
   }
   buffer[size] = '\0';
-}
-
-void AxeSystem::sendSysEx(const byte length, byte *sysex) {
-
-	byte sum = 0xF0;
-	for (int i=0; i<length-1; ++i) {
-		sum ^= sysex[i];
-	}
-	sysex[length-1] = (sum & 0x7F);
-	#ifdef AXE_DEBUG_SYSEX
-	char buf[100];
-	snprintf(buf, 100, "AxeSystem::sendSysEx(0x%02X):         ", sysex[4]);
-	DEBUGGER.print(buf);
-	for (unsigned i=0; i<length; i++) {
-		snprintf(buf, 6, "0x%02X ", sysex[i]);
-		DEBUGGER.print(buf);
-	}
-	DEBUGGER.println();
-	#endif
-
-	MIDI.sendSysEx(length, sysex);
-
 }
 
 void AxeSystem::setChanging() {

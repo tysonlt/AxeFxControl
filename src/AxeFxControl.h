@@ -1,7 +1,7 @@
 #pragma once
 
 #define AXE_DEBUG
-#define AXE_DEBUG_SYSEX
+// #define AXE_DEBUG_SYSEX
 #define DEBUGGER 													Serial
 
 #define REFRESH_INTERVAL 									5000
