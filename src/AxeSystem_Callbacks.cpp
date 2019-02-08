@@ -38,9 +38,6 @@ void AxeSystem::callConnectionStatusCallback(bool connected)  {
 	}
 }
 
-/**
- * 
- */
 void AxeSystem::callTapTempoCallback() {
 	if (NULL != _tapTempoCallback) {
 		(_tapTempoCallback)();

@@ -57,6 +57,6 @@ void AxePreset::reset() {
 }
 
 bool AxePreset::isComplete() {
-	return (_preset != -1 && _scene != -1 && _effectCount != -1); //status & STATUS_ALL_RECEIVED;
+	return (_preset != -1 && _scene != -1 && _effectCount != -1); 
 }
 
