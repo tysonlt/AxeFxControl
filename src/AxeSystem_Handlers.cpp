@@ -1,14 +1,6 @@
 #include "AxeSystem.h"
 
-void AxeSystem::onControlChange(byte channel, byte number, byte value) {
-	if (number == BANK_CHANGE_CC) {
-		_bank = value;
-	}
-}
-
-void AxeSystem::onProgramChange(byte channel, byte value) {
-
-	int number = (_bank * BANK_SIZE) + value;
+void AxeSystem::onPresetChange(const unsigned number) {
 
 	// ignore stale responses due to very fast preset changes, 
 	// but allow refreshes to current preset
@@ -184,4 +176,22 @@ void AxeSystem::processEffectDump(const byte *sysex, unsigned length) {
 
 	_incomingPreset.setEffects(effectIds, effectBypassed, count);
 			
+}
+
+void AxeSystem::parseName(const byte *sysex, byte length, byte offset, char *buffer, byte size) {
+	memset(buffer, ' ', size);
+	byte count = 0;
+  for (byte i = offset; i < length - 2 && count < size; i++) {
+    if (sysex[i] == 0) break;
+		buffer[count++] = sysex[i];
+  }
+  buffer[size] = '\0';
+}
+
+bool AxeSystem::isValidPresetNumber(int preset) {
+  return preset >= 0 && preset <= (int) MAX_PRESETS;
+}
+
+bool AxeSystem::isValidSceneNumber(int scene) { 
+	return scene >= 0 && scene <= MAX_SCENES; 
 }
