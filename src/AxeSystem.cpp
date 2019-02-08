@@ -9,7 +9,6 @@ void AxeSystem::init() {
 	if (_startupDelay > 0) { 
 		delay(_startupDelay);
 	}
-	while (Serial1.available()) Serial1.read();
 	MIDI.begin(MIDI_CHANNEL_OMNI);
 	MIDI.turnThruOff();
 	_midiReady = true;

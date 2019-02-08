@@ -5,7 +5,7 @@
 #include "AxeEffect.h"
 #include "AxeLooper.h"
 #include "utility/MIDI.h"
-#include "../AxeFxControl.h"
+#include "AxeFxControl.h"
 
 typedef byte Tempo;
 
@@ -56,7 +56,6 @@ class AxeSystem {
 		Version getFirmwareVersion() { return _firmwareVersion; }
 		Version getUsbVersion() { return _usbVersion; }
 
-		//TODO ControlLayout getCurrentControlLayout()
 		//TODO pluggable command scheme based on axe Version
 		
 		void setSysexTimout(unsigned long ms) { _sysexTimout = ms; }
