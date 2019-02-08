@@ -1,15 +1,14 @@
 #include "AxeLooper.h"
 #include "AxeSystem.h"
 
-void AxeLooper::record() 		{ addStatus(LOOPER_RECORD); }
-void AxeLooper::play() 			{ addStatus(LOOPER_PLAY); }
-void AxeLooper::overdub() 	{ addStatus(LOOPER_OVERDUB); }
-void AxeLooper::once() 			{ addStatus(LOOPER_ONCE); }
-void AxeLooper::reverse() 	{ addStatus(LOOPER_REVERSE); }
-void AxeLooper::halfSpeed() { addStatus(LOOPER_HALF_SPEED); }
+void AxeLooper::record() 		{ pressButton(LooperRecord); }
+void AxeLooper::play() 			{ pressButton(LooperPlay); }
+void AxeLooper::undo() 			{ pressButton(LooperUndo); }
+void AxeLooper::once() 			{ pressButton(LooperOnce); }
+void AxeLooper::reverse() 	{ pressButton(LooperReverse); } 
+void AxeLooper::halfSpeed() { pressButton(LooperHalfSpeed); }
 
-void AxeLooper::addStatus(LooperStatus status) {
-	_status |= status;
-	_axe->setLooperStatus(_status);
+void AxeLooper::pressButton(LooperButton button) {
+	_axe->pressLooperButton(button);
 	_axe->requestLooperStatus();
 }

@@ -4,6 +4,15 @@
 
 typedef byte LooperStatus;
 
+enum LooperButton {
+	LooperRecord,
+	LooperPlay,
+	LooperUndo,
+	LooperOnce,
+	LooperReverse,
+	LooperHalfSpeed
+};
+
 class AxeSystem;
 class AxeLooper {
 
@@ -19,16 +28,17 @@ class AxeLooper {
 		bool isReverse() 		{ return _status & LOOPER_REVERSE; }
 		bool isHalfSpeed() 	{ return _status & LOOPER_HALF_SPEED; }
 
+		//TODO: toggle
 		void record();
 		void play();
-		void overdub();
+		void undo();
 		void once();
-		void reverse();
+		void reverse(); 
 		void halfSpeed();
 
 		void setAxeSystem(AxeSystem *axe) { _axe = axe; }
 
-	public:
+	private:
 
 		const static byte LOOPER_RECORD			= 1 << 0;
 		const static byte LOOPER_PLAY				= 1 << 1;
@@ -37,11 +47,9 @@ class AxeLooper {
 		const static byte LOOPER_REVERSE		= 1 << 4;
 		const static byte LOOPER_HALF_SPEED	= 1 << 5;
 
-	private:
-
-		void addStatus(LooperStatus status);
+		void pressButton(LooperButton);
 
 		LooperStatus _status;
-		AxeSystem *_axe;
+		AxeSystem *_axe = nullptr;
 
 };

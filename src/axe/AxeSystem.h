@@ -39,7 +39,7 @@ class AxeSystem {
 		void enableEffect(EffectId);
 		void disableEffect(EffectId);
 		void requestLooperStatus();
-		void setLooperStatus(LooperStatus);
+		void pressLooperButton(LooperButton);
 
 		void sendPresetIncrement();
 		void sendPresetDecrement();
