@@ -1,7 +1,6 @@
 Axe	KEYWORD1
-AxePreset KEYWORD1
 AxeSystem	KEYWORD1
-init	KEYWORD2
+AxeEffect	KEYWORD1
 update	KEYWORD2
 enableRefresh KEYWORD2
 refresh	KEYWORD2
@@ -44,3 +43,17 @@ getEffectTag	KEYWORD2
 isEffectBypassed	KEYWORD2
 isEffectSwitchable	KEYWORD2
 isComplete	KEYWORD2
+
+AxeLooper	KEYWORD1
+isRecord	KEYWORD2
+isPlay	KEYWORD2
+isOverdub	KEYWORD2
+isOnce	KEYWORD2
+isReverse	KEYWORD2
+isHalfSpeed	KEYWORD2
+record	KEYWORD2
+play	KEYWORD2
+undo	KEYWORD2
+once	KEYWORD2
+reverse	KEYWORD2
+halfSpeed	KEYWORD2
