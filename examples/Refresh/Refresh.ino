@@ -45,12 +45,12 @@ void onPresetChange(AxePreset preset) {
 	Serial.print("Looper status: ");
 	snprintf(buf, sz, 
 		"record[%d] play[%d] overdub[%d] once[%d] reverse[%d] halfspeed[%d]",
-		preset.getLooper().isRecord(),
-		preset.getLooper().isPlay(),
-		preset.getLooper().isOverdub(),
-		preset.getLooper().isOnce(),
-		preset.getLooper().isReverse(),
-		preset.getLooper().isHalfSpeed()
+		Axe.getLooper().isRecord(),
+		Axe.getLooper().isPlay(),
+		Axe.getLooper().isOverdub(),
+		Axe.getLooper().isOnce(),
+		Axe.getLooper().isReverse(),
+		Axe.getLooper().isHalfSpeed()
 	);
 	Serial.println(buf);
 
