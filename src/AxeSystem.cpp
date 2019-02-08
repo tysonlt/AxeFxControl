@@ -1,7 +1,7 @@
 #include "AxeSystem.h"
 
 //TODO: would like more control over this...
-MIDI_CREATE_DEFAULT_INSTANCE();
+MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 
 /////// BEGIN MIDI CALLS ///////
 
