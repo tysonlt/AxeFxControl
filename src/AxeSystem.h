@@ -51,6 +51,11 @@ class AxeSystem {
 		void sendPresetChange(const unsigned preset);
 		void sendSceneChange(const byte scene);
 
+		//for you hackers out there
+		// void sendControlChange(...)
+		// void sendProgramChange
+		// void sendSysEx()
+
 		bool isPresetChanging() { return _presetChanging; }
 		bool isTunerEngaged() { return _tunerEngaged; }
 		Tempo getTempo() { return _tempo; }
