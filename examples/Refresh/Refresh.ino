@@ -8,13 +8,14 @@ void setup() {
 	Serial.begin(9600);
 	// while (!Serial);
 
+	//Axe.begin(Serial1, AxeSystem::MIDI_CHANNEL_OMNI); //same as...
+	Axe.begin(Serial1);
+
 	//register a callback so we know when preset details are available
 	Axe.registerPresetChangeCallback(onPresetChange);
 
 	//ask for details to be refreshed every 3 seconds
 	Axe.enableRefresh(3000);
-
-	Axe.begin(Serial1);
 
 	//request current preset
 	Axe.requestPresetDetails();

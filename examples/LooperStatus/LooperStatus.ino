@@ -7,9 +7,9 @@ void setup() {
 	//note that this won't work on a Nano, it uses Serial for MIDI
 	Serial.begin(9600);
 
+	Axe.begin(Serial1);
 	Axe.registerLooperStatusCallback(onLooperChange);
 	Axe.enableRefresh(1000);
-	Axe.begin(Serial1);
 
 }
 

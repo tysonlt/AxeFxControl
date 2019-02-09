@@ -5,7 +5,9 @@ AxeSystem Axe;
 void setup() {
 	Serial.begin(9600);
 	Axe.registerPresetChangingCallback(onPresetChanging);
-	Axe.begin(Serial1);
+	Axe.begin(Serial1, 4);
+	//Go to Axe, Setup->MIDI/Remote->Midi Channel=4 to see channel filter in action
+	//Otherwise, just remove the channel param above and it will default to OMIN
 }
 
 void loop() {
@@ -22,6 +24,6 @@ void loop() {
 
 }
 
-void onPresetChanging(int preset) {
+void onPresetChanging(PresetNumber preset) {
 	Serial.println(preset);
 }
