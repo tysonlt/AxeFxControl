@@ -84,14 +84,14 @@ void AxeSystem::sendPresetChange(const PresetNumber number) {
 
 //One-based channel
 void AxeSystem::sendControlChange(byte controller, byte value, byte channel) {
-	SER_SEND(ControlChange | ((channel - 1) & 0x0f));
+	SER_SEND(ControlChange | ((channel - 1) & 0x0F));
 	SER_SEND(controller);
 	SER_SEND(value);
 }
 
 //One-based channel
 void AxeSystem::sendProgramChange(byte value, byte channel) {
-	SER_SEND(ProgramChange | ((channel - 1) & 0x0f));
+	SER_SEND(ProgramChange | ((channel - 1) & 0x0F));
 	SER_SEND(value);
 }
 
