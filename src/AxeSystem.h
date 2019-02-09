@@ -11,6 +11,16 @@ typedef int16_t PresetNumber;
 typedef int8_t SceneNumber;
 typedef unsigned long millis_t;
 
+typedef void (*ConnectionStatusCallback)(bool);
+typedef void (*TapTempoCallback)();
+typedef void (*PresetChangingCallback)(PresetNumber);
+typedef void (*PresetChangeCallback)(AxePreset);
+typedef void (*SystemChangeCallback)();
+typedef void (*TunerStatusCallback)(bool);
+typedef void (*TunerDataCallback)(const char *, const byte, const byte);
+typedef void (*LooperStatusCallback)(AxeLooper);
+typedef bool (*SysexPluginCallback)(const byte*, const byte);
+
 struct Version {
 	byte major, minor;
 };
@@ -25,11 +35,11 @@ class AxeSystem {
 
 		void begin(HardwareSerial& serial, byte midiChannel = DEFAULT_MIDI_CHANNEL);
 		void setMidiChannel(byte channel) { _midiChannel = channel; }		
+		void update();
 
 		// Update preset details every millis. Don't refresh if another preset request was received within throttle interval.
 		void enableRefresh(const millis_t millis = 3000, const millis_t throttle = 500);
 		void refresh(bool ignoreThrottle = false);
-		void update();
 
 		void requestPresetDetails() { requestPresetName(); }
 		void requestFirmwareVersion();		
@@ -72,15 +82,15 @@ class AxeSystem {
 		void setTunerTimeout(const millis_t ms) { _tunerTimout = ms; }
 		void setStartupDelay(const millis_t ms) { _startupDelay = ms; }
 
-		void registerConnectionStatusCallback(void (*func)(bool));
-		void registerWaitingCallback(void (*func)());
-		void registerPresetChangingCallback(void (*func)(PresetNumber));
-		void registerPresetChangeCallback(void (*func)(AxePreset));
-		void registerSystemChangeCallback(void (*func)());
-		void registerTapTempoCallback(void (*func)());
-		void registerTunerDataCallback(void (*func)(const char *, const byte, const byte));
-		void registerTunerStatusCallback(void (*func)(bool));
-		void registerLooperStatusCallback(void (*func)(AxeLooper));
+		void registerConnectionStatusCallback(ConnectionStatusCallback);
+		void registerPresetChangingCallback(PresetChangingCallback);
+		void registerPresetChangeCallback(PresetChangeCallback);
+		void registerSystemChangeCallback(SystemChangeCallback);
+		void registerTapTempoCallback(TapTempoCallback);
+		void registerTunerDataCallback(TunerDataCallback);
+		void registerTunerStatusCallback(TunerStatusCallback);
+		void registerLooperStatusCallback(LooperStatusCallback);
+		void registerSysexPluginCallback(SysexPluginCallback); //return true to halt further processing
 
 	public:
 
@@ -156,6 +166,7 @@ class AxeSystem {
 		void callTunerDataCallback(const char *note, const byte string, const byte fineTune);
 		void callTunerStatusCallback(bool enabled);
 		void callLooperStatusCallback(AxeLooper*);
+		bool callSysexPluginCallback(const byte*, const byte); 
 
 		bool isValidPresetNumber(const PresetNumber preset);
 		bool isValidSceneNumber(const SceneNumber scene); 
@@ -185,14 +196,15 @@ class AxeSystem {
 		millis_t _sysexTimout = 2000, _tunerTimout = 250;
 		millis_t _lastSysexResponse = 0, _lastTunerResponse = 0, _lastRefresh = 0;
 
-		void (*_connectionStatusCallback)(bool);
-		void (*_tapTempoCallback)();
-		void (*_presetChangingCallback)(PresetNumber);
-		void (*_presetChangeCallback)(AxePreset);
-		void (*_systemChangeCallback)();
-		void (*_tunerStatusCallback)(bool);
-		void (*_tunerDataCallback)(const char *, const byte, const byte);
-		void (*_looperStatusCallback)(AxeLooper);
+		ConnectionStatusCallback 	_connectionStatusCallback;
+		TapTempoCallback 					_tapTempoCallback;
+		PresetChangingCallback 		_presetChangingCallback;
+		PresetChangeCallback 			_presetChangeCallback;
+		SystemChangeCallback 			_systemChangeCallback;
+		TunerStatusCallback 			_tunerStatusCallback;
+		TunerDataCallback 				_tunerDataCallback;
+		LooperStatusCallback 			_looperStatusCallback;
+		SysexPluginCallback 			_sysexPluginCallback;
 	
 		const char *_notes[12] = {"A ", "Bb", "B ", "C ", "C#", "D ", "Eb", "E ", "F ", "F#", "G ", "Ab"};
 

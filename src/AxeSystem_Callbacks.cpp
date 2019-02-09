@@ -1,36 +1,42 @@
 #include "AxeSystem.h"
 
-void AxeSystem::registerConnectionStatusCallback( void (*func)(bool) ) {
+void AxeSystem::registerConnectionStatusCallback(ConnectionStatusCallback func) {
 	_connectionStatusCallback = func;
 }
 
-void AxeSystem::registerPresetChangingCallback( void (*func)(PresetNumber) ) {
+void AxeSystem::registerPresetChangingCallback(PresetChangingCallback func) {
 	_presetChangingCallback = func;
 }
 
-void AxeSystem::registerPresetChangeCallback( void (*func)(AxePreset) ) {
+void AxeSystem::registerPresetChangeCallback(PresetChangeCallback func) {
 	_presetChangeCallback = func;
 }
 
-void AxeSystem::registerSystemChangeCallback( void (*func)() ) {
+void AxeSystem::registerSystemChangeCallback(SystemChangeCallback func) {
 	_systemChangeCallback = func;
 }
 
-void AxeSystem::registerTapTempoCallback( void (*func)() ) {
+void AxeSystem::registerTapTempoCallback(TapTempoCallback func) {
 	_tapTempoCallback = func;
 }
 
-void AxeSystem::registerTunerDataCallback( void (*func)(const char*, const byte, const byte) ) {
+void AxeSystem::registerTunerDataCallback(TunerDataCallback func) {
 	_tunerDataCallback = func;
 }
 
-void AxeSystem::registerTunerStatusCallback( void (*func)(bool) ) {
+void AxeSystem::registerTunerStatusCallback(TunerStatusCallback func) {
 	_tunerStatusCallback = func;
 }
 
-void AxeSystem::registerLooperStatusCallback( void (*func)(AxeLooper) ) {
+void AxeSystem::registerLooperStatusCallback(LooperStatusCallback func) {
 	_looperStatusCallback = func;
 }
+
+void AxeSystem::registerSysexPluginCallback(SysexPluginCallback func) {
+	_sysexPluginCallback = func;
+}
+
+//////////////////////////////////////////////////////////////////////////////
 
 void AxeSystem::callConnectionStatusCallback(bool connected)  {
 	if (NULL != _connectionStatusCallback) {
@@ -77,5 +83,13 @@ void AxeSystem::callLooperStatusCallback(AxeLooper *looper) {
 void AxeSystem::callTunerStatusCallback(bool enabled) {
 	if (NULL != _tunerStatusCallback) {
 		(_tunerStatusCallback)(enabled);
+	}
+}
+
+bool AxeSystem::callSysexPluginCallback(const byte *sysex, const byte length) {
+	if (NULL != _sysexPluginCallback) {
+		return (_sysexPluginCallback)(sysex, length);
+	} else {
+		return false; 
 	}
 }

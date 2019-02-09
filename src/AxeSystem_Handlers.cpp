@@ -17,6 +17,10 @@ void AxeSystem::onPresetChange(const PresetNumber number) {
 
 void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 
+	if (callSysexPluginCallback(sysex, length)) {
+		return;
+	}
+
 	const size_t bufferSize = 40;
 	char buffer[bufferSize];
 
