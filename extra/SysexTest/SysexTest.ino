@@ -1,5 +1,4 @@
-#include <MIDI.h>
-
+#include <AxeSystem.h>
 #include "AxeFxEffectList.h"
 
 #define PL Serial.println
@@ -16,13 +15,12 @@
   (byte & 0x02 ? '1' : '0'), \
   (byte & 0x01 ? '1' : '0') 
   
-//instantiate the MIDI interface
-MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
-
 const byte sz = 50;
 char input[sz];
 byte index = 0;
 bool readFinished = false;
+
+AxeSystem Axe;
 
 void setup() {
   
@@ -30,15 +28,14 @@ void setup() {
   while (!Serial);
   delay(1500);
   
+	Axe.begin(Serial1);
+	Axe.registerSysexPluginCallback(onSysex);
+
   PL("");
   PL("Type hex AxeFX3 command and data. Header and checksum will be added.");
   PL("Type '08' and this will be sent: F0 00 01 74 10 08 1D F7");
   PL("");
 	
-	MIDI.begin(MIDI_CHANNEL_OMNI);
-	MIDI.turnThruOff();
-	MIDI.setHandleSystemExclusive(onSysex);
-
   PL("");
   PL("MIDI Ready.");
   PL("");
@@ -47,7 +44,7 @@ void setup() {
 
 void loop() {
 
-  MIDI.read();
+  Axe.update();
     
   readInput();
   if (readFinished) {
@@ -73,20 +70,21 @@ void readInput() {
 }
 
 
-void onSysex(byte *sysex, unsigned length) {
+bool onSysex(const byte *sysex, const byte length) {
   char buf[15];
   snprintf(buf, sizeof(buf), "RECV[%02d]: ", length);
   P(buf);
   dumpHex(sysex, length, 0, length);
   processSysex(sysex, length);
+	return true; //stop further processing
 }
 
-void processSysex(byte *sysex, unsigned length) {
+void processSysex(const byte *sysex, const byte length) {
 
   if (sysex[5] == 0x13) {
     PL("");
     PL("EFFECT DUMP");
-    for (unsigned i=6; i<length-3; i+=3) {      
+    for (byte i=6; i<length-3; i+=3) {      
       printEffect(sysex[i], sysex[i+1], sysex[i+2]);
     }
     
@@ -145,7 +143,7 @@ void sendSysEx(char input[]) {
     P(buf);
     dumpHex(sysex, length, 0, length);
 
-    MIDI.sendSysEx(length, sysex, true);
+    Axe.sendSysEx(sysex, length);
   
 }
 
@@ -159,7 +157,7 @@ void addChecksum(const byte length, byte *sysex, bool headersAdded) {
   
 }
 
-void dumpHex(byte *arr, int len, int from, int to) {
+void dumpHex(const byte *arr, const int len, int from, int to) {
   char buf[6];
   if (to == 0) to = len;
   for (byte i=from; i<to; i++) {
