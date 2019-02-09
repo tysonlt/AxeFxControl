@@ -119,13 +119,13 @@ void AxeSystem::sendCommand(const byte command, const byte *data, const byte par
 	sysex[length++] = command;
 
 	//optional data
-	for (byte j=0; j<paramCount; j++) {
-		sysex[length++] = data[j];
+	for (byte i=0; i<paramCount; i++) {
+		sysex[length++] = data[i];
 	}
 
 	//checksum
 	byte sum = 0xF0;
-	for (int i=1; i<length; ++i) {
+	for (int i=1; i<length; i++) {
 		sum ^= sysex[i];
 	}
 
