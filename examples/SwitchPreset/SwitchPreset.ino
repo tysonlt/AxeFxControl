@@ -5,11 +5,12 @@ AxeSystem Axe;
 void setup() {
 	Serial.begin(9600);
 	Axe.registerPresetChangingCallback(onPresetChanging);
+	Axe.begin(Serial1);
 }
 
 void loop() {
 
-	static unsigned preset = 0;
+	static PresetNumber preset = 0;
 	if (preset >= AxeSystem::MAX_PRESETS) {
 		preset = 0;
 	}

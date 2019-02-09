@@ -26,7 +26,7 @@ void AxeSystem::readMidi() {
 			switch (data) {
 
 				case ControlChange: {
-					while (SER_AVLB < 2);
+					while (SER_AVLB < 2); //assume rest of message is in buffer
 					if (BANK_CHANGE_CC == SER_READ) {
 						_bank = SER_READ;
 					}
@@ -34,7 +34,7 @@ void AxeSystem::readMidi() {
 				}
 
 				case ProgramChange: {
-					while (SER_AVLB < 1);
+					while (SER_AVLB < 1); //assume rest of message is in buffer
 					byte patch = SER_READ;
 					onPresetChange(_bank * 128 + patch);
 					break;
@@ -55,7 +55,7 @@ void AxeSystem::readMidi() {
 
 }
 
-void AxeSystem::sendPresetChange(const unsigned number) {
+void AxeSystem::sendPresetChange(const PresetNumber number) {
 
 	SER_SEND(ControlChange);
 	SER_SEND(BANK_CHANGE_CC);
@@ -117,7 +117,7 @@ void AxeSystem::sendCommand(const byte command, const byte *data, const byte par
 
 }
 
-bool AxeSystem::isAxeSysEx(const byte *sysex, const unsigned length) {
+bool AxeSystem::isAxeSysEx(const byte *sysex, const byte length) {
 	return 
 		length > 4 && 
 		sysex[1] == SYSEX_MANUFACTURER_BYTE1 && 

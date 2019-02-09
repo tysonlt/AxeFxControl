@@ -1,6 +1,6 @@
 #include "AxeSystem.h"
 
-void AxeSystem::init(HardwareSerial& serial) {	
+void AxeSystem::begin(HardwareSerial& serial) {	
 	if (_startupDelay > 0) { 
 		delay(_startupDelay);
 	}
@@ -22,7 +22,7 @@ void AxeSystem::update() {
 
 }
 
-void AxeSystem::enableRefresh(unsigned long millis, unsigned long throttle) {
+void AxeSystem::enableRefresh(const millis_t millis, const millis_t throttle) {
 	_refreshRate = millis;
 	_refreshThrottle = throttle;
 }
@@ -50,7 +50,7 @@ void AxeSystem::checkFirmware() {
   }
 }
 
-void AxeSystem::setSystemConnected(bool connected) {
+void AxeSystem::setSystemConnected(const bool connected) {
 	bool oldStatus = _systemConnected;
 	_systemConnected = connected;
   if (oldStatus != _systemConnected) {
@@ -87,7 +87,11 @@ void AxeSystem::setChanging() {
 	_presetChanging = true;
 }
 
-void AxeSystem::intToMidiBytes(int number, byte *byte1, byte *byte2) {
+void AxeSystem::intToMidiBytes(const int number, byte *byte1, byte *byte2) {
 	*byte1 = number % BANK_SIZE;
 	*byte2 = number / BANK_SIZE;
+}
+
+int AxeSystem::midiBytesToInt(const byte lsb, const byte msb) {
+	return lsb + (msb * BANK_SIZE);
 }

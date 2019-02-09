@@ -9,6 +9,7 @@ void setup() {
 
 	Axe.registerLooperStatusCallback(onLooperChange);
 	Axe.enableRefresh(1000);
+	Axe.begin(Serial1);
 
 }
 

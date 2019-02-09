@@ -7,6 +7,9 @@
 #include "AxeFxControl.h"
 
 typedef byte Tempo;
+typedef int16_t PresetNumber;
+typedef int8_t SceneNumber;
+typedef unsigned long millis_t;
 
 struct Version {
 	byte major, minor;
@@ -20,25 +23,25 @@ class AxeSystem {
 			_looper.setAxeSystem(this);
 		}
 
-		void init(HardwareSerial& serial);
+		void begin(HardwareSerial& serial);
 		void update();
 
 		// Update preset details every millis. Don't refresh if another preset request was received within throttle interval.
-		void enableRefresh(unsigned long millis = 3000, unsigned long throttle = 500);
+		void enableRefresh(const millis_t millis = 3000, const millis_t throttle = 500);
 		void refresh(bool ignoreThrottle = false);
 
 		void requestPresetDetails() { requestPresetName(); }
 		void requestFirmwareVersion();		
 		void requestTempo();
-		void setTempo(Tempo tempo);
+		void setTempo(const Tempo tempo);
 		void sendTap();
 		void toggleTuner();
 		void enableTuner();
 		void disableTuner();
-		void enableEffect(EffectId);
-		void disableEffect(EffectId);
+		void enableEffect(const EffectId);
+		void disableEffect(const EffectId);
 		void requestLooperStatus();
-		void pressLooperButton(LooperButton);
+		void pressLooperButton(const LooperButton);
 
 		//for generic commands
 		void sendCommand(const byte command);
@@ -48,8 +51,8 @@ class AxeSystem {
 		void sendPresetDecrement();
 		void sendSceneIncrement();
 		void sendSceneDecrement();
-		void sendPresetChange(const unsigned preset);
-		void sendSceneChange(const byte scene);
+		void sendPresetChange(const PresetNumber preset);
+		void sendSceneChange(const SceneNumber scene);
 
 		//for you hackers out there
 		// void sendControlChange(...)
@@ -64,15 +67,13 @@ class AxeSystem {
 		Version getFirmwareVersion() { return _firmwareVersion; }
 		Version getUsbVersion() { return _usbVersion; }
 
-		//TODO pluggable command scheme based on axe Version
-		
-		void setSysexTimout(unsigned long ms) { _sysexTimout = ms; }
-		void setTunerTimeout(unsigned long ms) { _tunerTimout = ms; }
-		void setStartupDelay(unsigned long ms) { _startupDelay = ms; }
+		void setSysexTimout(const millis_t ms) { _sysexTimout = ms; }
+		void setTunerTimeout(const millis_t ms) { _tunerTimout = ms; }
+		void setStartupDelay(const millis_t ms) { _startupDelay = ms; }
 
 		void registerConnectionStatusCallback(void (*func)(bool));
 		void registerWaitingCallback(void (*func)());
-		void registerPresetChangingCallback(void (*func)(int));
+		void registerPresetChangingCallback(void (*func)(PresetNumber));
 		void registerPresetChangeCallback(void (*func)(AxePreset));
 		void registerSystemChangeCallback(void (*func)());
 		void registerTapTempoCallback(void (*func)());
@@ -87,7 +88,7 @@ class AxeSystem {
 		const static byte MAX_SCENES 												= 8;
 		const static byte TEMPO_MIN 												= 24;
 		const static byte TEMPO_MAX 												= 250;
-		constexpr static unsigned MAX_PRESETS 							= (MAX_BANKS * BANK_SIZE) - 1;
+		constexpr static PresetNumber MAX_PRESETS 					= (MAX_BANKS * BANK_SIZE) - 1;
 
 	private:
 
@@ -132,30 +133,31 @@ class AxeSystem {
 		void checkIncomingPreset();
 		void setChanging();
 		void sendSysEx(const byte length, byte *sysex);
-		void setSystemConnected(bool connected);
-		bool isAxeSysEx(const byte *sysex, const unsigned length);
-		void parseName(const byte *sysex, byte length, byte offset, char *buffer, byte size);
-		void processEffectDump(const byte *sysex, unsigned length);
-		void onSystemExclusive(const byte *sysex, unsigned length);
-		void onPresetChange(const unsigned preset);
+		void setSystemConnected(const bool connected);
+		bool isAxeSysEx(const byte *sysex, const byte length);
+		void parseName(const byte *sysex, const byte length, const byte offset, char *buffer, const byte size);
+		void processEffectDump(const byte *sysex, const byte length);
+		void onSystemExclusive(const byte *sysex, const byte length);
+		void onPresetChange(const PresetNumber number);
 
-		void requestPresetName(int preset = -1);
-		void requestSceneName();
+		void requestPresetName(const PresetNumber number = -1);
+		void requestSceneName(const SceneNumber number = -1);
 		void requestSceneNumber();
 		void requestEffectDetails();
 
 		void callConnectionStatusCallback(bool connected);	
 		void callTapTempoCallback();
-		void callPresetChangingCallback(int presetNumber);
+		void callPresetChangingCallback(PresetNumber number);
 		void callPresetChangeCallback(AxePreset*);
 		void callSystemChangeCallback();
 		void callTunerDataCallback(const char *note, const byte string, const byte fineTune);
 		void callTunerStatusCallback(bool enabled);
 		void callLooperStatusCallback(AxeLooper*);
 
-		bool isValidPresetNumber(int preset);
-		bool isValidSceneNumber(int scene); 
-		void intToMidiBytes(int, byte*, byte*);
+		bool isValidPresetNumber(const PresetNumber preset);
+		bool isValidSceneNumber(const SceneNumber scene); 
+		void intToMidiBytes(const int, byte*, byte*);
+		int midiBytesToInt(const byte, const byte);
 
 		AxePreset _preset, _incomingPreset;
 		AxeLooper _looper;
@@ -174,14 +176,14 @@ class AxeSystem {
 		byte _sysexCount;
 		bool _readingSysex = false;
 		byte _tunerIncomingCount = 0, _tunerTriggerThreshold = 5;
-		unsigned long _startupDelay = 1000;
-		unsigned long _refreshRate = 0, _refreshThrottle = 500;
-		unsigned long _sysexTimout = 2000, _tunerTimout = 250;
-		unsigned long _lastSysexResponse = 0, _lastTunerResponse = 0, _lastRefresh = 0;
+		millis_t _startupDelay = 1000;
+		millis_t _refreshRate = 0, _refreshThrottle = 500;
+		millis_t _sysexTimout = 2000, _tunerTimout = 250;
+		millis_t _lastSysexResponse = 0, _lastTunerResponse = 0, _lastRefresh = 0;
 
 		void (*_connectionStatusCallback)(bool);
 		void (*_tapTempoCallback)();
-		void (*_presetChangingCallback)(const int);
+		void (*_presetChangingCallback)(PresetNumber);
 		void (*_presetChangeCallback)(AxePreset);
 		void (*_systemChangeCallback)();
 		void (*_tunerStatusCallback)(bool);

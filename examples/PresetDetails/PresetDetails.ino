@@ -11,6 +11,8 @@ void setup() {
 	//register a callback so we know when preset details are available
 	Axe.registerPresetChangeCallback(onPresetChange);
 
+	Axe.begin(Serial1);
+
 	//request current preset
 	Axe.requestPresetDetails();
 

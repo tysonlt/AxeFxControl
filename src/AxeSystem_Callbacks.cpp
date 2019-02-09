@@ -4,7 +4,7 @@ void AxeSystem::registerConnectionStatusCallback( void (*func)(bool) ) {
 	_connectionStatusCallback = func;
 }
 
-void AxeSystem::registerPresetChangingCallback( void (*func)(int) ) {
+void AxeSystem::registerPresetChangingCallback( void (*func)(PresetNumber) ) {
 	_presetChangingCallback = func;
 }
 
@@ -44,7 +44,7 @@ void AxeSystem::callTapTempoCallback() {
 	}
 }
 
-void AxeSystem::callPresetChangingCallback(int presetNumber) {
+void AxeSystem::callPresetChangingCallback(PresetNumber presetNumber) {
 	if (NULL != _presetChangingCallback) {
 		(_presetChangingCallback)(presetNumber);
 	}

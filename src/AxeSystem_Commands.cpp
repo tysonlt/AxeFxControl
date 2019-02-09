@@ -1,117 +1,66 @@
 #include "AxeSystem.h"
 #include "AxeEffect.h"
 
-		const byte REQUEST_EFFECT_BYPASSED_COMMAND_9_BYTES[9] = {
-				SYSEX_MANUFACTURER_BYTE1,  		SYSEX_MANUFACTURER_BYTE2,
-				SYSEX_MANUFACTURER_BYTE3,  		SYSEX_AXE_VERSION,
-				SYSEX_REQUEST_EFFECT_BYPASS, 	SYSEX_QUERY_BYTE,
-				SYSEX_QUERY_BYTE,          		SYSEX_QUERY_BYTE,
-				SYSEX_CHECKSUM_PLACEHOLDER};
-
-		const byte REQUEST_SCENE_NAME_COMMAND_7_BYTES[7] = {
-				SYSEX_MANUFACTURER_BYTE1,  SYSEX_MANUFACTURER_BYTE2,
-				SYSEX_MANUFACTURER_BYTE3,  SYSEX_AXE_VERSION,
-				SYSEX_REQUEST_SCENE_INFO,  SYSEX_QUERY_BYTE,
-				SYSEX_CHECKSUM_PLACEHOLDER};
-
-		const byte REQUEST_SCENE_NUMBER_COMMAND_7_BYTES[7] = {
-				SYSEX_MANUFACTURER_BYTE1,   SYSEX_MANUFACTURER_BYTE2,
-				SYSEX_MANUFACTURER_BYTE3,   SYSEX_AXE_VERSION,
-				SYSEX_REQUEST_SCENE_NUMBER, SYSEX_QUERY_BYTE,
-				SYSEX_CHECKSUM_PLACEHOLDER};
-
-		const byte REQUEST_TEMPO_COMMAND_8_BYTES[8] = {
-				SYSEX_MANUFACTURER_BYTE1, SYSEX_MANUFACTURER_BYTE2,
-				SYSEX_MANUFACTURER_BYTE3, SYSEX_AXE_VERSION,
-				SYSEX_REQUEST_TEMPO,      SYSEX_QUERY_BYTE,
-				SYSEX_QUERY_BYTE,         SYSEX_CHECKSUM_PLACEHOLDER};
-
-		const byte TAP_TEMPO_PULSE_COMMAND_6_BYTES[6] = {
-				SYSEX_MANUFACTURER_BYTE1, SYSEX_MANUFACTURER_BYTE2,
-				SYSEX_MANUFACTURER_BYTE3, SYSEX_AXE_VERSION,
-				SYSEX_TAP_TEMPO_PULSE,    SYSEX_CHECKSUM_PLACEHOLDER};
-
-		const byte ENABLE_TUNER_COMMAND_7_BYTES[7] = {
-				SYSEX_MANUFACTURER_BYTE1,	SYSEX_MANUFACTURER_BYTE2,
-				SYSEX_MANUFACTURER_BYTE3,	SYSEX_AXE_VERSION,
-				SYSEX_TUNER,							SYSEX_TUNER_ON,
-				SYSEX_CHECKSUM_PLACEHOLDER};
-
-		const byte DISABLE_TUNER_COMMAND_7_BYTES[7] = {
-				SYSEX_MANUFACTURER_BYTE1,	SYSEX_MANUFACTURER_BYTE2,
-				SYSEX_MANUFACTURER_BYTE3,	SYSEX_AXE_VERSION,
-				SYSEX_TUNER,							SYSEX_TUNER_OFF,
-				SYSEX_CHECKSUM_PLACEHOLDER};
-
-		const byte REQUEST_LOOPER_STATUS_COMMAND_7_BYTES[7] = {
-				SYSEX_MANUFACTURER_BYTE1,  		SYSEX_MANUFACTURER_BYTE2,
-				SYSEX_MANUFACTURER_BYTE3,  		SYSEX_AXE_VERSION,
-				SYSEX_REQUEST_LOOPER_STATUS,  SYSEX_QUERY_BYTE,
-				SYSEX_CHECKSUM_PLACEHOLDER};
-
 void AxeSystem::requestFirmwareVersion() {
 	sendCommand(SYSEX_REQUEST_FIRMWARE);
 }
 
-void AxeSystem::requestPresetName(int preset) {
-
-	byte data[2] = {SYSEX_QUERY_BYTE};
-
-  if (preset != -1) {
-    intToMidiBytes(preset, &data[0], &data[1]);
+void AxeSystem::requestPresetName(const PresetNumber number) {
+	byte data[2] = {SYSEX_QUERY_BYTE, SYSEX_QUERY_BYTE};
+  if (number != -1) {
+    intToMidiBytes(number, &data[0], &data[1]);
   }
-
 	sendCommand(SYSEX_REQUEST_PRESET_INFO, data, 2);
 }
 
-void AxeSystem::requestSceneName() {
-	sendSysEx(7, (byte*) REQUEST_SCENE_NAME_COMMAND_7_BYTES);
+void AxeSystem::requestSceneName(const SceneNumber number) {
+	byte data[1] = {SYSEX_QUERY_BYTE};
+	if (number != -1) {
+		data[0] = number;
+	}
+	sendCommand(SYSEX_REQUEST_SCENE_INFO, data, 1);
 }
 
 void AxeSystem::requestSceneNumber() {
-	sendSysEx(7, (byte*) REQUEST_SCENE_NUMBER_COMMAND_7_BYTES);
+	byte data[1] = {SYSEX_QUERY_BYTE};
+	sendCommand(SYSEX_REQUEST_SCENE_NUMBER, data, 1);
 }
-
 
 void AxeSystem::requestEffectDetails() {
 	sendCommand(SYSEX_EFFECT_DUMP);
 }
 
-void AxeSystem::sendSceneChange(byte scene) {
-	byte command[7];
-	memcpy(command, REQUEST_SCENE_NUMBER_COMMAND_7_BYTES, 7);
-	command[5] = scene - 1;
-	sendSysEx(7, (byte*) command);
+//Assumes you are sending 1-based scenes.
+void AxeSystem::sendSceneChange(const SceneNumber number) {
+	byte data[1] = { (byte) (number - 1) }; 
+	sendCommand(SYSEX_REQUEST_SCENE_NUMBER, data, 1);
 }
 
 void AxeSystem::requestLooperStatus() {
-	sendSysEx(7, (byte*) REQUEST_LOOPER_STATUS_COMMAND_7_BYTES);
+	byte data[1] = {SYSEX_QUERY_BYTE};
+	sendCommand(SYSEX_REQUEST_LOOPER_STATUS, data, 1);
 }
 
-void AxeSystem::pressLooperButton(LooperButton button) {
-	byte command[7];
-	memcpy(command, REQUEST_LOOPER_STATUS_COMMAND_7_BYTES, 7);
-	command[5] = button;
-	sendSysEx(7, (byte*) command);
+void AxeSystem::pressLooperButton(const LooperButton button) {
+	byte data[1] = {button};
+	sendCommand(SYSEX_REQUEST_LOOPER_STATUS, data, 1);
 }
 
 void AxeSystem::requestTempo() {
-	sendSysEx(8, (byte*) REQUEST_TEMPO_COMMAND_8_BYTES);
+	byte data[2] = {SYSEX_QUERY_BYTE, SYSEX_QUERY_BYTE};
+	sendCommand(SYSEX_REQUEST_TEMPO, data, 2);
 }
 
-void AxeSystem::setTempo(Tempo tempo) {
-  byte command[8];
-	memcpy(command, REQUEST_TEMPO_COMMAND_8_BYTES, 8);
-	intToMidiBytes(tempo, &command[5], &command[6]);
-	sendSysEx(8, (byte*) command);
-
-	//Axe won't notify us of this, so send a manual system change event
+void AxeSystem::setTempo(const Tempo tempo) {
+	byte data[2];
+	intToMidiBytes(tempo, &data[0], &data[1]);
+	sendCommand(SYSEX_REQUEST_TEMPO, data, 2);
 	_tempo = tempo;
 	callSystemChangeCallback();
 }
 
 void AxeSystem::sendTap() {
-	sendSysEx(6, (byte*) TAP_TEMPO_PULSE_COMMAND_6_BYTES);
+	sendCommand(SYSEX_TAP_TEMPO_PULSE);
 }
 
 void AxeSystem::toggleTuner() {
@@ -119,38 +68,38 @@ void AxeSystem::toggleTuner() {
 }
 
 void AxeSystem::enableTuner() {
+	byte data[1] = {SYSEX_TUNER_ON};
 	_tunerEngaged = true;
-	_lastTunerResponse = millis(); //reset timer
-  sendSysEx(7, (byte*) ENABLE_TUNER_COMMAND_7_BYTES);
+	_lastTunerResponse = millis(); 
+	sendCommand(SYSEX_TUNER, data, 1);
 	callTunerStatusCallback(_tunerEngaged);
 }
 
 void AxeSystem::disableTuner() {
 	_tunerEngaged = false;
-  sendSysEx(7, (byte*) DISABLE_TUNER_COMMAND_7_BYTES);
+	byte data[1] = {SYSEX_TUNER_OFF};
+	sendCommand(SYSEX_TUNER, data, 1);
 	callTunerStatusCallback(_tunerEngaged);
 }
 
-void AxeSystem::enableEffect(EffectId effectId) {
-  byte command[9];
-	memcpy(command, REQUEST_EFFECT_BYPASSED_COMMAND_9_BYTES, 9);
-	intToMidiBytes(effectId, &command[5], &command[6]);
-	command[7] = SYSEX_EFFECT_ENABLE;
-	sendSysEx(9, (byte*) command);
+void AxeSystem::enableEffect(const EffectId effectId) {
+  byte data[3];
+	intToMidiBytes(effectId, &data[0], &data[1]);
+	data[2] = SYSEX_EFFECT_ENABLE;
+	sendCommand(SYSEX_REQUEST_EFFECT_BYPASS, data, 3);
 }
 
-void AxeSystem::disableEffect(EffectId effectId) {
-	byte command[9];
-	memcpy(command, REQUEST_EFFECT_BYPASSED_COMMAND_9_BYTES, 9);
-	intToMidiBytes(effectId, &command[5], &command[6]);
-	command[7] = SYSEX_EFFECT_BYPASS;
-	sendSysEx(9, (byte*) command);
+void AxeSystem::disableEffect(const EffectId effectId) {
+  byte data[3];
+	intToMidiBytes(effectId, &data[0], &data[1]);
+	data[2] = SYSEX_EFFECT_BYPASS;
+	sendCommand(SYSEX_REQUEST_EFFECT_BYPASS, data, 3);
 }
 
 void AxeSystem::sendPresetIncrement() {
   int number = _preset.getPresetNumber();
   if (isValidPresetNumber(number)) {
-    if (++number > (BANK_SIZE * MAX_BANKS) - 1) {
+    if (++number > MAX_PRESETS) {
       number = 0;
     }
     sendPresetChange(number);
@@ -161,7 +110,7 @@ void AxeSystem::sendPresetDecrement() {
   int number = _preset.getPresetNumber();
   if (isValidPresetNumber(number)) {
     if (number == 0) {
-      number = (BANK_SIZE * MAX_BANKS) - 1;
+      number = MAX_PRESETS;
     } else {
       number--;
     }
@@ -173,7 +122,7 @@ void AxeSystem::sendSceneIncrement() {
   byte number = _preset.getSceneNumber();
   if (isValidSceneNumber(number)) {
     if (++number > MAX_SCENES) {
-      number = 0;
+      number = 1;
     }
     sendSceneChange(number);
   }
@@ -182,8 +131,8 @@ void AxeSystem::sendSceneIncrement() {
 void AxeSystem::sendSceneDecrement() {
   byte number = _preset.getSceneNumber();
   if (isValidSceneNumber(number)) {
-    if (number == 0) {
-      number = MAX_SCENES - 1;
+    if (number == 1) {
+      number = MAX_SCENES;
     } else {
       number--;
     }

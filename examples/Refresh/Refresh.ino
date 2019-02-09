@@ -14,6 +14,11 @@ void setup() {
 	//ask for details to be refreshed every 3 seconds
 	Axe.enableRefresh(3000);
 
+	Axe.begin(Serial1);
+
+	//request current preset
+	Axe.requestPresetDetails();
+	
 }
 
 void loop() {

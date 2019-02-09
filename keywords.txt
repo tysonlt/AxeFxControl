@@ -1,6 +1,7 @@
 Axe	KEYWORD1
 AxeSystem	KEYWORD1
 AxeEffect	KEYWORD1
+init	KEYWORD2
 update	KEYWORD2
 enableRefresh KEYWORD2
 refresh	KEYWORD2
