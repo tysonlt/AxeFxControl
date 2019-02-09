@@ -134,9 +134,7 @@ void AxeSystem::sendCommand(const byte command, const byte *data, const byte par
 	sysex[length++] = SYSEX_END;
 
 	//punch it!
-	for (byte i=0; i<length; i++) {
-		SER_SEND(sysex[i]);
-	}
+	sendSysEx(sysex, length);
 
 	#ifdef AXE_DEBUG_SYSEX
 	char buf[6];
