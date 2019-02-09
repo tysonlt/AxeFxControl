@@ -13,6 +13,7 @@ void setup() {
 
 	Axe.registerSystemChangeCallback(onSystemChange);
 	Axe.registerTapTempoCallback(onTapTempo);
+	Axe.begin(Serial1);
 
 }
 

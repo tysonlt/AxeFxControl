@@ -9,13 +9,17 @@ void setup() {
 	Serial.begin(9600);
 	while (!Serial);
 
+	//init AxeSystem
+	Axe.begin(Serial1);
+
 	//register a callback so we know when preset details are available
 	Axe.registerPresetChangeCallback(onPresetChange);
 
+	//ask for refresh call
+	Axe.enableRefresh(5000);
+
 	//request current preset
 	Axe.requestPresetDetails();
-
-	Axe.enableRefresh(5000);
 
 }
 

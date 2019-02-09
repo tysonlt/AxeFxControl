@@ -1,23 +1,7 @@
 #include "AxeSystem.h"
 
-//TODO: would like more control over this...
-MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
-
-/////// BEGIN MIDI CALLS ///////
-
-void AxeSystem::init() {	
-	if (_startupDelay > 0) { 
-		delay(_startupDelay);
-	}
-	MIDI.begin(MIDI_CHANNEL_OMNI);
-	MIDI.turnThruOff();
-	_midiReady = true;
-}
-
 void AxeSystem::update() {
 	
-	checkMidi();
-
 	if (!_presetChanging && _refreshRate > 0) {
 		unsigned long now = millis();
 		if (now - _lastRefresh > _refreshRate) {
@@ -25,67 +9,11 @@ void AxeSystem::update() {
 		}
 	}
 
-	if (MIDI.read()) {
-		if (MIDI.getType() == midi::ControlChange) {
-			onControlChange(MIDI.getChannel(), MIDI.getData1(), MIDI.getData2());
-		} else if (MIDI.getType() == midi::ProgramChange) {
-			onProgramChange(MIDI.getChannel(), MIDI.getData1());
-		} else if (MIDI.getType() == midi::SystemExclusive) {
-			onSystemExclusive(MIDI.getSysExArray(), MIDI.getSysExArrayLength());
-		}
-	} 
+	readMidi();
 
 }
 
-void AxeSystem::sendPresetChange(const unsigned number) {
-
-	checkMidi();
-
-  byte bank = number / BANK_SIZE;
-  byte patch = number - (BANK_SIZE * bank);
-
-  MIDI.sendControlChange(BANK_CHANGE_CC, bank, _midiChannel);
-  MIDI.sendProgramChange(patch, _midiChannel);
-
-	setChanging();
-	callPresetChangingCallback(number);
-
-}
-
-void AxeSystem::sendSysEx(const byte length, byte *sysex) {
-
-	checkMidi();
-
-	byte sum = 0xF0;
-	for (int i=0; i<length-1; ++i) {
-		sum ^= sysex[i];
-	}
-	sysex[length-1] = (sum & 0x7F);
-
-	#ifdef AXE_DEBUG_SYSEX
-	char buf[100];
-	snprintf(buf, 100, "AxeSystem::sendSysEx(0x%02X):         ", sysex[4]);
-	DEBUGGER.print(buf);
-	for (unsigned i=0; i<length; i++) {
-		snprintf(buf, 6, "0x%02X ", sysex[i]);
-		DEBUGGER.print(buf);
-	}
-	DEBUGGER.println();
-	#endif
-	
-	MIDI.sendSysEx(length, sysex);
-
-}
-
-void AxeSystem::checkMidi() {
-	if (!_midiReady) {
-		init();
-	}
-}
-
-//////// END MIDI CALLS ///////
-
-void AxeSystem::enableRefresh(unsigned long millis, unsigned long throttle) {
+void AxeSystem::enableRefresh(const millis_t millis, const millis_t throttle) {
 	_refreshRate = millis;
 	_refreshThrottle = throttle;
 }
@@ -113,7 +41,7 @@ void AxeSystem::checkFirmware() {
   }
 }
 
-void AxeSystem::setSystemConnected(bool connected) {
+void AxeSystem::setSystemConnected(const bool connected) {
 	bool oldStatus = _systemConnected;
 	_systemConnected = connected;
   if (oldStatus != _systemConnected) {
@@ -145,38 +73,16 @@ void AxeSystem::checkIncomingPreset() {
   }
 }
 
-bool AxeSystem::isAxeSysEx(const byte *sysex, const unsigned length) {
-	return 
-		length > 4 && 
-		sysex[1] == SYSEX_MANUFACTURER_BYTE1 && 
-		sysex[2] == SYSEX_MANUFACTURER_BYTE2 && 
-		sysex[3] == SYSEX_MANUFACTURER_BYTE3;
-}
-
-void AxeSystem::parseName(const byte *sysex, byte length, byte offset, char *buffer, byte size) {
-	memset(buffer, ' ', size);
-	byte count = 0;
-  for (byte i = offset; i < length - 2 && count < size; i++) {
-    if (sysex[i] == 0) break;
-		buffer[count++] = sysex[i];
-  }
-  buffer[size] = '\0';
-}
-
 void AxeSystem::setChanging() {
 	_incomingPreset.reset();
 	_presetChanging = true;
 }
 
-bool AxeSystem::isValidPresetNumber(int preset) {
-  return preset >= 0 && preset <= (int) MAX_PRESETS;
-}
-
-bool AxeSystem::isValidSceneNumber(int scene) { 
-	return scene >= 0 && scene <= MAX_SCENES; 
-}
-
-void AxeSystem::intToMidiBytes(int number, byte *byte1, byte *byte2) {
+void AxeSystem::intToMidiBytes(const int number, byte *byte1, byte *byte2) {
 	*byte1 = number % BANK_SIZE;
 	*byte2 = number / BANK_SIZE;
+}
+
+int AxeSystem::midiBytesToInt(const byte lsb, const byte msb) {
+	return lsb + (msb * BANK_SIZE);
 }

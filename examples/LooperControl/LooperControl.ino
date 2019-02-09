@@ -4,6 +4,7 @@ AxeSystem Axe;
 
 void setup() {
 	Serial.begin(9600);
+	Axe.begin(Serial1);
 }
 
 void loop() {

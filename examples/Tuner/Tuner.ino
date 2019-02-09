@@ -11,6 +11,7 @@ void setup() {
 	timer = millis();
 	Axe.registerTunerDataCallback(onTunerData);
 	Axe.registerTunerStatusCallback(onTunerStatus);
+	Axe.begin(Serial1);
 }
 
 void loop() {

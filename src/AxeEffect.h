@@ -730,7 +730,7 @@ enum EFFECT_ID_ {
 		static bool isSwitchable(EffectId effectId) {
 			switch (effectId) {
 				case ID_CONTROL:
-				case ID_DISTORT1:
+				case ID_DISTORT1: //these are actually amps, fuz is distortion
 				case ID_DISTORT2:
 				case ID_DISTORT3:
 				case ID_DISTORT4:
