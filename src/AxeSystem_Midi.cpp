@@ -4,13 +4,24 @@
 #define SER_READ _serial->read()
 #define SER_SEND _serial->write
 
+void AxeSystem::begin(HardwareSerial& serial, byte midiChannel) {	
+	if (_startupDelay > 0) { 
+		delay(_startupDelay);
+	}
+	setMidiChannel(midiChannel);
+	_serial = &serial;
+	_serial->begin(MIDI_BAUD);
+	_midiReady = true;
+}
+
 void AxeSystem::readMidi() {
 
 	if (SER_AVLB) {
 		
 		byte data = SER_READ;
-
+		
 		if (_readingSysex) {
+
 			_sysexBuffer[_sysexCount++] = data;
 			if (data == SYSEX_END) {
 				_readingSysex = false;
@@ -23,20 +34,25 @@ void AxeSystem::readMidi() {
 
 		} else {
 
-			switch (data) {
+			//remove channel nibble
+			switch (data & 0xF0) {
 
 				case ControlChange: {
-					while (SER_AVLB < 2); //assume rest of message is in buffer
-					if (BANK_CHANGE_CC == SER_READ) {
-						_bank = SER_READ;
+					if (filterChannel(data)) {
+						while (SER_AVLB < 2); //assume rest of message is in buffer
+						if (BANK_CHANGE_CC == SER_READ) {
+							_bank = SER_READ;
+						}
 					}
 					break;
 				}
 
 				case ProgramChange: {
-					while (SER_AVLB < 1); //assume rest of message is in buffer
-					byte patch = SER_READ;
-					onPresetChange(_bank * 128 + patch);
+					if (filterChannel(data)) {
+						while (SER_AVLB < 1); //assume rest of message is in buffer
+						byte patch = SER_READ;
+						onPresetChange(_bank * 128 + patch);
+					}
 					break;
 				}
 
@@ -47,25 +63,42 @@ void AxeSystem::readMidi() {
 					break;
 				}
 
-			}
+			} //end switch
 
-		}
+		} //end if reading sysex
 
-	}
+	} //end if ser avail
 
 }
 
+bool AxeSystem::filterChannel(byte data) {
+	return _midiChannel == MIDI_CHANNEL_OMNI || _midiChannel == ((data & 0x0F) + 1);
+}
+
 void AxeSystem::sendPresetChange(const PresetNumber number) {
-
-	SER_SEND(ControlChange);
-	SER_SEND(BANK_CHANGE_CC);
-	SER_SEND(number / 128);
-	SER_SEND(ProgramChange);
-	SER_SEND(number % 128);
-
+	sendControlChange(BANK_CHANGE_CC, number / 128, _midiChannel);
+	sendProgramChange(number % 128, _midiChannel);
 	setChanging();
 	callPresetChangingCallback(number);
+}
 
+//One-based channel
+void AxeSystem::sendControlChange(byte controller, byte value, byte channel) {
+	SER_SEND(ControlChange | ((channel - 1) & 0x0f));
+	SER_SEND(controller);
+	SER_SEND(value);
+}
+
+//One-based channel
+void AxeSystem::sendProgramChange(byte value, byte channel) {
+	SER_SEND(ProgramChange | ((channel - 1) & 0x0f));
+	SER_SEND(value);
+}
+
+void AxeSystem::sendSysEx(const byte *sysex, const byte length) {
+	for (byte i=0; i<length; i++) {
+		SER_SEND(sysex[i]);
+	}
 }
 
 void AxeSystem::sendCommand(const byte command) {

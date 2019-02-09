@@ -23,12 +23,13 @@ class AxeSystem {
 			_looper.setAxeSystem(this);
 		}
 
-		void begin(HardwareSerial& serial);
-		void update();
+		void begin(HardwareSerial& serial, byte midiChannel = DEFAULT_MIDI_CHANNEL);
+		void setMidiChannel(byte channel) { _midiChannel = channel; }		
 
 		// Update preset details every millis. Don't refresh if another preset request was received within throttle interval.
 		void enableRefresh(const millis_t millis = 3000, const millis_t throttle = 500);
 		void refresh(bool ignoreThrottle = false);
+		void update();
 
 		void requestPresetDetails() { requestPresetName(); }
 		void requestFirmwareVersion();		
@@ -54,10 +55,10 @@ class AxeSystem {
 		void sendPresetChange(const PresetNumber preset);
 		void sendSceneChange(const SceneNumber scene);
 
-		//for you hackers out there
-		// void sendControlChange(...)
-		// void sendProgramChange
-		// void sendSysEx()
+		//for you hackers out there...
+		void sendControlChange(byte controller, byte value, byte channel);
+		void sendProgramChange(byte value, byte channel);
+		void sendSysEx(const byte *sysex, const byte length);
 
 		bool isPresetChanging() { return _presetChanging; }
 		bool isTunerEngaged() { return _tunerEngaged; }
@@ -88,6 +89,8 @@ class AxeSystem {
 		const static byte MAX_SCENES 												= 8;
 		const static byte TEMPO_MIN 												= 24;
 		const static byte TEMPO_MAX 												= 250;
+		const static byte MIDI_CHANNEL_OMNI									= 0;
+		const static byte DEFAULT_MIDI_CHANNEL							= MIDI_CHANNEL_OMNI;
 		constexpr static PresetNumber MAX_PRESETS 					= (MAX_BANKS * BANK_SIZE) - 1;
 
 	private:
@@ -158,6 +161,7 @@ class AxeSystem {
 		bool isValidSceneNumber(const SceneNumber scene); 
 		void intToMidiBytes(const int, byte*, byte*);
 		int midiBytesToInt(const byte, const byte);
+		bool filterChannel(byte message);
 
 		AxePreset _preset, _incomingPreset;
 		AxeLooper _looper;

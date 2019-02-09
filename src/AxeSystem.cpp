@@ -1,14 +1,5 @@
 #include "AxeSystem.h"
 
-void AxeSystem::begin(HardwareSerial& serial) {	
-	if (_startupDelay > 0) { 
-		delay(_startupDelay);
-	}
-	_serial = &serial;
-	_serial->begin(MIDI_BAUD);
-	_midiReady = true;
-}
-
 void AxeSystem::update() {
 	
 	if (!_presetChanging && _refreshRate > 0) {
