@@ -200,6 +200,7 @@ void AxeSystem::processEffectDump(const byte *sysex, const byte length) {
     if (msb) effectId |= 128;
 
 		AxeEffect effect;
+		effect.setAxeSystem(this);
 		effect.setEffectId(effectId);
 		effect.setBypassed(bypassed);
 		effect.setChannel(channel);

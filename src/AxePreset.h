@@ -11,19 +11,21 @@ class AxePreset {
 
 	public:
 
-		void setPresetNumber(int number) {  _preset = number; }
-		void setSceneNumber(int number) {  _scene = number; }
 		int getPresetNumber() { return _preset; }
 		int getSceneNumber() { return _scene; }
-
-		void setPresetName(char *buffer);
-		void setSceneName(char *buffer);
+		
 		void copyPresetName(char *buffer, size_t max);
 		void copySceneName(char *buffer, size_t max);
 
 		unsigned getEffectCount() { return _effectCount; }
 		AxeEffect getEffectAt(const EffectIndex index) { return _effects[index]; }
 
+	protected:
+
+		void setPresetNumber(int number) {  _preset = number; }
+		void setSceneNumber(int number) {  _scene = number; }
+		void setPresetName(char *buffer);
+		void setSceneName(char *buffer);
 		void reset();	
 		bool isComplete();
 

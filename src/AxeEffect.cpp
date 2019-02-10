@@ -1,4 +1,18 @@
 #include "AxeEffect.h"
+#include "AxeSystem.h"
+
+void AxeEffect::bypass() {
+	_axe->disableEffect(_effectId);
+}
+	
+void AxeEffect::enable() {
+	_axe->enableEffect(_effectId);
+}
+
+void AxeEffect::switchChannel(Channel channel) {
+	setChannel(channel);
+	_axe->setEffectChannel(_effectId, channel);
+}
 
 void AxeEffect::copyEffectName(char *buffer, size_t max) { 	
 	char tag[0];

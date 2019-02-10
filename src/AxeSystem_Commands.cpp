@@ -36,6 +36,13 @@ void AxeSystem::sendSceneChange(const SceneNumber number) {
 	sendCommand(SYSEX_REQUEST_SCENE_NUMBER, data, 1);
 }
 
+void AxeSystem::setEffectChannel(const EffectId effectId, const Channel channel) {
+	byte data[3];
+	intToMidiBytes(effectId, &data[0], &data[1]);
+	data[2] = channel;
+	sendCommand(SYSEX_REQUEST_EFFECT_CHANNEL, data, 3);
+}
+
 void AxeSystem::requestLooperStatus() {
 	byte data[1] = {SYSEX_QUERY_BYTE};
 	sendCommand(SYSEX_REQUEST_LOOPER_STATUS, data, 1);

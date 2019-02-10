@@ -57,6 +57,7 @@ class AxeSystem {
 		void disableTuner();
 		void enableEffect(const EffectId);
 		void disableEffect(const EffectId);
+		void setEffectChannel(const EffectId, const Channel);
 
 		//for generic commands
 		void sendCommand(const byte command);
