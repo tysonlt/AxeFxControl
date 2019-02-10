@@ -24,10 +24,10 @@ AxeSystem Axe;
 
 void setup() {
   
-	Serial.begin(115200);
+	Serial.begin(9600);
   while (!Serial);
   delay(1500);
-  
+
 	Axe.begin(Serial1);
 	Axe.registerSysexPluginCallback(onSysex);
 
@@ -102,9 +102,14 @@ void printEffect(const byte effectId, const byte data1, byte const data2) {
   if (data1) {
     intEffectId = effectId | 128;
   }
-  bool bypassed = (data2 & 1);
+  
+  bool bypassed = (data2 & 0x01);
+  char channel = 'A' + ((data2 >> 1) & 0x03);
+  byte numChannels = (data2 >> 4) & 0x07;
   if (assignNameAndTag(intEffectId, name, 50, tag, 10)) {
-    snprintf(buf, 100, "[%c][%s][0x%02X 0x%02X 0x%02X][%03d] %s", bypassed ? ' ' : 'X', tag, effectId, data1, data2, intEffectId, name);
+    snprintf(buf, 100, 
+      "[%c][%s][0x%02X 0x%02X 0x%02X][%c%c%c%c%c%c%c%c][%03d][ch=%c/%d] %s", 
+      bypassed ? ' ' : 'X', tag, effectId, data1, data2, BYTE_TO_BINARY(data2), intEffectId, channel, numChannels, name);
     Serial.println(buf);
   }
   
