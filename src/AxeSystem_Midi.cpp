@@ -34,12 +34,12 @@ void AxeSystem::readMidi() {
 
 		} else {
 
-			//remove channel nibble
+			//mask channel nibble
 			switch (data & 0xF0) {
 
 				case ControlChange: {
 					if (filterChannel(data)) {
-						while (SER_AVLB < 2); //assume rest of message is in buffer
+						while (SER_AVLB < 2); //assume rest of message is in buffer or coming
 						if (BANK_CHANGE_CC == SER_READ) {
 							_bank = SER_READ;
 						}
@@ -49,7 +49,7 @@ void AxeSystem::readMidi() {
 
 				case ProgramChange: {
 					if (filterChannel(data)) {
-						while (SER_AVLB < 1); //assume rest of message is in buffer
+						while (SER_AVLB < 1); //assume rest of message is in buffer or coming
 						byte patch = SER_READ;
 						onPresetChange(_bank * 128 + patch);
 					}
