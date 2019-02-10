@@ -152,10 +152,10 @@ class AxeSystem {
 		void checkFirmware();
 		void checkTimers();
 		void checkIncomingPreset();
-		void setChanging();
 		void sendSysEx(const byte length, byte *sysex);
 		void setSystemConnected(const bool connected);
 		bool isAxeSysEx(const byte *sysex, const byte length);
+		bool isRequestedPreset(const PresetNumber);
 		void parseName(const byte *sysex, const byte length, const byte offset, char *buffer, const byte size);
 		void processEffectDump(const byte *sysex, const byte length);
 		void onSystemExclusive(const byte *sysex, const byte length);

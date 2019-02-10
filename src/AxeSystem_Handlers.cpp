@@ -1,18 +1,11 @@
 #include "AxeSystem.h"
 
 void AxeSystem::onPresetChange(const PresetNumber number) {
-
-	// ignore stale responses due to very fast preset changes, 
-	// but allow refreshes to current preset
-	if (true/*!_presetChanging || number == _preset.getPresetNumber()*/) {
-		_incomingPreset.reset();
-		requestPresetName(number);
-		if (!_presetChanging) {
-			setChanging();
-			callPresetChangingCallback(number);
-		}
-	}
-		
+	_presetChanging = true;
+	_incomingPreset.reset();
+	_incomingPreset.setPresetNumber(number);
+	requestPresetName(number);
+	callPresetChangingCallback(number);
 }
 
 void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
@@ -45,6 +38,58 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 			break;
 		}
 
+		case SYSEX_REQUEST_PRESET_INFO: {
+			_lastRefresh = millis();
+			const byte max = AxePreset::MAX_PRESET_NAME + 1;
+			const PresetNumber number = midiBytesToInt(sysex[6], sysex[7]);
+			if (isRequestedPreset(number)) { //drop older responses
+				parseName(sysex, length, 8, buffer, max);
+				_incomingPreset.reset(); //in case stale packets arrived from prev request
+				_incomingPreset.setPresetNumber(number);
+				_incomingPreset.setPresetName(buffer); 
+				_incomingPreset.copyPresetName(buffer, max); //copy back out in case preset changed it
+				callPresetNameCallback(number, (const char*) buffer, max);
+				requestSceneName();
+				requestEffectDetails();
+				checkIncomingPreset();
+			}
+			break;
+		}
+
+		case SYSEX_REQUEST_SCENE_INFO: {
+			//TODO during fast changes, can we guarantee this is for current preset?
+			if (!_incomingPreset.isComplete()) {
+				const SceneNumber number = sysex[6] + 1;
+				const byte max = AxePreset::MAX_SCENE_NAME + 1;
+				parseName(sysex, length, 7, buffer, max);
+				_incomingPreset.setSceneNumber(number);
+				_incomingPreset.setSceneName(buffer); 
+				_incomingPreset.copySceneName(buffer, max); //copy back out in case preset changed it
+				callSceneNameCallback(number, (const char*) buffer, max);
+				checkIncomingPreset();
+			}
+			break;
+		}
+
+		case SYSEX_REQUEST_SCENE_NUMBER: {
+			//TODO during fast changes, can we guarantee this is for current preset?
+			if (!_incomingPreset.isComplete()) {
+				_incomingPreset.setSceneNumber(sysex[6] + 1);
+				checkIncomingPreset();
+			}
+			break;
+		}
+
+		case SYSEX_EFFECT_DUMP: {
+			//TODO during fast changes, can we guarantee this is for current preset?
+			if (!_incomingPreset.isComplete()) {
+				processEffectDump(sysex, length);
+				callEffectsReceivedCallback(&_incomingPreset);
+				checkIncomingPreset();
+			}
+			break;
+		}
+
 		case SYSEX_REQUEST_FIRMWARE: {
 			_firmwareVersion.major = sysex[6];
 			_firmwareVersion.minor = sysex[7];
@@ -60,48 +105,6 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 				_tempo = newTempo;
 				callSystemChangeCallback();
 			}
-			break;
-		}
-
-		case SYSEX_REQUEST_PRESET_INFO: {
-			_lastRefresh = millis();
-			const PresetNumber number = midiBytesToInt(sysex[6], sysex[7]);
-			const byte max = AxePreset::MAX_PRESET_NAME + 1;
-			if (true/*!_presetChanging || number == _preset.getPresetNumber()*/) {
-				parseName(sysex, length, 8, buffer, max);
-				_incomingPreset.setPresetNumber(number);
-				_incomingPreset.setPresetName(buffer); 
-				_incomingPreset.copyPresetName(buffer, max); //copy back out in case preset changed it
-				callPresetNameCallback(number, (const char*) buffer, max);
-				requestSceneName();
-				requestEffectDetails();
-				checkIncomingPreset();
-			}
-			break;
-		}
-
-		case SYSEX_REQUEST_SCENE_INFO: {
-			const SceneNumber number = sysex[6] + 1;
-			const byte max = AxePreset::MAX_SCENE_NAME + 1;
-			parseName(sysex, length, 7, buffer, max);
-			_incomingPreset.setSceneNumber(number);
-			_incomingPreset.setSceneName(buffer); 
-			_incomingPreset.copySceneName(buffer, max); //copy back out in case preset changed it
-			callSceneNameCallback(number, (const char*) buffer, max);
-			checkIncomingPreset();
-			break;
-		}
-
-		case SYSEX_REQUEST_SCENE_NUMBER: {
-			_incomingPreset.setSceneNumber(sysex[6] + 1);
-			checkIncomingPreset();
-			break;
-		}
-
-		case SYSEX_EFFECT_DUMP: {
-			processEffectDump(sysex, length);
-			callEffectsReceivedCallback(&_incomingPreset);
-			checkIncomingPreset();
 			break;
 		}
 
@@ -133,10 +136,6 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 
 		case SYSEX_REQUEST_EFFECT_BYPASS: {
-			/*
-			EffectId effectId = midiBytesToInt(sysex[6], sysex[7]);
-			bool bypassed = sysex[8];
-			*/
 			//adding so it's not unhandled during debug...
 			//not much to do because Axe doesn't send status updates for this
 			break;
@@ -157,6 +156,10 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 
 	}; //end case
 		
+}
+
+bool AxeSystem::isRequestedPreset(const PresetNumber number) {
+	return _incomingPreset.getPresetNumber() == -1 || _incomingPreset.getPresetNumber() == number;
 }
 
 void AxeSystem::checkIncomingPreset() {
