@@ -31,6 +31,7 @@ void onPresetChange(AxePreset preset) {
 	//NOTE! Preset/scene names with % in them will not print to debug properly
 
 	//AxeSystem has notified that all requested information has arrived!
+	Serial.println();
 	Serial.print("Preset number: ");
 	Serial.println(preset.getPresetNumber());
 
