@@ -21,14 +21,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 	_lastSysexResponse = millis();
 
 	#ifdef AXE_DEBUG_SYSEX
-	char b[100];
-	snprintf(b, 100, "AxeSystem::onSystemExclusive(0x%02X): ", sysex[5]);
-	DEBUGGER.print(b);
-	for (byte i=1; i<length-1; i++) {
-		snprintf(b, 6, "0x%02X ", sysex[i]);
-		DEBUGGER.print(b);
-	}
-	DEBUGGER.println();
+	debugSysex(sysex, length, "<- AxeSystem::onSystemExclusive(): ");
 	#endif
 
 	switch (sysex[5]) {
@@ -52,7 +45,14 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 				requestSceneName();
 				requestEffectDetails();
 				checkIncomingPreset();
-			}
+			} else {
+				#ifdef AXE_DEBUG
+				DEBUGGER.print("Dropping stale preset name packet ");
+				DEBUGGER.print(number);
+				DEBUGGER.print(", waiting for ");
+				DEBUGGER.println(_incomingPreset.getPresetNumber());
+				#endif
+			} 
 			break;
 		}
 
@@ -67,7 +67,11 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 				_incomingPreset.copySceneName(buffer, max); //copy back out in case preset changed it
 				callSceneNameCallback(number, (const char*) buffer, max);
 				checkIncomingPreset();
-			}
+			} else {
+				#ifdef AXE_DEBUG
+				DEBUGGER.println("Ignoring SYSEX_REQUEST_SCENE_INFO, preset already complete");
+				#endif
+			} 
 			break;
 		}
 
@@ -76,7 +80,11 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 			if (!_incomingPreset.isComplete()) { //TODO is this necessary given guard in preset name case?
 				_incomingPreset.setSceneNumber(sysex[6] + 1);
 				checkIncomingPreset();
-			}
+			} else {
+				#ifdef AXE_DEBUG
+				DEBUGGER.println("Ignoring SYSEX_REQUEST_SCENE_NUMBER, preset already complete");
+				#endif
+			} 
 			break;
 		}
 
@@ -86,7 +94,11 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 				processEffectDump(sysex, length);
 				callEffectsReceivedCallback(&_incomingPreset);
 				checkIncomingPreset();
-			}
+			} else {
+				#ifdef AXE_DEBUG
+				DEBUGGER.println("Ignoring SYSEX_EFFECT_DUMP, preset already complete");
+				#endif
+			} 
 			break;
 		}
 

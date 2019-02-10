@@ -72,3 +72,15 @@ void AxeSystem::intToMidiBytes(const int number, byte *byte1, byte *byte2) {
 int AxeSystem::midiBytesToInt(const byte lsb, const byte msb) {
 	return lsb + (msb * BANK_SIZE);
 }
+
+#ifdef AXE_DEBUG_SYSEX
+void AxeSystem::debugSysex(const byte *sysex, const byte length, const char *message) {
+	char buf[6];
+	DEBUGGER.print(message);
+	for (byte i=0; i<length; i++) {
+		snprintf(buf, 6, "0x%02X ", sysex[i]);
+		DEBUGGER.print(buf);
+	}
+	DEBUGGER.println();
+}
+#endif

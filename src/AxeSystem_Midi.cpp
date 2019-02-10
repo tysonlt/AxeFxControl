@@ -1,4 +1,4 @@
-#include <AxeSystem.h>
+#include "AxeSystem.h"
 
 #define SER_AVLB _serial->available()
 #define SER_READ _serial->read()
@@ -98,6 +98,9 @@ void AxeSystem::sendSysEx(const byte *sysex, const byte length) {
 	for (byte i=0; i<length; i++) {
 		SER_SEND(sysex[i]);
 	}
+	#ifdef AXE_DEBUG_SYSEX     
+	debugSysex(sysex, length, "-> AxeSystem::sendSysEx():         ");
+	#endif
 }
 
 void AxeSystem::sendCommand(const byte command) {
@@ -134,16 +137,6 @@ void AxeSystem::sendCommand(const byte command, const byte *data, const byte par
 
 	//punch it!
 	sendSysEx(sysex, length);
-
-	#ifdef AXE_DEBUG_SYSEX
-	char buf[6];
-	Serial.print("SYSEX OUT: ");
-	for (byte i=0; i<length; i++) {
-		snprintf(buf, 6, "0x%02X ", sysex[i]);
-		Serial.print(buf);
-	}
-	Serial.println();
-	#endif
 
 }
 

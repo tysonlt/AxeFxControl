@@ -185,6 +185,10 @@ class AxeSystem {
 		int midiBytesToInt(const byte, const byte);
 		bool filterChannel(byte message);
 
+		#ifdef AXE_DEBUG_SYSEX
+		void debugSysex(const byte *sysex, const byte length, const char *message);
+		#endif
+
 		AxePreset _preset, _incomingPreset;
 		AxeLooper _looper;
 		Version _firmwareVersion;
