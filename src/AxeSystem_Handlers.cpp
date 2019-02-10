@@ -188,26 +188,31 @@ void AxeSystem::processEffectDump(const byte *sysex, const byte length) {
 
 	unsigned count = 0;
 	unsigned numEffects = (length -5 -1) / 3; //groups of three, minus header and checksum
-	EffectId effectIds[numEffects];
-	bool effectBypassed[numEffects];
+	AxeEffect effects[numEffects];
 
   for (byte i = 6; i < length - 3 && count < AxePreset::MAX_EFFECTS; i += 3) {
 
     EffectId effectId = sysex[i];
     byte msb = sysex[i + 1], status = sysex[i + 2];
     bool bypassed = !!(status & 1); 
+		Channel channel = (status >> 1) & 0x03;
+  	byte numChannels = (status >> 4) & 0x07;
     if (msb) effectId |= 128;
 
+		AxeEffect effect;
+		effect.setEffectId(effectId);
+		effect.setBypassed(bypassed);
+		effect.setChannel(channel);
+		effect.setChannelCount(numChannels);
+
 		//NOTE assumes preset number has already been received
-		if (callEffectFilterCallback(_incomingPreset.getPresetNumber(), effectId, bypassed)) {
-			effectIds[count] = effectId;
-			effectBypassed[count] = bypassed;
-			count++;
+		if (callEffectFilterCallback(_incomingPreset.getPresetNumber(), effect)) {
+			effects[count++] = effect;
 		}
 
 	}
 
-	_incomingPreset.setEffects(effectIds, effectBypassed, count);
+	_incomingPreset.setEffects(effects, count);
 			
 }
 
