@@ -214,6 +214,8 @@ enum EFFECT_ID_ {
 			return (effectId >= ID_REVERB1 && effectId <= ID_REVERB4);
 		}
 
+		//TODO: add all switchable effects
+
 		static void copyEffectNameAndTag(EffectId effectId, char *name, byte szName, char *tag,	byte szTag) {
 
 			switch (effectId) {
