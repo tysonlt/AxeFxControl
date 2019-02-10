@@ -20,10 +20,10 @@ void loop() {
 	Axe.update();
 }
 
-bool onEffectFilter(const PresetNumber number, const EffectId effectId, const bool effectPypassed) {
+bool onEffectFilter(const PresetNumber number, AxeEffect effect) {
 
 	//only show drives, reverbs, and delays
-	return AxeEffect::isDrive(effectId) || AxeEffect::isDelay(effectId) || AxeEffect::isReverb(effectId);
+	return effect.isDrive() || effect.isDelay() || effect.isReverb();
 
 }
 
@@ -37,10 +37,11 @@ void onEffectsReceived(PresetNumber number, AxePreset preset) {
 	snprintf(buf, sz, "Effects[%d]: ", preset.getEffectCount());
 	Serial.println(buf);
 
-	for (EffectIndex effect = 0; effect < preset.getEffectCount(); effect++) {
-		preset.copyEffectTag(effect, tag, tagSz);
-		char engaged = preset.isEffectBypassed(effect) ? ' ' : 'X';
-		snprintf(buf, sz, "%s [%c]", tag, engaged);
+	for (EffectIndex index = 0; index < preset.getEffectCount(); index++) {
+    AxeEffect effect = preset.getEffectAt(index);
+		effect.copyEffectTag(tag, tagSz);
+		char engaged = effect.isBypassed() ? ' ' : 'X';
+		snprintf(buf, sz, "%s(ch:%c) [%c]", tag, effect.getChannelChar(), engaged);
 		Serial.println(buf);
 	}
 

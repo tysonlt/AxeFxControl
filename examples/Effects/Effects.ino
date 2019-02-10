@@ -34,20 +34,19 @@ void onPresetChange(AxePreset preset) {
 
 	preset.copyPresetName(buf, sz);
 	Serial.println(buf);
-	Serial.println("Effects:");
+
 	const size_t tagSz = 10;
 	char tag[tagSz];
 
-	for (EffectIndex effect = 0; effect < preset.getEffectCount(); effect++) {
-		preset.copyEffectTag(effect, tag, tagSz);
-		bool bypassed = preset.isEffectBypassed(effect);
-		snprintf(buf, sz, "%s [%c]", tag, bypassed ? ' ' : 'X');
+	snprintf(buf, sz, "Effects[%d]: ", preset.getEffectCount());
+	Serial.println(buf);
+
+	for (EffectIndex index = 0; index < preset.getEffectCount(); index++) {
+    AxeEffect effect = preset.getEffectAt(index);
+		effect.copyEffectTag(tag, tagSz);
+		char engaged = effect.isBypassed() ? ' ' : 'X';
+		snprintf(buf, sz, "%s(ch:%c) [%c]", tag, effect.getChannelChar(), engaged);
 		Serial.println(buf);
-
-		EffectId effectId = preset.getEffectId(effect);
-		bypassed ? Axe.enableEffect(effectId) : Axe.disableEffect(effectId);
 	}
-
-	Serial.println();
 
 }

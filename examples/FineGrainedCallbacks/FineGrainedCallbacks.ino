@@ -35,16 +35,19 @@ void onSceneName(SceneNumber number, const char *name, const byte length) {
 //if you want the entire preset.
 void onEffectsReceived(PresetNumber number, AxePreset preset) {
 
-	Serial.println("Effects:");
 	const size_t tagSz = 10;
 	char tag[tagSz];
-	const size_t sz = 10; 
+	const size_t sz = 25; 
 	char buf[sz]; 
-	for (EffectIndex effect = 0; effect < preset.getEffectCount(); effect++) {
-		preset.copyEffectTag(effect, tag, tagSz);
-		char engaged = preset.isEffectBypassed(effect) ? ' ' : 'X';
-		snprintf(buf, sz, "%s [%c]", tag, engaged);
+
+	snprintf(buf, sz, "Effects[%d]: ", preset.getEffectCount());
+	Serial.println(buf);
+
+	for (EffectIndex index = 0; index < preset.getEffectCount(); index++) {
+    AxeEffect effect = preset.getEffectAt(index);
+		effect.copyEffectTag(tag, tagSz);
+		char engaged = effect.isBypassed() ? ' ' : 'X';
+		snprintf(buf, sz, "%s(ch:%c) [%c]", tag, effect.getChannelChar(), engaged);
 		Serial.println(buf);
 	}
-
 }
