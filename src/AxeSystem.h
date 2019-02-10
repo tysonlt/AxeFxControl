@@ -23,7 +23,7 @@ typedef void (*TunerStatusCallback)(const bool);
 typedef void (*TunerDataCallback)(const char *, const byte, const byte);
 typedef void (*LooperStatusCallback)(AxeLooper);
 typedef bool (*SysexPluginCallback)(const byte*, const byte);
-typedef bool (*EffectFilterCallback)(const PresetNumber, const EffectId, const bool);
+typedef bool (*EffectFilterCallback)(const PresetNumber, const AxeEffect);
 
 struct Version {
 	byte major, minor;
@@ -177,7 +177,7 @@ class AxeSystem {
 		void callTunerStatusCallback(bool enabled);
 		void callLooperStatusCallback(AxeLooper*);
 		bool callSysexPluginCallback(const byte*, const byte); 
-		bool callEffectFilterCallback(const PresetNumber, const EffectId, const bool); 
+		bool callEffectFilterCallback(const PresetNumber, AxeEffect); 
 
 		bool isValidPresetNumber(const PresetNumber preset);
 		bool isValidSceneNumber(const SceneNumber scene); 

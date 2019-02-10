@@ -128,10 +128,10 @@ bool AxeSystem::callSysexPluginCallback(const byte *sysex, const byte length) {
 	}
 }
 
-bool AxeSystem::callEffectFilterCallback(const PresetNumber number, const EffectId effectId, const bool isBypassed) {
+bool AxeSystem::callEffectFilterCallback(const PresetNumber number, AxeEffect effect) {
 	if (NULL != _effectFilterCallback) {
-		return (_effectFilterCallback)(number, effectId, isBypassed);
+		return (_effectFilterCallback)(number, effect);
 	} else {
-		return AxeEffect::isSwitchable(effectId); //use default filter
+		return effect.isSwitchable(); //use default filter
 	}
 }
