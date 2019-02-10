@@ -183,9 +183,12 @@ void AxeSystem::processEffectDump(const byte *sysex, const byte length) {
     bool bypassed = !!(status & 1); 
     if (msb) effectId |= 128;
 
-		effectIds[count] = effectId;
-		effectBypassed[count] = bypassed;
-		count++;
+		//NOTE assumes preset number has already been received
+		if (callEffectFilterCallback(_incomingPreset.getPresetNumber(), effectId, bypassed)) {
+			effectIds[count] = effectId;
+			effectBypassed[count] = bypassed;
+			count++;
+		}
 
 	}
 

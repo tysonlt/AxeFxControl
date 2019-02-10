@@ -48,9 +48,13 @@ void AxeSystem::registerSysexPluginCallback(SysexPluginCallback func) {
 	_sysexPluginCallback = func;
 }
 
+void AxeSystem::registerEffectFilterCallback(EffectFilterCallback func) {
+	_effectFilterCallback = func;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
-void AxeSystem::callConnectionStatusCallback(bool connected)  {
+void AxeSystem::callConnectionStatusCallback(const bool connected)  {
 	if (NULL != _connectionStatusCallback) {
 		(_connectionStatusCallback)(connected);
 	}
@@ -62,19 +66,19 @@ void AxeSystem::callTapTempoCallback() {
 	}
 }
 
-void AxeSystem::callPresetChangingCallback(PresetNumber number) {
+void AxeSystem::callPresetChangingCallback(const PresetNumber number) {
 	if (NULL != _presetChangingCallback) {
 		(_presetChangingCallback)(number);
 	}
 }
 
-void AxeSystem::callPresetNameCallback(PresetNumber number, const char *name, const byte length) {
+void AxeSystem::callPresetNameCallback(const PresetNumber number, const char *name, const byte length) {
 	if (NULL != _presetNameCallback) {
 		(_presetNameCallback)(number, name, length);
 	}
 }
 
-void AxeSystem::callSceneNameCallback(SceneNumber number, const char* name, const byte length) {
+void AxeSystem::callSceneNameCallback(const SceneNumber number, const char* name, const byte length) {
 	if (NULL != _sceneNameCallback) {
 		(_sceneNameCallback)(number, name, length);
 	}
@@ -82,7 +86,7 @@ void AxeSystem::callSceneNameCallback(SceneNumber number, const char* name, cons
 
 void AxeSystem::callEffectsReceivedCallback(AxePreset *preset) {
 	if (NULL != _effectsReceivedCallback) {
-		(_effectsReceivedCallback)(*preset);
+		(_effectsReceivedCallback)(preset->getPresetNumber(), *preset);
 	}
 }
 
@@ -110,7 +114,7 @@ void AxeSystem::callLooperStatusCallback(AxeLooper *looper) {
 	}
 }
     
-void AxeSystem::callTunerStatusCallback(bool enabled) {
+void AxeSystem::callTunerStatusCallback(const bool enabled) {
 	if (NULL != _tunerStatusCallback) {
 		(_tunerStatusCallback)(enabled);
 	}
@@ -121,5 +125,13 @@ bool AxeSystem::callSysexPluginCallback(const byte *sysex, const byte length) {
 		return (_sysexPluginCallback)(sysex, length);
 	} else {
 		return false; 
+	}
+}
+
+bool AxeSystem::callEffectFilterCallback(const PresetNumber number, const EffectId effectId, const bool isBypassed) {
+	if (NULL != _effectFilterCallback) {
+		return (_effectFilterCallback)(number, effectId, isBypassed);
+	} else {
+		return AxeEffect::isSwitchable(effectId); //use default filter
 	}
 }

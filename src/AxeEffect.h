@@ -202,6 +202,18 @@ enum EFFECT_ID_ {
 
 	public:
 
+		static bool isDrive(const EffectId effectId) {
+			return (effectId >= ID_FUZZ1 && effectId <= ID_FUZZ4);
+		}
+
+		static bool isDelay(const EffectId effectId) {
+			return (effectId >= ID_DELAY1 && effectId <= ID_DELAY4);
+		}
+
+		static bool isReverb(const EffectId effectId) {
+			return (effectId >= ID_REVERB1 && effectId <= ID_REVERB4);
+		}
+
 		static void copyEffectNameAndTag(EffectId effectId, char *name, byte szName, char *tag,	byte szTag) {
 
 			switch (effectId) {

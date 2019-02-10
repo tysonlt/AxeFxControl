@@ -11,18 +11,19 @@ typedef int16_t PresetNumber;
 typedef int8_t SceneNumber;
 typedef unsigned long millis_t;
 
-typedef void (*ConnectionStatusCallback)(bool);
+typedef void (*ConnectionStatusCallback)(const bool);
 typedef void (*TapTempoCallback)();
-typedef void (*PresetChangingCallback)(PresetNumber);
-typedef void (*PresetNameCallback)(PresetNumber, const char*, const byte);
-typedef void (*SceneNameCallback)(SceneNumber, const char*, const byte);
-typedef void (*EffectsReceivedCallback)(PresetNumber number, AxePreset);
+typedef void (*PresetChangingCallback)(const PresetNumber);
+typedef void (*PresetNameCallback)(const PresetNumber, const char*, const byte);
+typedef void (*SceneNameCallback)(const SceneNumber, const char*, const byte);
+typedef void (*EffectsReceivedCallback)(const PresetNumber, AxePreset);
 typedef void (*PresetChangeCallback)(AxePreset);
 typedef void (*SystemChangeCallback)();
-typedef void (*TunerStatusCallback)(bool);
+typedef void (*TunerStatusCallback)(const bool);
 typedef void (*TunerDataCallback)(const char *, const byte, const byte);
 typedef void (*LooperStatusCallback)(AxeLooper);
 typedef bool (*SysexPluginCallback)(const byte*, const byte);
+typedef bool (*EffectFilterCallback)(const PresetNumber, const EffectId, const bool);
 
 struct Version {
 	byte major, minor;
@@ -97,6 +98,7 @@ class AxeSystem {
 		void registerTunerStatusCallback(TunerStatusCallback);
 		void registerLooperStatusCallback(LooperStatusCallback);
 		void registerSysexPluginCallback(SysexPluginCallback); //return true to halt further processing
+		void registerEffectFilterCallback(EffectFilterCallback); //return false to remove from the effect list
 
 	public:
 
@@ -163,11 +165,11 @@ class AxeSystem {
 		void requestSceneName(const SceneNumber number = -1);
 		void requestSceneNumber();
 		void requestEffectDetails();
-		void callConnectionStatusCallback(bool connected);	
+		void callConnectionStatusCallback(const bool connected);	
 		void callTapTempoCallback();
-		void callPresetChangingCallback(PresetNumber number);
-		void callPresetNameCallback(PresetNumber, const char*, const byte);
-		void callSceneNameCallback(SceneNumber, const char*, const byte);
+		void callPresetChangingCallback(const PresetNumber);
+		void callPresetNameCallback(const PresetNumber, const char*, const byte);
+		void callSceneNameCallback(const SceneNumber, const char*, const byte);
 		void callEffectsReceivedCallback(AxePreset*);
 		void callPresetChangeCallback(AxePreset*);
 		void callSystemChangeCallback();
@@ -175,6 +177,7 @@ class AxeSystem {
 		void callTunerStatusCallback(bool enabled);
 		void callLooperStatusCallback(AxeLooper*);
 		bool callSysexPluginCallback(const byte*, const byte); 
+		bool callEffectFilterCallback(const PresetNumber, const EffectId, const bool); 
 
 		bool isValidPresetNumber(const PresetNumber preset);
 		bool isValidSceneNumber(const SceneNumber scene); 
@@ -216,7 +219,8 @@ class AxeSystem {
 		TunerDataCallback 				_tunerDataCallback;
 		LooperStatusCallback 			_looperStatusCallback;
 		SysexPluginCallback 			_sysexPluginCallback;
-	
+		EffectFilterCallback			_effectFilterCallback;
+
 		const char *_notes[12] = {"A ", "Bb", "B ", "C ", "C#", "D ", "Eb", "E ", "F ", "F#", "G ", "Ab"};
 
 };
