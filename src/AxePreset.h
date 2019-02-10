@@ -47,6 +47,7 @@ class AxePreset {
 		int _scene = -1;
 		int _preset = -1;
 		int _effectCount = -1;	
+		bool _presetNameReceived = false, _sceneNameReceived = false;
 		EffectId _effectIdList[MAX_EFFECTS];
 		bool _bypassedList[MAX_EFFECTS];
 		char _presetName[MAX_PRESET_NAME + 1];
