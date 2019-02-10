@@ -58,7 +58,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 
 		case SYSEX_REQUEST_SCENE_INFO: {
 			//TODO during fast changes, can we guarantee this is for current preset?
-			if (!_incomingPreset.isComplete()) {
+			if (!_incomingPreset.isComplete()) { //TODO is this necessary given guard in preset name case?
 				const SceneNumber number = sysex[6] + 1;
 				const byte max = AxePreset::MAX_SCENE_NAME + 1;
 				parseName(sysex, length, 7, buffer, max);
@@ -73,7 +73,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 
 		case SYSEX_REQUEST_SCENE_NUMBER: {
 			//TODO during fast changes, can we guarantee this is for current preset?
-			if (!_incomingPreset.isComplete()) {
+			if (!_incomingPreset.isComplete()) { //TODO is this necessary given guard in preset name case?
 				_incomingPreset.setSceneNumber(sysex[6] + 1);
 				checkIncomingPreset();
 			}
@@ -82,7 +82,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 
 		case SYSEX_EFFECT_DUMP: {
 			//TODO during fast changes, can we guarantee this is for current preset?
-			if (!_incomingPreset.isComplete()) {
+			if (!_incomingPreset.isComplete()) { //TODO is this necessary given guard in preset name case?
 				processEffectDump(sysex, length);
 				callEffectsReceivedCallback(&_incomingPreset);
 				checkIncomingPreset();
