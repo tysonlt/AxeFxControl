@@ -65,11 +65,14 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 
 		case SYSEX_REQUEST_PRESET_INFO: {
 			_lastRefresh = millis();
-			int number = midiBytesToInt(sysex[6], sysex[7]);
+			const PresetNumber number = midiBytesToInt(sysex[6], sysex[7]);
+			const byte max = AxePreset::MAX_PRESET_NAME + 1;
 			if (true/*!_presetChanging || number == _preset.getPresetNumber()*/) {
-				parseName(sysex, length, 8, buffer, AxePreset::MAX_PRESET_NAME);
-				_incomingPreset.setPresetName(buffer); 
+				parseName(sysex, length, 8, buffer, max);
 				_incomingPreset.setPresetNumber(number);
+				_incomingPreset.setPresetName(buffer); 
+				_incomingPreset.copyPresetName(buffer, max); //copy back out in case preset changed it
+				callPresetNameCallback(number, (const char*) buffer, max);
 				requestSceneName();
 				requestEffectDetails();
 				checkIncomingPreset();
@@ -78,9 +81,13 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 
 		case SYSEX_REQUEST_SCENE_INFO: {
-			parseName(sysex, length, 7, buffer, AxePreset::MAX_SCENE_NAME);
+			const SceneNumber number = sysex[6] + 1;
+			const byte max = AxePreset::MAX_SCENE_NAME + 1;
+			parseName(sysex, length, 7, buffer, max);
+			_incomingPreset.setSceneNumber(number);
 			_incomingPreset.setSceneName(buffer); 
-			_incomingPreset.setSceneNumber(sysex[6] + 1);
+			_incomingPreset.copySceneName(buffer, max); //copy back out in case preset changed it
+			callSceneNameCallback(number, (const char*) buffer, max);
 			checkIncomingPreset();
 			break;
 		}
@@ -93,6 +100,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 
 		case SYSEX_EFFECT_DUMP: {
 			processEffectDump(sysex, length);
+			callEffectsReceivedCallback(&_incomingPreset);
 			checkIncomingPreset();
 			break;
 		}
@@ -149,6 +157,14 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 
 	}; //end case
 		
+}
+
+void AxeSystem::checkIncomingPreset() {
+  if (_incomingPreset.isComplete()) {
+    _presetChanging = false;
+    _preset = _incomingPreset;
+    callPresetChangeCallback(&_preset);
+  }
 }
 
 // TODO: need to prioritise which effects are shown in order

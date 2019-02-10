@@ -8,6 +8,18 @@ void AxeSystem::registerPresetChangingCallback(PresetChangingCallback func) {
 	_presetChangingCallback = func;
 }
 
+void AxeSystem::registerPresetNameCallback(PresetNameCallback func) {
+	_presetNameCallback = func;
+}
+
+void AxeSystem::registerSceneNameCallback(SceneNameCallback func) {
+	_sceneNameCallback = func;
+}
+
+void AxeSystem::registerEffectsReceivedCallback(EffectsReceivedCallback func) {
+	_effectsReceivedCallback = func;
+}
+
 void AxeSystem::registerPresetChangeCallback(PresetChangeCallback func) {
 	_presetChangeCallback = func;
 }
@@ -50,9 +62,27 @@ void AxeSystem::callTapTempoCallback() {
 	}
 }
 
-void AxeSystem::callPresetChangingCallback(PresetNumber presetNumber) {
+void AxeSystem::callPresetChangingCallback(PresetNumber number) {
 	if (NULL != _presetChangingCallback) {
-		(_presetChangingCallback)(presetNumber);
+		(_presetChangingCallback)(number);
+	}
+}
+
+void AxeSystem::callPresetNameCallback(PresetNumber number, const char *name, const byte length) {
+	if (NULL != _presetNameCallback) {
+		(_presetNameCallback)(number, name, length);
+	}
+}
+
+void AxeSystem::callSceneNameCallback(SceneNumber number, const char* name, const byte length) {
+	if (NULL != _sceneNameCallback) {
+		(_sceneNameCallback)(number, name, length);
+	}
+}
+
+void AxeSystem::callEffectsReceivedCallback(AxePreset *preset) {
+	if (NULL != _effectsReceivedCallback) {
+		(_effectsReceivedCallback)(*preset);
 	}
 }
 

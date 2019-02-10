@@ -65,14 +65,6 @@ void AxeSystem::checkTimers() {
 	
 }
 
-void AxeSystem::checkIncomingPreset() {
-  if (_incomingPreset.isComplete()) {
-    _presetChanging = false;
-    _preset = _incomingPreset;
-    callPresetChangeCallback(&_preset);
-  }
-}
-
 void AxeSystem::setChanging() {
 	_incomingPreset.reset();
 	_presetChanging = true;

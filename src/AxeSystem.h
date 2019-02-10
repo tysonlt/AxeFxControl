@@ -14,6 +14,9 @@ typedef unsigned long millis_t;
 typedef void (*ConnectionStatusCallback)(bool);
 typedef void (*TapTempoCallback)();
 typedef void (*PresetChangingCallback)(PresetNumber);
+typedef void (*PresetNameCallback)(PresetNumber, const char*, const byte);
+typedef void (*SceneNameCallback)(SceneNumber, const char*, const byte);
+typedef void (*EffectsReceivedCallback)(PresetNumber number, AxePreset);
 typedef void (*PresetChangeCallback)(AxePreset);
 typedef void (*SystemChangeCallback)();
 typedef void (*TunerStatusCallback)(bool);
@@ -44,6 +47,8 @@ class AxeSystem {
 		void requestPresetDetails() { requestPresetName(); }
 		void requestFirmwareVersion();		
 		void requestTempo();
+		void requestLooperStatus();
+		void pressLooperButton(const LooperButton);
 		void setTempo(const Tempo tempo);
 		void sendTap();
 		void toggleTuner();
@@ -51,8 +56,6 @@ class AxeSystem {
 		void disableTuner();
 		void enableEffect(const EffectId);
 		void disableEffect(const EffectId);
-		void requestLooperStatus();
-		void pressLooperButton(const LooperButton);
 
 		//for generic commands
 		void sendCommand(const byte command);
@@ -85,6 +88,9 @@ class AxeSystem {
 		void registerConnectionStatusCallback(ConnectionStatusCallback);
 		void registerPresetChangingCallback(PresetChangingCallback);
 		void registerPresetChangeCallback(PresetChangeCallback);
+		void registerPresetNameCallback(PresetNameCallback);
+		void registerSceneNameCallback(SceneNameCallback);
+		void registerEffectsReceivedCallback(EffectsReceivedCallback); 
 		void registerSystemChangeCallback(SystemChangeCallback);
 		void registerTapTempoCallback(TapTempoCallback);
 		void registerTunerDataCallback(TunerDataCallback);
@@ -157,10 +163,12 @@ class AxeSystem {
 		void requestSceneName(const SceneNumber number = -1);
 		void requestSceneNumber();
 		void requestEffectDetails();
-
 		void callConnectionStatusCallback(bool connected);	
 		void callTapTempoCallback();
 		void callPresetChangingCallback(PresetNumber number);
+		void callPresetNameCallback(PresetNumber, const char*, const byte);
+		void callSceneNameCallback(SceneNumber, const char*, const byte);
+		void callEffectsReceivedCallback(AxePreset*);
 		void callPresetChangeCallback(AxePreset*);
 		void callSystemChangeCallback();
 		void callTunerDataCallback(const char *note, const byte string, const byte fineTune);
@@ -199,6 +207,9 @@ class AxeSystem {
 		ConnectionStatusCallback 	_connectionStatusCallback;
 		TapTempoCallback 					_tapTempoCallback;
 		PresetChangingCallback 		_presetChangingCallback;
+		PresetNameCallback				_presetNameCallback;
+		SceneNameCallback					_sceneNameCallback;
+		EffectsReceivedCallback		_effectsReceivedCallback;
 		PresetChangeCallback 			_presetChangeCallback;
 		SystemChangeCallback 			_systemChangeCallback;
 		TunerStatusCallback 			_tunerStatusCallback;
