@@ -27,7 +27,6 @@ void loop() {
 			tempo = AxeSystem::TEMPO_MIN;
 		}
 		Axe.setTempo(tempo);
-
 	}
   
 	Axe.update();
