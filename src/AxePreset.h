@@ -2,11 +2,12 @@
 
 #include <Arduino.h>
 #include "AxeEffect.h"
-#include "AxeLooper.h"
 
 typedef byte EffectIndex;
 
 class AxePreset {
+
+	friend class AxeSystem;
 
 	public:
 
@@ -20,13 +21,8 @@ class AxePreset {
 		void copyPresetName(char *buffer, size_t max);
 		void copySceneName(char *buffer, size_t max);
 
-		void setEffects(const EffectId effectIdList[], const bool bypassedList[], const unsigned count);
-		void copyEffectName(EffectIndex index, char *buffer, size_t max);
-		void copyEffectTag(EffectIndex index, char *buffer, size_t max);
-		bool isEffectSwitchable(EffectIndex index);
-		bool isEffectBypassed(EffectIndex index);
 		unsigned getEffectCount() { return _effectCount; }
-		EffectId getEffectId(EffectIndex index) { return _effectIdList[index] ;}
+		AxeEffect getEffectAt(const EffectIndex index) { return _effects[index]; }
 
 		void reset();	
 		bool isComplete();
@@ -44,14 +40,15 @@ class AxePreset {
 		const static byte EFFECT_NAME_SIZE 	= 21;
 		const static byte EFFECT_TAG_SIZE 	= 6;
 
+		void setEffects(const AxeEffect effects[], const unsigned count);
+
 		int _scene = -1;
 		int _preset = -1;
 		int _effectCount = -1;	
 		bool _presetNameReceived = false, _sceneNameReceived = false;
-		EffectId _effectIdList[MAX_EFFECTS];
-		bool _bypassedList[MAX_EFFECTS];
 		char _presetName[MAX_PRESET_NAME + 1];
 		char _sceneName[MAX_SCENE_NAME + 1];
+		AxeEffect _effects[MAX_EFFECTS];
 		
 };
 

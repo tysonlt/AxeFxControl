@@ -1,5 +1,4 @@
 #include "AxePreset.h"
-#include "AxeSystem.h"
 
 void AxePreset::setPresetName(char *buffer) {
 	snprintf(_presetName, MAX_PRESET_NAME+1, buffer);
@@ -11,11 +10,10 @@ void AxePreset::setSceneName(char *buffer) {
 	_sceneNameReceived = true;
 }
 
-void AxePreset::setEffects(const EffectId effectIdList[], const bool bypassedList[], const unsigned count) {
+void AxePreset::setEffects(const AxeEffect effects[], const unsigned count) {
 	_effectCount = 0;
 	for (unsigned i=0; i < count && i < MAX_EFFECTS; i++) {
-		_effectIdList[_effectCount] = effectIdList[i];
-		_bypassedList[_effectCount] = bypassedList[i];
+		_effects[_effectCount] = effects[i];
 		_effectCount++;
 	}
 }
@@ -28,30 +26,9 @@ void AxePreset::copySceneName(char *buffer, size_t max) {
 	snprintf(buffer, max, _sceneName);
 }
 
-void AxePreset::copyEffectName(EffectIndex index, char *buffer, size_t max) { 	
-	char tag[0];
-	EffectId effectId = _effectIdList[index];
-	AxeEffect::copyEffectNameAndTag(effectId, buffer, max, tag, 0);
-}
-
-void AxePreset::copyEffectTag(EffectIndex index, char *buffer, size_t max) { 	
-	char name[0];
-	EffectId effectId = _effectIdList[index];
-	AxeEffect::copyEffectNameAndTag(effectId, name, 0, buffer, max);
-}
-
-bool AxePreset::isEffectSwitchable(EffectIndex index) {
-	EffectId effectId = _effectIdList[index];
-	return AxeEffect::isSwitchable(effectId);
-}
-
-bool AxePreset::isEffectBypassed(EffectIndex index) {
-	return _bypassedList[index];
-}
-
 void AxePreset::reset() {
 	_scene = -1;
-	_preset = -1;
+	_preset = -1; 
 	_effectCount = -1;	
 	_presetNameReceived = false;
 	_sceneNameReceived = false;
