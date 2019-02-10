@@ -22,8 +22,7 @@ void AxeSystem::refresh(bool ignoreThrottle) {
 	unsigned long now = millis();
   if (ignoreThrottle || (!_tunerEngaged && (now - _lastRefresh) > _refreshThrottle)) {
 		_lastRefresh = now;
-		setChanging();
-		requestPresetName();
+		onPresetChange(_preset.getPresetNumber()); //trigger a full read
 		requestTempo();
 		requestLooperStatus();
   } else {
@@ -63,11 +62,6 @@ void AxeSystem::checkTimers() {
     callTunerStatusCallback(_tunerEngaged);
   }
 	
-}
-
-void AxeSystem::setChanging() {
-	_incomingPreset.reset();
-	_presetChanging = true;
 }
 
 void AxeSystem::intToMidiBytes(const int number, byte *byte1, byte *byte2) {

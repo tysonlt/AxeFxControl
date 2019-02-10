@@ -78,8 +78,7 @@ bool AxeSystem::filterChannel(byte data) {
 void AxeSystem::sendPresetChange(const PresetNumber number) {
 	sendControlChange(BANK_CHANGE_CC, number / 128, _midiChannel);
 	sendProgramChange(number % 128, _midiChannel);
-	setChanging();
-	callPresetChangingCallback(number);
+	onPresetChange(number);
 }
 
 //One-based channel
