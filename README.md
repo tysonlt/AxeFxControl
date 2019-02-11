@@ -2,7 +2,7 @@
 
 An Arduino library for interfacing with the AxeFX. 
 
-This is a 100% complete implementation of the AxeFX III 3rd party MIDI spec.
+This is a 100% complete implementation of the (AxeFX III 3rd party MIDI spec.)[http://www.fractalaudio.com/downloads/misc/Axe-Fx%20III%20MIDI%20for%203rd%20Party%20Devices.pdf]
 
 So far I have tested it with my AFX3, and it is based solely on that. The 2 has different messages and I don't have one to test with.
 
