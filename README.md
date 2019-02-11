@@ -1,6 +1,6 @@
 # AxeFxControl
 
-An Arduino library for interfacing with the AxeFX. 
+An Arduino library for interfacing with the AxeFX III. 
 
 This is a 100% complete implementation of the [AxeFX III 3rd party MIDI spec.](http://www.fractalaudio.com/downloads/misc/Axe-Fx%20III%20MIDI%20for%203rd%20Party%20Devices.pdf)
 
@@ -26,13 +26,17 @@ Implemented are:
 * Add custom sysex handlers with option to override normal processing
 * Add custom effect list filters to change which effects will be displayed
 
-Currently tested for the AxeFX 3 - I don't have a 2 so I can't test it - contributers welcome!
+Currently tested for the AxeFX III. The AxeFX II uses different messages, and I don't have a unit to test with.
 
 # Documentation
 
 ## Quick Start
 
-To get started quickly, just check out the examples. They contain a complete reference for the API (in fact they double as the unit tests!) Start with PresetDetails.ino, Refresh.ino, and SwitchPreset.ino.
+To get started quickly, just check out the examples. They contain a complete reference for the API (in fact they double as the unit tests!) Start with:
+
+* [SwitchPreset.ino](examples/SwitchPreset/SwitchPreset.ino)
+* [PresetDetails.ino](examples/PresetDetails/PresetDetails.ino)
+* [Refresh.ino](examples/Refresh/Refresh.ino)
 
 ## Classes
 
