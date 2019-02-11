@@ -2,6 +2,32 @@
 
 An Arduino library for interfacing with the AxeFX. 
 
+This is a 100% complete implementation of the AxeFX III 3rd party MIDI spec.
+
+So far I have tested it with my AFX3, and it is based solely on that. The 2 has different messages and I don't have one to test with.
+
+Implemented are:
+
+* Preset change
+* Preset increment/decrement with rollover
+* Scene change
+* Scene increment/decrement with rollover
+* Display preset name and number
+* Display scene name and number
+* Effect channel change
+* Retrieve list of effect blocks with channel and bypass status (filters out non-effects such as input/output etc)
+* Effect bypass
+* Tuner control
+* Looper status and control
+* Realtime tuner data
+* Detects preset change from front panel
+* Send and receive tap tempo events
+* Get and set tempo value
+* Configurable auto-refresh
+* Send custom PC/CC/SysEx
+* Add custom sysex handlers with option to override normal processing
+* Add custom effect list filters to change which effects will be displayed
+
 Currently tested for the AxeFX 3 - I don't have a 2 so I can't test it - contributers welcome!
 
 # Documentation
