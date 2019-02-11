@@ -27,6 +27,10 @@ class AxeSystem {
 
 	public:
 
+		// To use this class, call 'AxeSystem Axe;' at the top of your sketch, and then
+		// call 'Axe.init(Serial1);' in setup(). (Or whatever your hardware serial is.)
+		// Optionally register a notification callback, optionally turn on auto-refresh, 
+		// and then just call 'Axe.update();' in the main loop and you are ready to roll.
 		AxeSystem() {
 			_looper.setAxeSystem(this);
 		}
@@ -48,19 +52,17 @@ class AxeSystem {
 		// Pass true to refresh immediately, regardless of when the last sysex message was recei ved.   
 		void refresh(bool ignoreThrottle = false);
 
-		//
 		// These are the commands you can send to the Axe.
 		// Notice that you cannot directly query the scene and effects. 
 		// These must be fetched as part of a preset details request.
 		// This helps maintain a proper state in case of fast preset changes.
 		//
-		// To get the information back, you should register a callback.
-		// Call registerPresetChangeCallback() to be notified of preset details.
+		// To get the results back, you should register a callback.
+		// Call registerPresetChangeCallback() to be notified of preset changes.
 		//
-		// Alternatively, just poll isPresetChanging() after sending a command and
-		// then call get getPreset(). This method will return NULL until the preset 
-		// is ready if you forget to check.
-		//
+		// Alternatively, you can call getPreset() any time you want, but it will
+		// not reflect the next preset until isPresetReady() returns true. This
+		// is not the best way to go. You should register a callback instead.
 		void requestPresetDetails() { requestPresetName(); }
 		void requestFirmwareVersion();		
 		void requestTempo();
@@ -100,8 +102,10 @@ class AxeSystem {
 		void sendSysEx(const byte *sysex, const byte length);
 
 		// These two methods tell you whether the preset is in the middle of
-		// changing. During this time, sysex data is being read from the Axe
-		// so you can't retrieve the current preset. 
+		// changing. (They are just the inverse of each other.) During this time, 
+		// sysex data is being read from the Axe, so the result will still reflect
+		// the old preset until isPresetReady() returns true, or isPresetChanging()
+		// returns false. You are better of registering a preset change callback!
 		bool isPresetReady() { return !_presetChanging; }
 		bool isPresetChanging() { return _presetChanging; }
 
@@ -136,7 +140,7 @@ class AxeSystem {
 		// calling begin() on the Serial object before it is actually ready. Perhaps this
 		// is only a problem with cheap clones, but the default 1000ms pause solves a lot
 		// of stability problems, so it is safe to leave it in. Show a pretty pattern on 
-		// your screen or something.
+		// your screen or something, or set to 0 to disable altogether.
 		void setStartupDelay(const millis_t ms) { _startupDelay = ms; }
 
 		// These are the various state change callbacks you can register.
@@ -189,7 +193,8 @@ class AxeSystem {
 		void registerEffectsReceivedCallback(EffectsReceivedCallback); 
 		
 		// Called when a global parameter changes... well, when the tempo changes. 
-		// That's all we know about!
+		// That's all we know about! Will also be called when we read the firmware 
+		// version at startup.
 		void registerSystemChangeCallback(SystemChangeCallback);
 
 		// The Axe sends real-time pulses in time with the tempo. 
@@ -198,7 +203,7 @@ class AxeSystem {
 		void registerTapTempoCallback(TapTempoCallback);
 		
 		// Tuner data comes flooding in when the tuner is engaged.
-		// String goes from 1 to 6, and finetune from 0-127, where 63 is in tune.
+		// String goes from 1 to 6, and finetune from 0-127, where 63 is in-tune.
 		// This requires Setup -> MIDI -> Realtime Sysex to be enabled on the Axe.
 		void registerTunerDataCallback(TunerDataCallback);
 
