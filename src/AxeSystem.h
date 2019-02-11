@@ -1,19 +1,10 @@
 #pragma once
 
 #include <Arduino.h>
-#include "AxePreset.h"
-#include "AxeEffect.h"
+#include "AxeTypes.h"
 #include "AxeLooper.h"
-#include "AxeFxControl.h"
-
-typedef byte Tempo;
-typedef int16_t PresetNumber;
-typedef int8_t SceneNumber;
-typedef unsigned long millis_t;
-
-struct Version {
-	byte major, minor;
-};
+#include "AxeEffect.h"
+#include "AxePreset.h"
 
 //
 // This is the main class you will interact with. There is no need to worry about any other classes.
@@ -305,7 +296,9 @@ class AxeSystem {
 		bool isValidSceneNumber(const SceneNumber scene); 
 		void intToMidiBytes(const int, byte*, byte*);
 		int midiBytesToInt(const byte, const byte);
-		bool filterChannel(byte message);
+		bool filterMidiChannel(byte message);
+
+		bool defaultEffectFilter(PresetNumber number, AxeEffect effect);
 
 		#ifdef AXE_DEBUG_SYSEX
 		void debugSysex(const byte *sysex, const byte length, const char *message);

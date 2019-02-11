@@ -1,26 +1,16 @@
 #pragma once
 
 #include <Arduino.h>
-
-typedef byte LooperStatus;
-
-enum LooperButton {
-	LooperRecord,
-	LooperPlay,
-	LooperUndo,
-	LooperOnce,
-	LooperReverse,
-	LooperHalfSpeed
-};
+#include "AxeTypes.h"
 
 class AxeSystem;
+
+// Ask the AxeSystem for this to control and read the looper.
 class AxeLooper {
 
 	public:
 
-		void setStatus(LooperStatus status) { _status = status; }
-		LooperStatus getStatus() { return _status; }
-
+		// These are your status methods. I don't think they require much explanation.
 		bool isRecord() 		{ return _status & LOOPER_RECORD; }
 		bool isPlay() 			{ return _status & LOOPER_PLAY; }
 		bool isOverdub() 		{ return _status & LOOPER_OVERDUB; }
@@ -28,7 +18,10 @@ class AxeLooper {
 		bool isReverse() 		{ return _status & LOOPER_REVERSE; }
 		bool isHalfSpeed() 	{ return _status & LOOPER_HALF_SPEED; }
 
-		//TODO: toggle
+		// These are the available virtual 'buttons' you can press.
+		// AxeFX 3 doesn't let you directly 'set' the state, you can
+		// only simulate pressing the button. Perhaps you could map
+		// a CC to directly set state if you needed that.
 		void record();
 		void play();
 		void undo();
@@ -36,9 +29,11 @@ class AxeLooper {
 		void reverse(); 
 		void halfSpeed();
 
-		void setAxeSystem(AxeSystem *axe) { _axe = axe; }
+	protected:
 
-	private:
+		friend class AxeSystem;
+
+		AxeLooper() {}
 
 		const static byte LOOPER_RECORD			= 1 << 0;
 		const static byte LOOPER_PLAY				= 1 << 1;
@@ -47,7 +42,12 @@ class AxeLooper {
 		const static byte LOOPER_REVERSE		= 1 << 4;
 		const static byte LOOPER_HALF_SPEED	= 1 << 5;
 
+		LooperStatus getStatus() { return _status; }
 		void pressButton(LooperButton);
+		void setStatus(LooperStatus status) { _status = status; }
+		void setAxeSystem(AxeSystem *axe) { _axe = axe; }
+
+	private:
 
 		LooperStatus _status;
 		AxeSystem *_axe = nullptr;
