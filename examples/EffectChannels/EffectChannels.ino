@@ -36,12 +36,15 @@ void onPresetChange(AxePreset preset) {
 
 		Channel channel = 0;
 		while (true) {
+			
 			effect.switchChannel(channel);
+			
 			Serial.println(effect.getChannelChar());
 			if (++channel >= effect.getChannelCount()) {
 				channel = 0;
 			}
 			delay(1000);
+			
 		}
 
 	}
