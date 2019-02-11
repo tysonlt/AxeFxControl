@@ -17,9 +17,7 @@ To get started quickly, just check out the examples. They contain a complete ref
 This is the main class you will interact with. There is no need to worry about 
 including any other classes.
 
-Create an instance of this in your main sketch, above the setup function, like this: 
-AxeSystem Axe;
-
+Create an instance of this in your main sketch, above the setup function. 
 Then just use it anywhere in your code. Check the examples for how to set it up.
 
 The examples also function as unit tests, and as such they (should) cover every 
