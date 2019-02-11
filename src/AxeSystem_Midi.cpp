@@ -5,13 +5,15 @@
 #define SER_SEND _serial->write
 
 void AxeSystem::begin(HardwareSerial& serial, byte midiChannel) {	
-	if (_startupDelay > 0) { 
-		delay(_startupDelay);
+	if (!_midiReady) {
+		if (_startupDelay > 0) { 
+			delay(_startupDelay);
+		}
+		setMidiChannel(midiChannel);
+		_serial = &serial;
+		_serial->begin(MIDI_BAUD);
+		_midiReady = true;
 	}
-	setMidiChannel(midiChannel);
-	_serial = &serial;
-	_serial->begin(MIDI_BAUD);
-	_midiReady = true;
 }
 
 void AxeSystem::readMidi() {
