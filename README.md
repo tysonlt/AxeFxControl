@@ -28,6 +28,9 @@ Implemented are:
 
 Currently tested for the AxeFX III. The AxeFX II uses different messages, and I don't have a unit to test with.
 
+This project was heavily inspired by the [FCBInfinity project](https://github.com/mackatack/FCBInfinity). Without 
+that code as an early reference, this library would never have gotten off the ground.
+
 # Documentation
 
 ## Quick Start
