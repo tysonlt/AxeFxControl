@@ -40,7 +40,7 @@ void AxeSystem::readMidi() {
 			switch (data & 0xF0) {
 
 				case ControlChange: {
-					if (filterChannel(data)) {
+					if (filterMidiChannel(data)) {
 						while (SER_AVLB < 2); //assume rest of message is in buffer or coming
 						if (BANK_CHANGE_CC == SER_READ) {
 							_bank = SER_READ;
@@ -50,7 +50,7 @@ void AxeSystem::readMidi() {
 				}
 
 				case ProgramChange: {
-					if (filterChannel(data)) {
+					if (filterMidiChannel(data)) {
 						while (SER_AVLB < 1); //assume rest of message is in buffer or coming
 						byte patch = SER_READ;
 						onPresetChange(_bank * 128 + patch);
@@ -73,7 +73,7 @@ void AxeSystem::readMidi() {
 
 }
 
-bool AxeSystem::filterChannel(byte data) {
+bool AxeSystem::filterMidiChannel(byte data) {
 	return _midiChannel == MIDI_CHANNEL_OMNI || _midiChannel == ((data & 0x0F) + 1);
 }
 
