@@ -51,7 +51,7 @@ the library.
 
 		// Declare an instance of this class above your setup() function.
 		// Optionally register a notification callback, optionally turn on auto-refresh, 
-		// and then just call 'Axe.update();' in the main loop and you are ready to roll.
+		// and then just call Axe.update() in the main loop and you are ready to roll.
 		AxeSystem();
 
 		// You must call begin with a hardware serial such as Serial1. Optionally set the 
@@ -129,7 +129,7 @@ the library.
 		// changing. (They are just the inverse of each other.) During this time, 
 		// sysex data is being read from the Axe, so the result will still reflect
 		// the old preset until isPresetReady() returns true, or isPresetChanging()
-		// returns false. You are better of registering a preset change callback!
+		// returns false. You are better off registering a preset change callback!
 		bool isPresetReady();
 		bool isPresetChanging();
 
@@ -241,3 +241,98 @@ the library.
 		// See the typedef documentation above to learn how they work.
 		void registerSysexPluginCallback(SysexPluginCallback); 
 		void registerEffectFilterCallback(EffectFilterCallback); 
+
+### AxePreset
+
+This class represents the current preset. You can get it by calling getPreset() on AxeSystem,
+or better yet, register a preset change callback.
+
+		// The current preset and scene numbers.
+		PresetNumber getPresetNumber();
+		SceneNumber  getSceneNumber();
+		
+		// Call these with a buffer of size 'max' to be 
+		// given the preset and scene names.
+		void copyPresetName(char *buffer, size_t max);
+		void copySceneName(char *buffer, size_t max);
+
+		// Use these methods to get a list of effects and their state.
+		// First call getEffectCount() to set up your loop, and then
+		// call getEffectAt() to retrieve an individual effect.
+		// See AxeEffect.h for what you can do with the effect object.
+		unsigned getEffectCount();
+		AxeEffect getEffectAt(const EffectIndex index);
+
+		// Defaults to 50. If you are running short on ram, lower this to 
+		// truncate the number of effects that will be read from the Axe.
+		byte getMaxEffects();
+		void setMaxEffects(byte max);
+
+### AxeEffect
+
+You can retrieve a list of effects from an AxePreset object.
+		
+		// Like in AxePreset, pass a buffer of at least 'max'
+		// size to retrieve the full name of the current effect.
+		// These names are not official, they are just the enum
+		// entry with 'ID_' stripped off. Maybe a contributer
+		// can enter the full effect names? :)
+		void copyEffectName(char *buffer, size_t max);
+
+		// Get the 'tag', or short 4-character label shown in the grid.
+		// Pass a buffer of 5 to fit the null byte at the end.
+		void copyEffectTag(char *buffer, size_t max);
+
+		// Most effects support 4 channels.
+		byte getChannelCount();
+
+		// Get the current channel, either as a 0-based byte,
+		// or as an A-B-C-D char. I like the char option myself.
+		Channel getChannel();
+		char getChannelChar();
+		
+		// Is this effect currently bypassed?
+		bool isBypassed();
+
+		// What kind of effect is this? Needs to be updated by
+		// a charming contributer to include the full list.
+		bool isDrive();
+		bool isDelay();
+		bool isReverb();
+
+		// Control the state of this effect. Bypass or enable
+		// it, or change the channel using a 0-based byte.
+		// Eg. 0='A', 3='D'.
+		void bypass();
+		void enable();
+		void switchChannel(Channel channel);
+
+		// This returns the internal EFFECT_ID_ as defined in
+		// the enum published by Fractal Audio Systems. You can
+		// pass these to some AxeSystem methods, but generally
+		// you don't need to worry about this unless you are
+		// hacking your own sysex that wasn't published in the spec.
+		EffectId getEffectId();
+		
+### AxeLooper
+
+Ask the AxeSystem for this object. Use it to control and read the looper.
+
+		// These are your status methods. I don't think they require much explanation.
+		bool isRecord();
+		bool isPlay();
+		bool isOverdub();
+		bool isOnce();
+		bool isReverse();
+		bool isHalfSpeed();
+
+		// These are the available virtual 'buttons' you can press.
+		// AxeFX 3 doesn't let you directly 'set' the state, you can
+		// only simulate pressing the button. Perhaps you could map
+		// a CC to directly set state if you needed that.
+		void record();
+		void play();
+		void undo();
+		void once();
+		void reverse(); 
+		void halfSpeed();
