@@ -12,7 +12,7 @@ void AxePreset::setSceneName(char *buffer) {
 
 void AxePreset::setEffects(const AxeEffect effects[], const unsigned count) {
 	_effectCount = 0;
-	for (unsigned i=0; i < count && i < MAX_EFFECTS; i++) {
+	for (unsigned i=0; i < count && i < _maxEffects; i++) {
 		_effects[_effectCount] = effects[i];
 		_effectCount++;
 	}
