@@ -28,6 +28,7 @@ class AxePreset {
 
 		// Defaults to 50. If you are running short on ram, lower this to 
 		// truncate the number of effects that will be read from the Axe.
+		// Don't increase it without changing MAX_EFFECTS as well.
 		byte getMaxEffects() { return _maxEffects; }
 		void setMaxEffects(byte max) { _maxEffects = max; }
 
@@ -48,14 +49,13 @@ class AxePreset {
 	public:
 	
 		// These maxiumums are set by the Axe.
-		const static byte MAX_PRESET_NAME 	= 32;
-		const static byte MAX_SCENE_NAME 		= 32;
+		const static byte MAX_PRESET_NAME	= 32;
+		const static byte MAX_SCENE_NAME	= 32;
+
+		//Our internal limit
+		const static byte MAX_EFFECTS			= 50;
 
 	private:
-
-		const static byte MAX_EFFECTS 			= 50;
-		const static byte MAX_EFFECT_NAME 	= 20;
-		const static byte MAX_EFFECT_TAG 		= 5;
 
 		void setEffects(const AxeEffect effects[], const unsigned count);
 
