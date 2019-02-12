@@ -7,40 +7,47 @@
 #include "AxePreset.h"
 
 //
-// This is the main class you will interact with. There is no need to worry about any other classes.
-// Create an instance of this in your main sketch, above the setup function, like this: AxeSystem Axe;
+// This is the main class you will interact with. There is no need to worry about 
+// including any other classes.
+// 
+// Create an instance of this in your main sketch, above the setup function.
 // Then just use it anywhere in your code. Check the examples for how to set it up.
 //
-// The examples also function as unit tests, and as such they (should) cover every method in this class.
-// If you need help, just go to the examples to see how to use the library.
+// The examples also function as unit tests, and as such they (should) cover every 
+// method in this class. If you need help, just go to the examples to see how to use 
+// the library.
 // 
 class AxeSystem {
 
 	public:
 
-		// To use this class, call 'AxeSystem Axe;' at the top of your sketch, and then
-		// call 'Axe.init(Serial1);' in setup(). (Or whatever your hardware serial is.)
+		// Declare an instance of this class above your setup() function.
 		// Optionally register a notification callback, optionally turn on auto-refresh, 
-		// and then just call 'Axe.update();' in the main loop and you are ready to roll.
+		// and then just call Axe.update() in the main loop and you are ready to roll.
 		AxeSystem() {
 			_looper.setAxeSystem(this);
 		}
 
-		// You must call begin with a hardware serial such as Serial1. Optionally set the MIDI channel, defaults to OMNI
+		// You must call begin with a hardware serial such as Serial1. Optionally set the 
+		// MIDI channel, defaults to OMNI.
 		// You cannot call this more than once. (Well you can, but it will be ignored.)
 		void begin(HardwareSerial& serial, byte midiChannel = DEFAULT_MIDI_CHANNEL);
 
-		// Optionally set the MIDI channel, defaults to OMNI. You can safely change this at any time.
+		// Optionally set the MIDI channel. You can safely change this at any time.
 		void setMidiChannel(byte channel) { _midiChannel = channel; }		
 
-		// Update preset details every millis. Don't refresh if another preset request was received within throttle interval.
+		// Update preset details every millis. Don't refresh if another preset request 
+		// was received within throttle interval.
 		void enableRefresh(const millis_t millis = 3000, const millis_t throttle = 500);
 
-		// Remember to call this from loop(). Avoid using delay() anywhere in your code for best results.
+		// Remember to call this from loop(). Avoid using delay() anywhere in your code 
+		// for best results.
 		void update();
 
-		// Manually refresh the current preset. This is called automatically if enableRefresh() was called. 
-		// Pass true to refresh immediately, regardless of when the last sysex message was recei ved.   
+		// Manually refresh the current preset. This is called automatically 
+		// if enableRefresh() was called. 
+		// Pass true to refresh immediately, regardless of when the last sysex 
+		// message was receieved.   
 		void refresh(bool ignoreThrottle = false);
 
 		// These are the commands you can send to the Axe.
@@ -96,7 +103,7 @@ class AxeSystem {
 		// changing. (They are just the inverse of each other.) During this time, 
 		// sysex data is being read from the Axe, so the result will still reflect
 		// the old preset until isPresetReady() returns true, or isPresetChanging()
-		// returns false. You are better of registering a preset change callback!
+		// returns false. You are better off registering a preset change callback!
 		bool isPresetReady() { return !_presetChanging; }
 		bool isPresetChanging() { return _presetChanging; }
 
@@ -171,7 +178,7 @@ class AxeSystem {
 		// Called on our first message from the Axe, and if the sysex timeout has passed.
 		void registerConnectionStatusCallback(ConnectionStatusCallback);
 
-		// Called when we detect a preset is about to change (ie you called it, or front panel change.)
+		// Called when we detect a preset is about to change. 
 		void registerPresetChangingCallback(PresetChangingCallback);
 
 		// This is probably the one you want. Lets you know when the new preset is ready to query.
@@ -201,13 +208,13 @@ class AxeSystem {
 		// Tuner on/off notifications. Due to some heuristic magic, it's pretty accurate.
 		void registerTunerStatusCallback(TunerStatusCallback);
 
-		// Something changed on the looper.
+		// Something changed on the looper. 
 		void registerLooperStatusCallback(LooperStatusCallback);
 
 		// These let you override the way messages are processed. 
 		// See the typedef documentation above to learn how they work.
-		void registerSysexPluginCallback(SysexPluginCallback); //return true to halt further processing
-		void registerEffectFilterCallback(EffectFilterCallback); //return false to remove from the effect list
+		void registerSysexPluginCallback(SysexPluginCallback); 
+		void registerEffectFilterCallback(EffectFilterCallback); 
 
 	public:
 
