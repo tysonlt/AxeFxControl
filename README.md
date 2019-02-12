@@ -279,6 +279,8 @@ or better yet, register a preset change callback.
 
 		// Defaults to 50. If you are running short on ram, lower this to 
 		// truncate the number of effects that will be read from the Axe.
+		// If raising over 50, you will have to change the value of the 
+		// MAX_EFFECTS constant.
 		byte getMaxEffects();
 		void setMaxEffects(byte max);
 
