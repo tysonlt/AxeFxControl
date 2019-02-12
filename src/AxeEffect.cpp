@@ -51,18 +51,18 @@ byte AxeEffect::effectIndex(EffectId effectId) {
 void AxeEffect::copyEffectNameAndTag(EffectId effectId, char *name, uint8_t szName, char *tag, uint8_t szTag) {    
 
 	byte hash = hashFor(effectId);
-	int size = arraySize(__EFFECT_NAME_TABLE) - 1;
+	int last = arraySize(__EFFECT_NAME_TABLE) - 1;
 
 	//use 'unknown' for out-of-bounds ids
-	if (hash < 0 || hash >= size) {
-		hash = size;
+	if (hash < 0 || hash >= last) {
+		hash = last;
 	}
 
 	//grab label from progmem
 	EffectLabel label;
 	memcpy_P(&label, &__EFFECT_NAME_TABLE[hash], sizeof label);
 
-	if (effectId == ID_MIDIBLOCK || hash == size) {
+	if (effectId == ID_MIDIBLOCK || hash == last) {
 		//MIDI block and 'unknown' have no number to append
 		snprintf(name, szName, "%s", label.name);
 		snprintf(tag, szTag, "%s", label.tag);
