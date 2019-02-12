@@ -5,7 +5,7 @@
 
 class AxeSystem;
 
-// Ask the AxeSystem for this to control and read the looper.
+// Ask the AxeSystem for this object. Use it to control and read the looper.
 class AxeLooper {
 
 	public:
