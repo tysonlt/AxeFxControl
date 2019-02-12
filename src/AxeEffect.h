@@ -51,6 +51,11 @@ class AxeEffect {
 		// hacking your own sysex that wasn't published in the spec.
 		EffectId getEffectId() { return _effectId; }
 
+	public:
+
+		const static byte MAX_EFFECT_NAME	= 20;
+		const static byte MAX_EFFECT_TAG	= 5;
+
 	protected:
 
 		friend class AxePreset;
@@ -63,14 +68,21 @@ class AxeEffect {
 		void setChannelCount(byte count) { _numChannels = count; }
 		void setChannel(Channel channel) { _channel = channel; }
 		void setEffectId(EffectId effectId) { _effectId = effectId; }
+
 		void copyEffectNameAndTag(EffectId effectId, char *name, byte szName, char *tag, byte szTag);
 
 	private:
+
+		const static EFFECT_ID_ FIRST_EFFECT = ID_COMP1;
 
 		EffectId _effectId;
 		Channel _channel;
 		byte _numChannels;
 		bool _bypassed;
+
+		byte offset(EffectId);
+		byte hashFor(EffectId effectId);
+		byte effectIndex(EffectId effectId);
 
 		AxeSystem *_axe = nullptr;
 

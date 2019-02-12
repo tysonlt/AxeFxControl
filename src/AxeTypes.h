@@ -11,6 +11,11 @@ typedef byte Tempo;
 typedef unsigned long millis_t;
 typedef byte LooperStatus;
 
+struct EffectLabel {
+	const char* name;
+	const char* tag;
+};
+
 struct Version {
 	byte major, minor;
 };
@@ -28,3 +33,8 @@ class AxeEffect;
 class AxePreset;
 class AxeLooper;
 class AxeSystem;
+
+template<typename T, size_t N>
+size_t arraySize(T(&)[N]) {
+    return N;
+}
