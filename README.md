@@ -44,6 +44,10 @@ To get started quickly, just check out the examples. They contain a complete ref
 * [PresetDetails.ino](examples/PresetDetails/PresetDetails.ino)
 * [Refresh.ino](examples/Refresh/Refresh.ino)
 
+You only need to include <AxeFxSystem.h>, no need to include the other headers. 
+
+The library adds 1,216 bytes to your program memory, and uses 137 bytes of dynamic memory.
+
 ## Classes
 
 ### AxeSystem
