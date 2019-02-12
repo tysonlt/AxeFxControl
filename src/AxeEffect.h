@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include "AxeTypes.h"
 #include "AxeEffectEnum.h"
+#include "AxeEffectLabels.h"
 
 // You can retrieve a list of effects from an AxePreset object.
 class AxeEffect {
