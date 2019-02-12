@@ -31,7 +31,7 @@ Currently tested for the AxeFX III. The AxeFX II uses different messages, and I 
 This project was heavily inspired by the [FCBInfinity project](https://github.com/mackatack/FCBInfinity). 
 
 ### Thanks
-* Thanks to unix-guy and AlbertA from the Fractal Forums for helping improve the effect labels - code size reduced by 1k!
+* Thanks to unix-guy and AlbertA from the Fractal Forums for helping improve the effect label code.
 * Thanks to mackatack for the FCBInfinity project. Without that code as an early reference, this library would never have gotten off the ground.
 
 # Documentation
@@ -43,6 +43,10 @@ To get started quickly, just check out the examples. They contain a complete ref
 * [SwitchPreset.ino](examples/SwitchPreset/SwitchPreset.ino)
 * [PresetDetails.ino](examples/PresetDetails/PresetDetails.ino)
 * [Refresh.ino](examples/Refresh/Refresh.ino)
+
+You only need to include <AxeFxSystem.h>, no need to include the other headers. 
+
+The library adds 1,216 bytes to your program memory, and uses 137 bytes of dynamic memory.
 
 ## Classes
 
@@ -275,6 +279,8 @@ or better yet, register a preset change callback.
 
 		// Defaults to 50. If you are running short on ram, lower this to 
 		// truncate the number of effects that will be read from the Axe.
+		// If raising over 50, you will have to change the value of the 
+		// MAX_EFFECTS constant.
 		byte getMaxEffects();
 		void setMaxEffects(byte max);
 
