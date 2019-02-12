@@ -29,23 +29,23 @@ bool AxeEffect::isDelay() { return (_effectId >= ID_DELAY1 && _effectId <= ID_DE
 bool AxeEffect::isReverb() { return (_effectId >= ID_REVERB1 && _effectId <= ID_REVERB4); }
 
 char AxeEffect::getChannelChar() {
-		return 'A' + _channel;
+	return 'A' + _channel;
 }
 
 // Thanks to https://forum.fractalaudio.com/members/alberta.7980/ for the hash wizardry
 
 byte AxeEffect::offset(EffectId effectId) {
-    // Needed because ID_MIDIBLOCK messes up the nice 
-		// blocks-of-four property in the IDS
-    return effectId > ID_MIDIBLOCK ? 3 : 0;
+	// Needed because ID_MIDIBLOCK messes up the nice 
+	// blocks-of-four property in the IDS
+	return effectId > ID_MIDIBLOCK ? 3 : 0;
 }
 
 byte AxeEffect::hashFor(EffectId effectId) {
-    return (effectId - FIRST_EFFECT + offset(effectId)) / 4;
+	return (effectId - FIRST_EFFECT + offset(effectId)) / 4;
 }
 
 byte AxeEffect::effectIndex(EffectId effectId) {
-    return ((effectId - FIRST_EFFECT + offset(effectId)) % 4) + 1;
+	return ((effectId - FIRST_EFFECT + offset(effectId)) % 4) + 1;
 }
 
 void AxeEffect::copyEffectNameAndTag(EffectId effectId, char *name, uint8_t szName, char *tag, uint8_t szTag) {    
