@@ -1,5 +1,7 @@
 #include <AxeSystem.h>
+#include <AxeEffectEnum.h>
 #include "AxeFxEffectList.h"
+
 
 #define PL Serial.println
 #define P  Serial.print
