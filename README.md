@@ -31,7 +31,7 @@ Currently tested for the AxeFX III. The AxeFX II uses different messages, and I 
 This project was heavily inspired by the [FCBInfinity project](https://github.com/mackatack/FCBInfinity). 
 
 ### Thanks
-* Thanks to unix-guy and AlbertA from the Fractal Forums for helping improve the effect labels - code size reduced by 1k!
+* Thanks to unix-guy and AlbertA from the Fractal Forums for helping improve the effect label code.
 * Thanks to mackatack for the FCBInfinity project. Without that code as an early reference, this library would never have gotten off the ground.
 
 # Documentation
