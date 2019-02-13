@@ -38,15 +38,13 @@ void onPresetChange(AxePreset preset) {
 	Serial.println(preset.getPresetNumber());
 
 	Serial.print("Preset name: ");
-	preset.copyPresetName(buf, sz);
-	Serial.println(buf);
+	preset.printPresetName(Serial, true);
 
 	Serial.print("Scene number: ");
 	Serial.println(preset.getSceneNumber());
 
 	Serial.print("Scene name: ");
-	preset.copySceneName(buf, sz);
-	Serial.println(buf);
+	preset.printSceneName(Serial, true);
 
 	Serial.print("Looper status: ");
 	snprintf(buf, sz, 
@@ -60,17 +58,14 @@ void onPresetChange(AxePreset preset) {
 	);
 	Serial.println(buf);
 
-	const size_t tagSz = 10;
-	char tag[tagSz];
-
 	snprintf(buf, sz, "Effects[%d]: ", preset.getEffectCount());
 	Serial.println(buf);
 
 	for (EffectIndex index = 0; index < preset.getEffectCount(); index++) {
     AxeEffect effect = preset.getEffectAt(index);
-		effect.copyEffectTag(tag, tagSz);
+		effect.printEffectTag(Serial);
 		char engaged = effect.isBypassed() ? ' ' : 'X';
-		snprintf(buf, sz, "%s(ch:%c) [%c]", tag, effect.getChannelChar(), engaged);
+		snprintf(buf, sz, "(ch:%c) [%c]", effect.getChannelChar(), engaged);
 		Serial.println(buf);
 	}
 

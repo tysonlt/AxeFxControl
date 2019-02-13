@@ -1,5 +1,19 @@
 #include "AxePreset.h"
 
+void AxePreset::printPresetName(Print& printer, bool newline) {
+	printer.print(_presetName);
+	if (newline) {
+		printer.println();
+	}
+}
+
+void AxePreset::printSceneName(Print& printer, bool newline) {
+	printer.print(_sceneName);
+	if (newline) {
+		printer.println();
+	}
+}
+
 void AxePreset::setPresetName(char *buffer) {
 	snprintf(_presetName, MAX_PRESET_NAME+1, buffer);
 	_presetNameReceived = true;
@@ -13,8 +27,7 @@ void AxePreset::setSceneName(char *buffer) {
 void AxePreset::setEffects(const AxeEffect effects[], const unsigned count) {
 	_effectCount = 0;
 	for (unsigned i=0; i < count && i < _maxEffects; i++) {
-		_effects[_effectCount] = effects[i];
-		_effectCount++;
+		_effects[_effectCount++] = effects[i];
 	}
 }
 

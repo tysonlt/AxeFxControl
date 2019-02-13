@@ -35,13 +35,14 @@ void onPresetChange(AxePreset preset) {
 	Serial.print("Preset number: ");
 	Serial.println(preset.getPresetNumber());
 
+	//You can print directly to a Print object
 	Serial.print("Preset name: ");
-	preset.copyPresetName(buf, sz);
-	Serial.println(buf);
-
+	preset.printPresetName(Serial, true);
+	
 	Serial.print("Scene number: ");
 	Serial.println(preset.getSceneNumber());
 
+	//Or you can get the name into a buffer
 	Serial.print("Scene name: ");
 	preset.copySceneName(buf, sz);
 	Serial.println(buf);

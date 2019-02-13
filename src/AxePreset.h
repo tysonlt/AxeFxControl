@@ -19,6 +19,10 @@ class AxePreset {
 		void copyPresetName(char *buffer, size_t max);
 		void copySceneName(char *buffer, size_t max);
 
+		// Print directly to a stream
+		void printPresetName(Print&, bool newline = false);
+		void printSceneName(Print&, bool newline = false);
+
 		// Use these methods to get a list of effects and their state.
 		// First call getEffectCount() to set up your loop, and then
 		// call getEffectAt() to retrieve an individual effect.

@@ -15,11 +15,18 @@ class AxeEffect {
 		// These names are not official, they are just the enum
 		// entry with 'ID_' stripped off. Maybe a contributer
 		// can enter the full effect names? :)
-		void copyEffectName(char *buffer, size_t max);
+		void copyEffectName(char *buffer, byte max);
 
 		// Get the 'tag', or short 4-character label shown in the grid.
 		// Pass a buffer of 5 to fit the null byte at the end.
-		void copyEffectTag(char *buffer, size_t max);
+		void copyEffectTag(char *buffer, byte max);
+
+		// Get both
+		void copyEffectNameAndTag(char *name, byte szName, char *tag, byte szTag);
+
+		// Print directly to a Print instance
+		void printEffectName(Print&, bool newline = false);
+		void printEffectTag(Print&, bool newline = false);
 
 		// Most effects support 4 channels.
 		byte getChannelCount() { return _numChannels; }
@@ -70,20 +77,20 @@ class AxeEffect {
 		void setChannel(Channel channel) { _channel = channel; }
 		void setEffectId(EffectId effectId) { _effectId = effectId; }
 
-		void copyEffectNameAndTag(EffectId effectId, char *name, byte szName, char *tag, byte szTag);
-
 	private:
 
 		const static EFFECT_ID_ FIRST_EFFECT = ID_COMP1;
+		const static char ASCII_ZERO = 0x30;
 
 		EffectId _effectId;
 		Channel _channel;
 		byte _numChannels;
 		bool _bypassed;
 
-		byte offset(EffectId);
-		byte hashFor(EffectId effectId);
-		byte effectIndex(EffectId effectId);
+		byte offset();
+		byte hash();
+		byte blockNum();
+		char blockNumChar();
 
 		AxeSystem *_axe = nullptr;
 
