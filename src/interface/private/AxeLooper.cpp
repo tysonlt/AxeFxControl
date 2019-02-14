@@ -1,5 +1,5 @@
-#include "AxeLooper.h"
-#include "AxeSystem.h"
+#include "interface/AxeLooper.h"
+#include "interface/AxeSystem.h"
 
 void AxeLooper::record() 		{ pressButton(LooperRecord); }
 void AxeLooper::play() 			{ pressButton(LooperPlay); }

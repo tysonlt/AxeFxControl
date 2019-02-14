@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include "AxeTypes.h"
+#include "private/AxeTypes.h"
 #include "AxeLooper.h"
 #include "AxeEffect.h"
 #include "AxePreset.h"
@@ -72,8 +72,9 @@ class AxeSystem {
 		void enableTuner();
 		void disableTuner();
 
-		// The preset also lets you access AxeEffect objects, 
-		// which are a more convenient way to call these methods.
+		// You can directly control effect blocks from here, but
+		// it is more convenient to use the AxeEffect list from
+		// the current preset object.
 		void enableEffect(const EffectId);
 		void disableEffect(const EffectId);
 		void setEffectChannel(const EffectId, const Channel);
@@ -141,28 +142,65 @@ class AxeSystem {
 		// your screen or something, or set to 0 to disable altogether.
 		void setStartupDelay(const millis_t ms) { _startupDelay = ms; }
 
-		// These are the various state change callbacks you can register.
-		// This is the easiest way to be notified of what is going with the Axe.
-		// Just call the releveant registerXXXCallback() method from setup(), and
-		// As long as you call Axe.update() from loop(), you will be notified of 
-		// relevant state changes. PresetChangeCallback is probably the one you want.
-		typedef void (*ConnectionStatusCallback)(const bool);
-		typedef void (*TapTempoCallback)();
-		typedef void (*PresetChangingCallback)(const PresetNumber);
-		typedef void (*PresetNameCallback)(const PresetNumber, const char*, const byte);
-		typedef void (*SceneNameCallback)(const SceneNumber, const char*, const byte);
-		typedef void (*EffectsReceivedCallback)(const PresetNumber, AxePreset);
+		// This is the best way to be notified of state changes. If you just
+		// want to know when a preset changes, call registerPresetChangeCallback(),
+		// and then update your screen/lcd whenever this is called.
 		typedef void (*PresetChangeCallback)(AxePreset);
-		typedef void (*SystemChangeCallback)();
-		typedef void (*TunerStatusCallback)(const bool);
-		typedef void (*TunerDataCallback)(const char *, const byte, const byte);
-		typedef void (*LooperStatusCallback)(AxeLooper);
+		void registerPresetChangeCallback(PresetChangeCallback);
 
-		// Hackers delight! These let you complement or override the standard sysex
+		// Called on our first message from the Axe, and if the sysex timeout has passed.
+		typedef void (*ConnectionStatusCallback)(const bool connected);
+		void registerConnectionStatusCallback(ConnectionStatusCallback);
+
+		// Called when we detect a preset is about to change. 
+		typedef void (*PresetChangingCallback)(const PresetNumber);
+		void registerPresetChangingCallback(PresetChangingCallback);
+
+		// These three give you fine-grained notification when different parts of the preset
+		// are received. This is useful if you only want the name and don't care about the effects.
+		typedef void (*PresetNameCallback)(const PresetNumber, const char* name, const byte length);
+		void registerPresetNameCallback(PresetNameCallback);
+
+		// Called when the scene name is received
+		typedef void (*SceneNameCallback)(const SceneNumber, const char* name, const byte length);
+		void registerSceneNameCallback(SceneNameCallback);
+
+		// Called when the effects list is receieved (after being filtered)
+		typedef void (*EffectsReceivedCallback)(const PresetNumber, AxePreset);
+		void registerEffectsReceivedCallback(EffectsReceivedCallback); 
+		
+		// Called when a global parameter changes... well, when the tempo changes. 
+		// That's all we know about. Will also be called when we read the firmware 
+		// version at startup. Query the global Axe object to get new data.
+		typedef void (*SystemChangeCallback)();
+		void registerSystemChangeCallback(SystemChangeCallback);
+
+		// The Axe sends real-time pulses in time with the tempo. 
+		// Flash a led! I woudln't update a TFT or LCD, it's too slow.
+		// This requires Setup -> MIDI -> Realtime Sysex to be enabled on the Axe.
+		typedef void (*TapTempoCallback)();
+		void registerTapTempoCallback(TapTempoCallback);
+		
+		// Tuner data comes flooding in when the tuner is engaged.
+		// String goes from 1 to 6, and finetune from 0-127, where 63 is in-tune.
+		// This requires Setup -> MIDI -> Realtime Sysex to be enabled on the Axe.
+		typedef void (*TunerDataCallback)(const char *note, const byte string, const byte fineTune);
+		void registerTunerDataCallback(TunerDataCallback);
+
+		// Tuner on/off notifications. Due to some heuristic magic, it's pretty accurate.
+		typedef void (*TunerStatusCallback)(const bool engaged);
+		void registerTunerStatusCallback(TunerStatusCallback);
+
+		// Something changed on the looper. 
+		typedef void (*LooperStatusCallback)(AxeLooper);
+		void registerLooperStatusCallback(LooperStatusCallback);
+
+		// Hackers delight! This lets you complement or override the standard sysex
 		// and effect filtering code. For the sysex plugin, you get to respond to any
 		// incoming sysex before standard processing. Returning false will cancel
 		// standard processing, returning true will continue on as normal.
-		typedef bool (*SysexPluginCallback)(const byte*, const byte);
+		typedef bool (*SysexPluginCallback)(const byte *sysex, const byte length);
+		void registerSysexPluginCallback(SysexPluginCallback); 
 
 		// By default, we filter some effects out of the effect list that we deem 
 		// unlikely to be useful if you want to display current effects. If you 
@@ -170,53 +208,7 @@ class AxeSystem {
 		// which effects are filtered out. Return true to allow an effect, false
 		// to filter it out of the effect list.
 		typedef bool (*EffectFilterCallback)(const PresetNumber, const AxeEffect);
-
-		// These are the best way to be notified of state changes. If you just
-		// want to know when a preset changes, call registerPresetChangeCallback(),
-		// and then update your screen/lcd whenever this is called.
-
-		// Called on our first message from the Axe, and if the sysex timeout has passed.
-		void registerConnectionStatusCallback(ConnectionStatusCallback);
-
-		// Called when we detect a preset is about to change. 
-		void registerPresetChangingCallback(PresetChangingCallback);
-
-		// This is probably the one you want. Lets you know when the new preset is ready to query.
-		void registerPresetChangeCallback(PresetChangeCallback);
-
-		// These three give you fine-grained notification when different parts of the preset
-		// are received. This is useful if you only want the name and don't care about the effects.
-		void registerPresetNameCallback(PresetNameCallback);
-		void registerSceneNameCallback(SceneNameCallback);
-		void registerEffectsReceivedCallback(EffectsReceivedCallback); 
-		
-		// Called when a global parameter changes... well, when the tempo changes. 
-		// That's all we know about! Will also be called when we read the firmware 
-		// version at startup.
-		void registerSystemChangeCallback(SystemChangeCallback);
-
-		// The Axe sends real-time pulses in time with the tempo. 
-		// Flash a led! I woudln't update a TFT or LCD, it's too slow.
-		// This requires Setup -> MIDI -> Realtime Sysex to be enabled on the Axe.
-		void registerTapTempoCallback(TapTempoCallback);
-		
-		// Tuner data comes flooding in when the tuner is engaged.
-		// String goes from 1 to 6, and finetune from 0-127, where 63 is in-tune.
-		// This requires Setup -> MIDI -> Realtime Sysex to be enabled on the Axe.
-		void registerTunerDataCallback(TunerDataCallback);
-
-		// Tuner on/off notifications. Due to some heuristic magic, it's pretty accurate.
-		void registerTunerStatusCallback(TunerStatusCallback);
-
-		// Something changed on the looper. 
-		void registerLooperStatusCallback(LooperStatusCallback);
-
-		// These let you override the way messages are processed. 
-		// See the typedef documentation above to learn how they work.
-		void registerSysexPluginCallback(SysexPluginCallback); 
 		void registerEffectFilterCallback(EffectFilterCallback); 
-
-	public:
 
 		//These are values supported by the AxeFX 3, and can't be changed.
 		const static byte BANK_SIZE 												= 128;
@@ -228,125 +220,10 @@ class AxeSystem {
 		const static byte DEFAULT_MIDI_CHANNEL							= MIDI_CHANNEL_OMNI;
 		constexpr static PresetNumber MAX_PRESETS 					= (MAX_BANKS * BANK_SIZE) - 1;
 
-	private:
-
 		// OK, there ends the tour! Continue on to AxePreset.h, 
 		// AxeEffect.h, and AxeLooper.h for more information.
 
-		const static byte SYSEX_END													= 0xF7;
-		const static byte MAX_SYSEX 												= 128;
-		const static unsigned MIDI_BAUD											= 31250;
-
-		const static byte BANK_CHANGE_CC 										= 0x00;
-		const static byte SYSEX_TUNER_ON 										= 0x01;
-		const static byte SYSEX_TUNER_OFF 									= 0x00;
-		const static byte SYSEX_EFFECT_BYPASS 							= 0x01;
-		const static byte SYSEX_EFFECT_ENABLE 							= 0x00;
-
-		const static byte SYSEX_MANUFACTURER_BYTE1 					= 0x00;
-		const static byte SYSEX_MANUFACTURER_BYTE2 					= 0x01;
-		const static byte SYSEX_MANUFACTURER_BYTE3 					= 0x74;
-		const static byte SYSEX_AXE_VERSION 								= 0x10;
-		const static byte SYSEX_QUERY_BYTE 									= 0x7F;
-		const static byte SYSEX_CHECKSUM_PLACEHOLDER 				= 0x00;
-
-		const static byte SYSEX_REQUEST_FIRMWARE 						= 0x08;
-		const static byte SYSEX_REQUEST_EFFECT_BYPASS 			= 0x0A;
-		const static byte SYSEX_REQUEST_EFFECT_CHANNEL 			= 0x0B;
-		const static byte SYSEX_REQUEST_SCENE_NUMBER 				= 0x0C;
-		const static byte SYSEX_REQUEST_PRESET_INFO 				= 0x0D;
-		const static byte SYSEX_REQUEST_SCENE_INFO 					= 0x0E;
-		const static byte SYSEX_REQUEST_LOOPER_STATUS 			= 0x0F;
-		const static byte SYSEX_TAP_TEMPO_PULSE 						= 0x10;
-		const static byte SYSEX_TUNER 											= 0x11;
-		const static byte SYSEX_EFFECT_DUMP 								= 0x13;
-		const static byte SYSEX_REQUEST_TEMPO 							= 0x14;
-
-		enum MidiType {
-			ControlChange = 0xB0,
-			ProgramChange = 0xC0,
-			SystemExclusive = 0xF0
-		};
-		
-		void readMidi();
-		void checkFirmware();
-		void checkTimers();
-		void checkIncomingPreset();
-		void sendSysEx(const byte length, byte *sysex);
-		void setSystemConnected(const bool connected);
-		bool isAxeSysEx(const byte *sysex, const byte length);
-		bool isRequestedPreset(const PresetNumber);
-		void parseName(const byte *sysex, const byte length, const byte offset, char *buffer, const byte size);
-		void processEffectDump(const byte *sysex, const byte length);
-		void onSystemExclusive(const byte *sysex, const byte length);
-		void onPresetChange(const PresetNumber number);
-
-		void requestPresetName(const PresetNumber number = -1);
-		void requestSceneName(const SceneNumber number = -1);
-		void requestSceneNumber();
-		void requestEffectDetails();
-		void callConnectionStatusCallback(const bool connected);	
-		void callTapTempoCallback();
-		void callPresetChangingCallback(const PresetNumber);
-		void callPresetNameCallback(const PresetNumber, const char*, const byte);
-		void callSceneNameCallback(const SceneNumber, const char*, const byte);
-		void callEffectsReceivedCallback(AxePreset*);
-		void callPresetChangeCallback(AxePreset*);
-		void callSystemChangeCallback();
-		void callTunerDataCallback(const char *note, const byte string, const byte fineTune);
-		void callTunerStatusCallback(bool enabled);
-		void callLooperStatusCallback(AxeLooper*);
-		bool callSysexPluginCallback(const byte*, const byte); 
-		bool callEffectFilterCallback(const PresetNumber, AxeEffect); 
-
-		bool isValidPresetNumber(const PresetNumber preset);
-		bool isValidSceneNumber(const SceneNumber scene); 
-		void intToMidiBytes(const int, byte*, byte*);
-		int midiBytesToInt(const byte, const byte);
-		bool filterMidiChannel(byte message);
-
-		bool defaultEffectFilter(PresetNumber number, AxeEffect effect);
-
-		#ifdef AXE_DEBUG_SYSEX
-		void debugSysex(const byte *sysex, const byte length, const char *message);
-		#endif
-
-		AxePreset _preset, _incomingPreset;
-		AxeLooper _looper;
-		Version _firmwareVersion;
-		Version _usbVersion;
-		HardwareSerial *_serial = nullptr;
-		byte _tempo;
-		byte _bank;
-		byte _midiChannel; 
-		bool _firmwareRequested = false;
-		bool _tunerEngaged = false;
-		bool _systemConnected = false;
-		bool _presetChanging = false;
-		bool _midiReady = false;
-		byte _sysexBuffer[MAX_SYSEX];
-		byte _sysexCount;
-		bool _readingSysex = false;
-		byte _tunerIncomingCount = 0, _tunerTriggerThreshold = 5;
-		millis_t _startupDelay = 1000;
-		millis_t _refreshRate = 0, _refreshThrottle = 500;
-		millis_t _sysexTimout = 2000, _tunerTimout = 250;
-		millis_t _lastSysexResponse = 0, _lastTunerResponse = 0, _lastRefresh = 0;
-
-		ConnectionStatusCallback 	_connectionStatusCallback;
-		TapTempoCallback 					_tapTempoCallback;
-		PresetChangingCallback 		_presetChangingCallback;
-		PresetNameCallback				_presetNameCallback;
-		SceneNameCallback					_sceneNameCallback;
-		EffectsReceivedCallback		_effectsReceivedCallback;
-		PresetChangeCallback 			_presetChangeCallback;
-		SystemChangeCallback 			_systemChangeCallback;
-		TunerStatusCallback 			_tunerStatusCallback;
-		TunerDataCallback 				_tunerDataCallback;
-		LooperStatusCallback 			_looperStatusCallback;
-		SysexPluginCallback 			_sysexPluginCallback;
-		EffectFilterCallback			_effectFilterCallback;
-
-		const char *_notes[12] = {"A ", "Bb", "B ", "C ", "C#", "D ", "Eb", "E ", "F ", "F#", "G ", "Ab"};
+	private: 
+		#include "private/AxeSystem_Private.h"
 
 };

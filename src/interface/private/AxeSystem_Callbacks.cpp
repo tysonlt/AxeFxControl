@@ -1,4 +1,4 @@
-#include "AxeSystem.h"
+#include "interface/AxeSystem.h"
 
 void AxeSystem::registerConnectionStatusCallback(ConnectionStatusCallback func) {
 	_connectionStatusCallback = func;
