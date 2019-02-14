@@ -318,7 +318,7 @@ class AxeSystem {
 		HardwareSerial *_serial = nullptr;
 		byte _tempo;
 		byte _bank;
-		byte _midiChannel = 1; //TODO: ask Axe
+		byte _midiChannel; 
 		bool _firmwareRequested = false;
 		bool _tunerEngaged = false;
 		bool _systemConnected = false;

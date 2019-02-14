@@ -31,12 +31,8 @@ void onSceneName(SceneNumber number, const char *name, const byte length) {
 }
 
 //NOTE: only rely on the effects, the reset of the preset is not guaranteed to be complete.
-//You could call isComplete() to find out, but better to use registerPresetChangeCallback
-//if you want the entire preset.
 void onEffectsReceived(PresetNumber number, AxePreset preset) {
 
-	const size_t tagSz = 10;
-	char tag[tagSz];
 	const size_t sz = 25; 
 	char buf[sz]; 
 
@@ -45,9 +41,9 @@ void onEffectsReceived(PresetNumber number, AxePreset preset) {
 
 	for (EffectIndex index = 0; index < preset.getEffectCount(); index++) {
     AxeEffect effect = preset.getEffectAt(index);
-		effect.copyEffectTag(tag, tagSz);
+		effect.printEffectTag(Serial);
 		char engaged = effect.isBypassed() ? ' ' : 'X';
-		snprintf(buf, sz, "%s(ch:%c) [%c]", tag, effect.getChannelChar(), engaged);
+		snprintf(buf, sz, "(ch:%c) [%c]", effect.getChannelChar(), engaged);
 		Serial.println(buf);
 	}
 }
