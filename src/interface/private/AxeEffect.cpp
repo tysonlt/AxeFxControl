@@ -1,5 +1,5 @@
-#include "AxeEffect.h"
-#include "AxeSystem.h"
+#include "interface/AxeEffect.h"
+#include "interface/AxeSystem.h"
 
 void AxeEffect::bypass() {
 	_axe->disableEffect(_effectId);

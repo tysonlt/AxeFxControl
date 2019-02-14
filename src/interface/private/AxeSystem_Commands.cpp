@@ -1,5 +1,5 @@
-#include "AxeSystem.h"
-#include "AxeEffect.h"
+#include "interface/AxeSystem.h"
+#include "interface/AxeEffect.h"
 
 void AxeSystem::requestFirmwareVersion() {
 	sendCommand(SYSEX_REQUEST_FIRMWARE);
