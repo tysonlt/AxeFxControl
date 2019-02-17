@@ -31,6 +31,26 @@ void AxePreset::setEffects(const AxeEffect effects[], const unsigned count) {
 	}
 }
 
+bool AxePreset::effectsChanged(AxePreset& compare) {
+
+	if (_preset != compare._preset || _scene != compare._scene) 
+		return true;
+
+	if (_effectCount != compare._effectCount) 
+		return true;
+
+	for (byte i=0; i<_effectCount; i++) {
+		if (_effects[i]._effectId != compare._effects[i]._effectId) {
+			return true;
+		} else if (_effects[i]._bypassed != compare._effects[i]._bypassed) {
+			return true;
+		}
+	}
+
+	return false;
+
+}
+
 void AxePreset::copyPresetName(char *buffer, size_t max) {
 	snprintf(buffer, max, _presetName);
 }

@@ -30,6 +30,10 @@ class AxePreset {
 		unsigned getEffectCount() { return _effectCount; }
 		AxeEffect getEffectAt(const EffectIndex index) { return _effects[index]; }
 
+		// Use to determine if the effect list has changed compared to
+		// another preset. Useful if deciding whether to reprint etc.
+		bool effectsChanged(AxePreset& preset);
+
 		// Defaults to 50. If you are running short on ram, lower this to 
 		// truncate the number of effects that will be read from the Axe.
 		// Don't increase it without changing MAX_EFFECTS as well.
