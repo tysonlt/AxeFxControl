@@ -34,6 +34,9 @@ class AxePreset {
 		// another preset. Useful if deciding whether to reprint etc.
 		bool effectsChanged(AxePreset& preset);
 
+		// Determine whether these presets have the same data
+		bool equals(AxePreset& compare);
+
 		// Defaults to 50. If you are running short on ram, lower this to 
 		// truncate the number of effects that will be read from the Axe.
 		// Don't increase it without changing MAX_EFFECTS as well.
