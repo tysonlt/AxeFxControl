@@ -1,7 +1,6 @@
 #include "interface/AxeSystem.h"
 
 void AxeSystem::onPresetChange(const PresetNumber number) {
-	_presetChanging = true;
 	_incomingPreset.reset();
 	_incomingPreset.setPresetNumber(number);
 	requestPresetName(number);
@@ -175,14 +174,14 @@ bool AxeSystem::isRequestedPreset(const PresetNumber number) {
 }
 
 void AxeSystem::checkIncomingPreset() {
-  if (_incomingPreset.isComplete()) {
-    _presetChanging = false;
-    _preset = _incomingPreset;
-    callPresetChangeCallback(&_preset);
+  if (_incomingPreset.isComplete() && !_preset.equals(_incomingPreset)) {
+		_preset = _incomingPreset;
+		callPresetChangeCallback(&_preset);
   }
 }
 
 // TODO: need to prioritise which effects are shown in order
+// TODO: sometimes first message is wrong, corrected on refresh (ie change tempo wheel and fx list goes whacky)
 // If assuming naked amps pack it gets a lot easier :)
 void AxeSystem::processEffectDump(const byte *sysex, const byte length) {
 
