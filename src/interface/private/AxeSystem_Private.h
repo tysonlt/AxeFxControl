@@ -89,7 +89,6 @@ byte _midiChannel;
 bool _firmwareRequested = false;
 bool _tunerEngaged = false;
 bool _systemConnected = false;
-bool _presetChanging = false;
 bool _midiReady = false;
 byte _sysexBuffer[MAX_SYSEX];
 byte _sysexCount;
