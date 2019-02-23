@@ -2,13 +2,12 @@
 
 void AxeSystem::update() {
 	
-	if (!_presetChanging && _refreshRate > 0) {
-		unsigned long now = millis();
-		if (now - _lastRefresh > _refreshRate) {
+	if (_refreshRate > 0) {
+		if (millis() - _lastRefresh > _refreshRate) {
 			refresh();
 		}
-	}
-
+	} 
+	
 	readMidi();
 
 }

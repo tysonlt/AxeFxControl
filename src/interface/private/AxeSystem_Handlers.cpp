@@ -1,7 +1,6 @@
 #include "interface/AxeSystem.h"
 
 void AxeSystem::onPresetChange(const PresetNumber number) {
-	_presetChanging = true;
 	_incomingPreset.reset();
 	_incomingPreset.setPresetNumber(number);
 	requestPresetName(number);
@@ -9,7 +8,7 @@ void AxeSystem::onPresetChange(const PresetNumber number) {
 }
 
 void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
-
+	
 	if (callSysexPluginCallback(sysex, length)) {
 		return;
 	}
@@ -32,6 +31,10 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 
 		case SYSEX_REQUEST_PRESET_INFO: {
+			#ifdef AXE_DEBUG	
+			DEBUGGER.println("SYSEX_REQUEST_PRESET_INFO");
+			#endif
+
 			_lastRefresh = millis();
 			const byte max = AxePreset::MAX_PRESET_NAME + 1;
 			const PresetNumber number = midiBytesToInt(sysex[6], sysex[7]);
@@ -42,8 +45,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 				_incomingPreset.setPresetName(buffer); 
 				_incomingPreset.copyPresetName(buffer, max); //copy back out in case preset changed it
 				callPresetNameCallback(number, (const char*) buffer, max);
-				requestSceneName();
-				requestEffectDetails();
+				requestSceneName(); //next item in chain
 				checkIncomingPreset();
 			} else {
 				#ifdef AXE_DEBUG
@@ -57,8 +59,11 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 
 		case SYSEX_REQUEST_SCENE_INFO: {
-			//TODO during fast changes, can we guarantee this is for current preset?
-			if (!_incomingPreset.isComplete()) { //TODO is this necessary given guard in preset name case?
+			#ifdef AXE_DEBUG	
+			DEBUGGER.println("SYSEX_REQUEST_SCENE_INFO");
+			#endif
+			
+			if (!_incomingPreset.isComplete()) { 
 				const SceneNumber number = sysex[6] + 1;
 				const byte max = AxePreset::MAX_SCENE_NAME + 1;
 				parseName(sysex, length, 7, buffer, max);
@@ -66,6 +71,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 				_incomingPreset.setSceneName(buffer); 
 				_incomingPreset.copySceneName(buffer, max); //copy back out in case preset changed it
 				callSceneNameCallback(number, (const char*) buffer, max);
+				requestEffectDetails(); //ask here instead of in preset name to avoid filling rx buffer
 				checkIncomingPreset();
 			} else {
 				#ifdef AXE_DEBUG
@@ -76,8 +82,11 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 
 		case SYSEX_REQUEST_SCENE_NUMBER: {
-			//TODO during fast changes, can we guarantee this is for current preset?
-			if (!_incomingPreset.isComplete()) { //TODO is this necessary given guard in preset name case?
+			#ifdef AXE_DEBUG	
+			DEBUGGER.println("SYSEX_REQUEST_SCENE_NUMBER");
+			#endif		
+
+			if (!_incomingPreset.isComplete()) { 
 				_incomingPreset.setSceneNumber(sysex[6] + 1);
 				checkIncomingPreset();
 			} else {
@@ -89,8 +98,11 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 
 		case SYSEX_EFFECT_DUMP: {
-			//TODO during fast changes, can we guarantee this is for current preset?
-			if (!_incomingPreset.isComplete()) { //TODO is this necessary given guard in preset name case?
+			#ifdef AXE_DEBUG	
+			DEBUGGER.println("SYSEX_EFFECT_DUMP");
+			#endif				
+
+			if (!_incomingPreset.isComplete()) { 
 				processEffectDump(sysex, length);
 				callEffectsReceivedCallback(&_incomingPreset);
 				checkIncomingPreset();
@@ -103,6 +115,10 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 
 		case SYSEX_REQUEST_FIRMWARE: {
+			#ifdef AXE_DEBUG	
+			DEBUGGER.println("SYSEX_REQUEST_FIRMWARE");
+			#endif				
+			
 			_firmwareVersion.major = sysex[6];
 			_firmwareVersion.minor = sysex[7];
 			_usbVersion.major = sysex[9];
@@ -112,6 +128,10 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 					
 		case SYSEX_REQUEST_TEMPO: {
+			#ifdef AXE_DEBUG	
+			DEBUGGER.println("SYSEX_REQUEST_TEMPO");
+			#endif			
+
 			byte newTempo = (byte) midiBytesToInt(sysex[6], sysex[7]);
 			if (newTempo != _tempo) {
 				_tempo = newTempo;
@@ -175,11 +195,10 @@ bool AxeSystem::isRequestedPreset(const PresetNumber number) {
 }
 
 void AxeSystem::checkIncomingPreset() {
-  if (_incomingPreset.isComplete()) {
-    _presetChanging = false;
-    _preset = _incomingPreset;
-    callPresetChangeCallback(&_preset);
-  }
+  if (_incomingPreset.isComplete() && !_preset.equals(_incomingPreset)) {
+		_preset = _incomingPreset;
+		callPresetChangeCallback(&_preset);
+  } 
 }
 
 // TODO: need to prioritise which effects are shown in order
@@ -206,7 +225,7 @@ void AxeSystem::processEffectDump(const byte *sysex, const byte length) {
 		effect.setChannel(channel);
 		effect.setChannelCount(numChannels);
 
-		//NOTE assumes preset number has already been received
+		//assumes preset number has already been received
 		if (callEffectFilterCallback(_incomingPreset.getPresetNumber(), effect)) {
 			effects[count++] = effect;
 		}

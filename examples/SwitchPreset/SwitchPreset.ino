@@ -2,10 +2,14 @@
 
 AxeSystem Axe;
 
+unsigned long time;
+
 void setup() {
 	Serial.begin(9600);
 	Axe.registerPresetChangingCallback(onPresetChanging);
+	Axe.registerPresetNameCallback(onPresetName);
 	Axe.begin(Serial1, 4);
+	time = millis();
 	//Go to Axe, Setup->MIDI/Remote->Midi Channel=4 to see channel filter in action
 	//Otherwise, just remove the channel param above and it will default to OMIN
 }
@@ -16,14 +20,22 @@ void loop() {
 	if (preset >= AxeSystem::MAX_PRESETS) {
 		preset = 0;
 	}
-	
-	Axe.sendPresetChange(preset);
-	delay(1000);
-	
-	preset += 11;
+
+	if (millis() - time > 1000) {	
+		Axe.sendPresetChange(preset);
+		preset += 11;
+		time = millis();
+	}
+
+	Axe.update();
 
 }
 
 void onPresetChanging(PresetNumber preset) {
-	Serial.println(preset);
+	Serial.print(preset);
+	Serial.print(": ");
+}
+
+void onPresetName(PresetNumber number, const char *name, const byte length) {
+	Serial.println(name);
 }

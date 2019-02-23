@@ -30,7 +30,7 @@ void onSceneName(SceneNumber number, const char *name, const byte length) {
 	Serial.println(name);
 }
 
-//NOTE: only rely on the effects, the reset of the preset is not guaranteed to be complete.
+//only rely on the effects, the reset of the preset is not guaranteed to be complete.
 void onEffectsReceived(PresetNumber number, AxePreset preset) {
 
 	const size_t sz = 25; 

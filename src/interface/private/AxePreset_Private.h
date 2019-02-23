@@ -2,8 +2,6 @@
 
 friend class AxeSystem;
 
-AxePreset() {}
-
 // These methods are used by AxeSystem to build the preset.
 // You don't need to call them, and you can't.
 void setPresetNumber(int number) {  _preset = number; }

@@ -6,8 +6,6 @@ const static char ASCII_ZERO = 0x30;
 friend class AxePreset;
 friend class AxeSystem;
 
-AxeEffect() {}
-
 void setAxeSystem(AxeSystem *axe) { _axe = axe; }
 void setBypassed(bool bypassed) { _bypassed = bypassed; }
 void setChannelCount(byte count) { _numChannels = count; }

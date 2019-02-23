@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include "AxeFxControl.h"
 #include "private/AxeTypes.h"
 #include "AxeLooper.h"
 #include "AxeEffect.h"
@@ -21,12 +22,9 @@ class AxeSystem {
 
 	public:
 
-		// Declare an instance of this class above your setup() function.
-		// Optionally register a notification callback, optionally turn on auto-refresh, 
-		// and then just call Axe.update() in the main loop and you are ready to roll.
-		AxeSystem() {
-			_looper.setAxeSystem(this);
-		}
+			AxeSystem() {
+				_looper.setAxeSystem(this);
+			}
 
 		// You must call begin with a hardware serial such as Serial1. Optionally set the 
 		// MIDI channel, defaults to OMNI.
@@ -38,7 +36,7 @@ class AxeSystem {
 
 		// Update preset details every millis. Don't refresh if another preset request 
 		// was received within throttle interval.
-		void enableRefresh(const millis_t millis = 3000, const millis_t throttle = 500);
+		void enableRefresh(const millis_t millis = 500, const millis_t throttle = 100);
 
 		// Remember to call this from loop(). Avoid using delay() anywhere in your code 
 		// for best results.
@@ -58,9 +56,8 @@ class AxeSystem {
 		// To get the results back, you should register a callback.
 		// Call registerPresetChangeCallback() to be notified of preset changes.
 		//
-		// Alternatively, you can call getPreset() any time you want, but it will
-		// not reflect the next preset until isPresetReady() returns true. This
-		// is not the best way to go. You should register a callback instead.
+		// Alternatively, you can call getPreset() any time you want, but it is
+		// not guaranteed to be current. You should register a callback instead.
 		void requestPresetDetails() { requestPresetName(); }
 		void requestFirmwareVersion();		
 		void requestTempo();
@@ -99,14 +96,6 @@ class AxeSystem {
 		void sendControlChange(byte controller, byte value, byte channel);
 		void sendProgramChange(byte value, byte channel);
 		void sendSysEx(const byte *sysex, const byte length);
-
-		// These two methods tell you whether the preset is in the middle of
-		// changing. (They are just the inverse of each other.) During this time, 
-		// sysex data is being read from the Axe, so the result will still reflect
-		// the old preset until isPresetReady() returns true, or isPresetChanging()
-		// returns false. You are better off registering a preset change callback!
-		bool isPresetReady() { return !_presetChanging; }
-		bool isPresetChanging() { return _presetChanging; }
 
 		// Well is it, or isn't it? As far as we know! This is pretty accurate
 		// even if you enable/disable the tuner from the front panel.
