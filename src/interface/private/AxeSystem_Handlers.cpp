@@ -63,8 +63,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 			DEBUGGER.println("SYSEX_REQUEST_SCENE_INFO");
 			#endif
 			
-			//TODO during fast changes, can we guarantee this is for current preset?
-			if (!_incomingPreset.isComplete()) { //TODO is this necessary given guard in preset name case?
+			if (!_incomingPreset.isComplete()) { 
 				const SceneNumber number = sysex[6] + 1;
 				const byte max = AxePreset::MAX_SCENE_NAME + 1;
 				parseName(sysex, length, 7, buffer, max);
@@ -87,8 +86,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 			DEBUGGER.println("SYSEX_REQUEST_SCENE_NUMBER");
 			#endif		
 
-			//TODO during fast changes, can we guarantee this is for current preset?
-			if (!_incomingPreset.isComplete()) { //TODO is this necessary given guard in preset name case?
+			if (!_incomingPreset.isComplete()) { 
 				_incomingPreset.setSceneNumber(sysex[6] + 1);
 				checkIncomingPreset();
 			} else {
@@ -104,8 +102,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 			DEBUGGER.println("SYSEX_EFFECT_DUMP");
 			#endif				
 
-			//TODO during fast changes, can we guarantee this is for current preset?
-			if (!_incomingPreset.isComplete()) { //TODO is this necessary given guard in preset name case?
+			if (!_incomingPreset.isComplete()) { 
 				processEffectDump(sysex, length);
 				callEffectsReceivedCallback(&_incomingPreset);
 				checkIncomingPreset();
@@ -205,7 +202,6 @@ void AxeSystem::checkIncomingPreset() {
 }
 
 // TODO: need to prioritise which effects are shown in order
-// TODO: sometimes first message is wrong, corrected on refresh (ie change tempo wheel and fx list goes whacky)
 // If assuming naked amps pack it gets a lot easier :)
 void AxeSystem::processEffectDump(const byte *sysex, const byte length) {
 
@@ -229,7 +225,7 @@ void AxeSystem::processEffectDump(const byte *sysex, const byte length) {
 		effect.setChannel(channel);
 		effect.setChannelCount(numChannels);
 
-		//NOTE assumes preset number has already been received
+		//assumes preset number has already been received
 		if (callEffectFilterCallback(_incomingPreset.getPresetNumber(), effect)) {
 			effects[count++] = effect;
 		}
