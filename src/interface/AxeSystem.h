@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include "AxeFxControl.h"
 #include "private/AxeTypes.h"
 #include "AxeLooper.h"
 #include "AxeEffect.h"
@@ -35,7 +36,7 @@ class AxeSystem {
 
 		// Update preset details every millis. Don't refresh if another preset request 
 		// was received within throttle interval.
-		void enableRefresh(const millis_t millis = 3000, const millis_t throttle = 500);
+		void enableRefresh(const millis_t millis = 500, const millis_t throttle = 100);
 
 		// Remember to call this from loop(). Avoid using delay() anywhere in your code 
 		// for best results.
