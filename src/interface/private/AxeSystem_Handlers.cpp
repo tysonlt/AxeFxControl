@@ -8,7 +8,7 @@ void AxeSystem::onPresetChange(const PresetNumber number) {
 }
 
 void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
-
+	
 	if (callSysexPluginCallback(sysex, length)) {
 		return;
 	}
@@ -31,6 +31,10 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 
 		case SYSEX_REQUEST_PRESET_INFO: {
+			#ifdef AXE_DEBUG	
+			DEBUGGER.println("SYSEX_REQUEST_PRESET_INFO");
+			#endif
+
 			_lastRefresh = millis();
 			const byte max = AxePreset::MAX_PRESET_NAME + 1;
 			const PresetNumber number = midiBytesToInt(sysex[6], sysex[7]);
@@ -41,8 +45,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 				_incomingPreset.setPresetName(buffer); 
 				_incomingPreset.copyPresetName(buffer, max); //copy back out in case preset changed it
 				callPresetNameCallback(number, (const char*) buffer, max);
-				requestSceneName();
-				requestEffectDetails();
+				requestSceneName(); //next item in chain
 				checkIncomingPreset();
 			} else {
 				#ifdef AXE_DEBUG
@@ -56,6 +59,10 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 
 		case SYSEX_REQUEST_SCENE_INFO: {
+			#ifdef AXE_DEBUG	
+			DEBUGGER.println("SYSEX_REQUEST_SCENE_INFO");
+			#endif
+			
 			//TODO during fast changes, can we guarantee this is for current preset?
 			if (!_incomingPreset.isComplete()) { //TODO is this necessary given guard in preset name case?
 				const SceneNumber number = sysex[6] + 1;
@@ -65,6 +72,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 				_incomingPreset.setSceneName(buffer); 
 				_incomingPreset.copySceneName(buffer, max); //copy back out in case preset changed it
 				callSceneNameCallback(number, (const char*) buffer, max);
+				requestEffectDetails(); //ask here instead of in preset name to avoid filling rx buffer
 				checkIncomingPreset();
 			} else {
 				#ifdef AXE_DEBUG
@@ -75,6 +83,10 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 
 		case SYSEX_REQUEST_SCENE_NUMBER: {
+			#ifdef AXE_DEBUG	
+			DEBUGGER.println("SYSEX_REQUEST_SCENE_NUMBER");
+			#endif		
+
 			//TODO during fast changes, can we guarantee this is for current preset?
 			if (!_incomingPreset.isComplete()) { //TODO is this necessary given guard in preset name case?
 				_incomingPreset.setSceneNumber(sysex[6] + 1);
@@ -88,6 +100,10 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 
 		case SYSEX_EFFECT_DUMP: {
+			#ifdef AXE_DEBUG	
+			DEBUGGER.println("SYSEX_EFFECT_DUMP");
+			#endif				
+
 			//TODO during fast changes, can we guarantee this is for current preset?
 			if (!_incomingPreset.isComplete()) { //TODO is this necessary given guard in preset name case?
 				processEffectDump(sysex, length);
@@ -102,6 +118,10 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 
 		case SYSEX_REQUEST_FIRMWARE: {
+			#ifdef AXE_DEBUG	
+			DEBUGGER.println("SYSEX_REQUEST_FIRMWARE");
+			#endif				
+			
 			_firmwareVersion.major = sysex[6];
 			_firmwareVersion.minor = sysex[7];
 			_usbVersion.major = sysex[9];
@@ -111,6 +131,10 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 					
 		case SYSEX_REQUEST_TEMPO: {
+			#ifdef AXE_DEBUG	
+			DEBUGGER.println("SYSEX_REQUEST_TEMPO");
+			#endif			
+
 			byte newTempo = (byte) midiBytesToInt(sysex[6], sysex[7]);
 			if (newTempo != _tempo) {
 				_tempo = newTempo;
@@ -177,7 +201,7 @@ void AxeSystem::checkIncomingPreset() {
   if (_incomingPreset.isComplete() && !_preset.equals(_incomingPreset)) {
 		_preset = _incomingPreset;
 		callPresetChangeCallback(&_preset);
-  }
+  } 
 }
 
 // TODO: need to prioritise which effects are shown in order
