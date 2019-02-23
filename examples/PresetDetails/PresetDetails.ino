@@ -4,7 +4,6 @@ AxeSystem Axe;
 
 void setup() {
 
-	//note that this won't work on a Nano, it uses Serial for MIDI
 	Serial.begin(9600);
 	while (!Serial);
 
@@ -28,7 +27,7 @@ void onPresetChange(AxePreset preset) {
 	const size_t sz = 150; 
 	char buf[sz]; 
 
-	//NOTE! Preset/scene names with % in them will not print to debug properly
+	//Preset/scene names with % in them will not print to debug properly
 
 	//AxeSystem has notified that all requested information has arrived!
 	Serial.println();
