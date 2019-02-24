@@ -9,7 +9,7 @@ static const EffectLabel __EFFECT_NAME_TABLE[] PROGMEM = {
 	{"AMP", "AMP"},
 	{"CAB", "CAB"},
 	{"REVERB", "REV"},
-	{"DELAY", "DEL"},
+	{"DELAY", "DLY"},
 	{"MULTITAP", "MTD"},
 	{"CHORUS", "CHO"},
 	{"FLANGER", "FLG"},
