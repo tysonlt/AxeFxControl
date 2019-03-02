@@ -1,5 +1,4 @@
-#include <AxeSystem.h>
-#include <AxeEffectEnum.h>
+#include <AxeFxControl.h>
 #include "AxeFxEffectList.h"
 
 
