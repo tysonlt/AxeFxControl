@@ -31,10 +31,6 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 
 		case SYSEX_REQUEST_PRESET_INFO: {
-			#ifdef AXE_DEBUG	
-			DEBUGGER.println("SYSEX_REQUEST_PRESET_INFO");
-			#endif
-
 			_lastRefresh = millis();
 			const byte max = AxePreset::MAX_PRESET_NAME + 1;
 			const PresetNumber number = midiBytesToInt(sysex[6], sysex[7]);
@@ -59,66 +55,34 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 
 		case SYSEX_REQUEST_SCENE_INFO: {
-			#ifdef AXE_DEBUG	
-			DEBUGGER.println("SYSEX_REQUEST_SCENE_INFO");
-			#endif
-			
-			if (!_incomingPreset.isComplete()) { 
-				const SceneNumber number = sysex[6] + 1;
-				const byte max = AxePreset::MAX_SCENE_NAME + 1;
-				parseName(sysex, length, 7, buffer, max);
-				_incomingPreset.setSceneNumber(number);
-				_incomingPreset.setSceneName(buffer); 
-				_incomingPreset.copySceneName(buffer, max); //copy back out in case preset changed it
-				callSceneNameCallback(number, (const char*) buffer, max);
+			const SceneNumber number = sysex[6] + 1;
+			const byte max = AxePreset::MAX_SCENE_NAME + 1;
+			parseName(sysex, length, 7, buffer, max);
+			_incomingPreset.setSceneNumber(number);
+			_incomingPreset.setSceneName(buffer); 
+			_incomingPreset.copySceneName(buffer, max); //copy back out in case preset changed it
+			callSceneNameCallback(number, (const char*) buffer, max);
+			if (!_incomingPreset.isComplete()) {
 				requestEffectDetails(); //ask here instead of in preset name to avoid filling rx buffer
-				checkIncomingPreset();
-			} else {
-				#ifdef AXE_DEBUG
-				DEBUGGER.println("Ignoring SYSEX_REQUEST_SCENE_INFO, preset already complete");
-				#endif
-			} 
+			}
+			checkIncomingPreset();
 			break;
 		}
 
 		case SYSEX_REQUEST_SCENE_NUMBER: {
-			#ifdef AXE_DEBUG	
-			DEBUGGER.println("SYSEX_REQUEST_SCENE_NUMBER");
-			#endif		
-
-			if (!_incomingPreset.isComplete()) { 
-				_incomingPreset.setSceneNumber(sysex[6] + 1);
-				checkIncomingPreset();
-			} else {
-				#ifdef AXE_DEBUG
-				DEBUGGER.println("Ignoring SYSEX_REQUEST_SCENE_NUMBER, preset already complete");
-				#endif
-			} 
+			_incomingPreset.setSceneNumber(sysex[6] + 1);
+			checkIncomingPreset(); 
 			break;
 		}
 
 		case SYSEX_EFFECT_DUMP: {
-			#ifdef AXE_DEBUG	
-			DEBUGGER.println("SYSEX_EFFECT_DUMP");
-			#endif				
-
-			if (!_incomingPreset.isComplete()) { 
-				processEffectDump(sysex, length);
-				callEffectsReceivedCallback(&_incomingPreset);
-				checkIncomingPreset();
-			} else {
-				#ifdef AXE_DEBUG
-				DEBUGGER.println("Ignoring SYSEX_EFFECT_DUMP, preset already complete");
-				#endif
-			} 
+			processEffectDump(sysex, length);
+			callEffectsReceivedCallback(&_incomingPreset);
+			checkIncomingPreset();
 			break;
 		}
 
 		case SYSEX_REQUEST_FIRMWARE: {
-			#ifdef AXE_DEBUG	
-			DEBUGGER.println("SYSEX_REQUEST_FIRMWARE");
-			#endif				
-			
 			_firmwareVersion.major = sysex[6];
 			_firmwareVersion.minor = sysex[7];
 			_usbVersion.major = sysex[9];
@@ -128,10 +92,6 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 					
 		case SYSEX_REQUEST_TEMPO: {
-			#ifdef AXE_DEBUG	
-			DEBUGGER.println("SYSEX_REQUEST_TEMPO");
-			#endif			
-
 			byte newTempo = (byte) midiBytesToInt(sysex[6], sysex[7]);
 			if (newTempo != _tempo) {
 				_tempo = newTempo;
