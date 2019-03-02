@@ -89,6 +89,12 @@ void processSysex(const byte *sysex, const byte length) {
       printEffect(sysex[i], sysex[i+1], sysex[i+2]);
     }
     
+  } else if (sysex[5] == 0x0E) {
+    Serial.print("Scene: >");
+    for (byte i=6; i<length-2; i++) {      
+      Serial.print((char) sysex[i]);
+    }
+    Serial.println("<");
   }
   
 }
