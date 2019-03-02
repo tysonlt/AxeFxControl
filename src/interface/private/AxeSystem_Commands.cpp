@@ -16,7 +16,7 @@ void AxeSystem::requestPresetName(const PresetNumber number) {
 void AxeSystem::requestSceneName(const SceneNumber number) {
 	byte data[1] = {SYSEX_QUERY_BYTE};
 	if (number != -1) {
-		data[0] = number;
+		data[0] = (byte) (number - 1);
 	}
 	sendCommand(SYSEX_REQUEST_SCENE_INFO, data, 1);
 }
@@ -34,6 +34,7 @@ void AxeSystem::requestEffectDetails() {
 void AxeSystem::sendSceneChange(const SceneNumber number) {
 	byte data[1] = { (byte) (number - 1) }; 
 	sendCommand(SYSEX_REQUEST_SCENE_NUMBER, data, 1);
+	requestSceneName(number);
 }
 
 void AxeSystem::setEffectChannel(const EffectId effectId, const Channel channel) {
