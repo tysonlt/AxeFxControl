@@ -3,10 +3,16 @@
 
 void AxeEffect::bypass() {
 	_axe->disableEffect(_effectId);
+	_bypassed = true;
 }
 	
 void AxeEffect::enable() {
 	_axe->enableEffect(_effectId);
+	_bypassed = false;
+}
+
+void AxeEffect::toggle() {
+	_bypassed ? enable() : bypass();
 }
 
 void AxeEffect::switchChannel(Channel channel) {

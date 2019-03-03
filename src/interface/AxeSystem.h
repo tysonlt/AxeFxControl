@@ -74,6 +74,8 @@ class AxeSystem {
 		// the current preset object.
 		void enableEffect(const EffectId);
 		void disableEffect(const EffectId);
+		void toggleEffect(const EffectId); 
+		bool isEffectEnabled(const EffectId); 
 		void setEffectChannel(const EffectId, const Channel);
 
 		// You can send your own command bytes to the Axe!
@@ -105,8 +107,8 @@ class AxeSystem {
 		Tempo getTempo() { return _tempo; }
 
 		// Return a COPY of the current preset. This is not a pointer, so it
-		// won't magically update after a refresh. Either call getPreset() again,
-		// or better yet, register a preset change callback to get fresh state.
+		// won't magically update after a refresh. Either call getCurrentPreset(),
+		// again, or better yet, register a preset change callback to get fresh state.
 		AxePreset getCurrentPreset() { return _preset; }
 
 		// Get the looper object to query and play with. 

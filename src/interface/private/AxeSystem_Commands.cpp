@@ -104,6 +104,23 @@ void AxeSystem::disableEffect(const EffectId effectId) {
 	sendCommand(SYSEX_REQUEST_EFFECT_BYPASS, data, 3);
 }
 
+void AxeSystem::toggleEffect(const EffectId effectId) {
+	for (EffectIndex i = 0; i < _preset._effectCount; i++) {
+		if (_preset._effects[i]._effectId == effectId) {
+			_preset._effects[i].toggle();
+		}
+	}
+}
+
+bool AxeSystem::isEffectEnabled(const EffectId effectId) {
+	for (EffectIndex i = 0; i < _preset._effectCount; i++) {
+		if (_preset._effects[i]._effectId == effectId) {
+			return !_preset._effects[i]._bypassed;
+		}
+	}
+	return false;
+}
+
 void AxeSystem::sendPresetIncrement() {
   int number = _preset.getPresetNumber();
   if (isValidPresetNumber(number)) {

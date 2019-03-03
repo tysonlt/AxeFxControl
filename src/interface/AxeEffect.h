@@ -50,6 +50,7 @@ class AxeEffect {
 		// Eg. 0='A', 3='D'.
 		void bypass();
 		void enable();
+		void toggle();
 		void switchChannel(Channel channel);
 
 		// This returns the internal EFFECT_ID_ as defined in
