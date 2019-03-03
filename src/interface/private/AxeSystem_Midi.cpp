@@ -77,6 +77,14 @@ bool AxeSystem::filterMidiChannel(byte data) {
 	return _midiChannel == MIDI_CHANNEL_OMNI || _midiChannel == ((data & 0x0F) + 1);
 }
 
+byte AxeSystem::applyChannel(byte midiByte, byte channel) {
+	if (channel == MIDI_CHANNEL_OMNI) {
+		return midiByte;
+	} else {
+		return midiByte | ((channel - 1) & 0x0F);
+	}
+}
+
 void AxeSystem::sendPresetChange(const PresetNumber number) {
 	sendControlChange(BANK_CHANGE_CC, number / 128, _midiChannel);
 	sendProgramChange(number % 128, _midiChannel);
@@ -85,14 +93,14 @@ void AxeSystem::sendPresetChange(const PresetNumber number) {
 
 //One-based channel
 void AxeSystem::sendControlChange(byte controller, byte value, byte channel) {
-	SER_SEND(ControlChange | ((channel - 1) & 0x0F));
+	SER_SEND(applyChannel(ControlChange, channel));
 	SER_SEND(controller);
 	SER_SEND(value);
 }
 
 //One-based channel
 void AxeSystem::sendProgramChange(byte value, byte channel) {
-	SER_SEND(ProgramChange | ((channel - 1) & 0x0F));
+	SER_SEND(applyChannel(ProgramChange, channel));
 	SER_SEND(value);
 }
 

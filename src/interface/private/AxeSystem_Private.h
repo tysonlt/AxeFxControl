@@ -71,6 +71,7 @@ bool isValidSceneNumber(const SceneNumber scene);
 void intToMidiBytes(const int, byte*, byte*);
 int midiBytesToInt(const byte, const byte);
 bool filterMidiChannel(byte message);
+byte applyChannel(byte midiByte, byte channel);
 
 bool defaultEffectFilter(PresetNumber number, AxeEffect effect);
 
