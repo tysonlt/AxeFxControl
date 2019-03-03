@@ -50,6 +50,8 @@ The library adds 1,216 bytes to your program memory, and uses 137 bytes of dynam
 
 ## Classes
 
+Please note that the main source of documentation is always the header files in src/interface. The information below may not always be up to date.
+
 ### AxeSystem
 
 This is the main class you will interact with. There is no need to worry about 
