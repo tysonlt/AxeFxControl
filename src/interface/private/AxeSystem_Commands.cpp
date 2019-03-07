@@ -105,20 +105,28 @@ void AxeSystem::disableEffect(const EffectId effectId) {
 }
 
 void AxeSystem::toggleEffect(const EffectId effectId) {
-	for (EffectIndex i = 0; i < _preset._effectCount; i++) {
-		if (_preset._effects[i]._effectId == effectId) {
-			_preset._effects[i].toggle();
-		}
+	if (AxeEffect *effect = findEffect(effectId)) {
+		effect->toggle();
 	}
 }
 
 bool AxeSystem::isEffectEnabled(const EffectId effectId) {
-	for (EffectIndex i = 0; i < _preset._effectCount; i++) {
-		if (_preset._effects[i]._effectId == effectId) {
-			return !_preset._effects[i]._bypassed;
-		}
+	if (AxeEffect *effect = findEffect(effectId)) {
+		return !effect->isBypassed();
 	}
 	return false;
+}
+
+void AxeSystem::sendEffectChannelIncrement(const EffectId effectId) {
+	if (AxeEffect *effect = findEffect(effectId)) {
+		effect->incrementChannel();
+	}
+}
+
+void AxeSystem::sendEffectChannelDecrement(const EffectId effectId) {
+	if (AxeEffect *effect = findEffect(effectId)) {
+		effect->decrementChannel();
+	}
 }
 
 void AxeSystem::sendPresetIncrement() {

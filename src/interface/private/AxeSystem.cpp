@@ -47,6 +47,15 @@ void AxeSystem::setSystemConnected(const bool connected) {
   }  
 }
 
+AxeEffect* AxeSystem::findEffect(const EffectId effectId) {
+	for (EffectIndex i = 0; i < _preset._effectCount; i++) {
+		if (_preset._effects[i]._effectId == effectId) {
+			return &_preset._effects[i];
+		}
+	}
+	return nullptr;
+}
+
 void AxeSystem::checkTimers() {
 
 	unsigned long now = millis();

@@ -52,6 +52,8 @@ void requestPresetName(const PresetNumber number = -1);
 void requestSceneName(const SceneNumber number = -1);
 void requestSceneNumber();
 void requestEffectDetails();
+AxeEffect* findEffect(const EffectId);
+
 void callConnectionStatusCallback(const bool connected);	
 void callTapTempoCallback();
 void callPresetChangingCallback(const PresetNumber);
@@ -71,7 +73,7 @@ bool isValidSceneNumber(const SceneNumber scene);
 void intToMidiBytes(const int, byte*, byte*);
 int midiBytesToInt(const byte, const byte);
 bool filterMidiChannel(byte message);
-byte applyChannel(byte midiByte, byte channel);
+byte applyMidiChannel(byte midiByte, byte channel);
 
 bool defaultEffectFilter(PresetNumber number, AxeEffect effect);
 

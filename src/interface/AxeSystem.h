@@ -77,6 +77,8 @@ class AxeSystem {
 		void toggleEffect(const EffectId); 
 		bool isEffectEnabled(const EffectId); 
 		void setEffectChannel(const EffectId, const Channel);
+		void sendEffectChannelIncrement(const EffectId);
+		void sendEffectChannelDecrement(const EffectId);
 
 		// You can send your own command bytes to the Axe!
 		// Currently we have implemented the entire 3rd part MIDI spec,
@@ -106,10 +108,8 @@ class AxeSystem {
 		// Get the current tempo as a BPM value.
 		Tempo getTempo() { return _tempo; }
 
-		// Return a COPY of the current preset. This is not a pointer, so it
-		// won't magically update after a refresh. Either call getCurrentPreset(),
-		// again, or better yet, register a preset change callback to get fresh state.
-		AxePreset getCurrentPreset() { return _preset; }
+		// Return a reference to the current preset.
+		AxePreset& getCurrentPreset() { return _preset; }
 
 		// Get the looper object to query and play with. 
 		AxeLooper& getLooper() { return _looper; }

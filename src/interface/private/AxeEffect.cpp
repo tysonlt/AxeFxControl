@@ -16,8 +16,24 @@ void AxeEffect::toggle() {
 }
 
 void AxeEffect::switchChannel(Channel channel) {
-	setChannel(channel);
+	_channel = channel;
 	_axe->setEffectChannel(_effectId, channel);
+}
+
+void AxeEffect::incrementChannel() {
+	if (++_channel >= _numChannels) {
+		_channel = 0;
+	}
+	switchChannel(_channel);
+}
+
+void AxeEffect::decrementChannel() {
+	if (_channel == 0) {
+		_channel = _numChannels - 1;
+	} else {
+		_channel--;
+	}
+	switchChannel(_channel);
 }
 
 void AxeEffect::copyEffectName(char *buffer, byte max) { 	

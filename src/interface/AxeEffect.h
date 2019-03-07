@@ -52,6 +52,8 @@ class AxeEffect {
 		void enable();
 		void toggle();
 		void switchChannel(Channel channel);
+		void incrementChannel();
+		void decrementChannel();
 
 		// This returns the internal EFFECT_ID_ as defined in
 		// the enum published by Fractal Audio Systems. You can
