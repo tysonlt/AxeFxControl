@@ -62,6 +62,9 @@ class AxeEffect {
 		// hacking your own sysex that wasn't published in the spec.
 		EffectId getEffectId() { return _effectId; }
 
+		// The default filter for the effect list, if no callback is registered.
+		static bool defaultEffectFilter(PresetNumber number, AxeEffect effect);
+
 		const static byte MAX_EFFECT_NAME	= 20;
 		const static byte MAX_EFFECT_TAG	= 5;
 

@@ -75,8 +75,6 @@ int midiBytesToInt(const byte, const byte);
 bool filterMidiChannel(byte message);
 byte applyMidiChannel(byte midiByte, byte channel);
 
-bool defaultEffectFilter(PresetNumber number, AxeEffect effect);
-
 #ifdef AXE_DEBUG_SYSEX
 void debugSysex(const byte *sysex, const byte length, const char *message);
 #endif

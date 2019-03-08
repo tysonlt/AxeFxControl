@@ -132,64 +132,6 @@ bool AxeSystem::callEffectFilterCallback(const PresetNumber number, AxeEffect ef
 	if (NULL != _effectFilterCallback) {
 		return (_effectFilterCallback)(number, effect);
 	} else {
-		return defaultEffectFilter(number, effect); //use default filter
+		return AxeEffect::defaultEffectFilter(number, effect); //use default filter
 	}
-}
-
-bool AxeSystem::defaultEffectFilter(const PresetNumber number, AxeEffect effect) {
-	switch (effect.getEffectId()) {
-		case ID_CONTROL:
-		case ID_DISTORT1: //these are actually amps, fuz is distortion
-		case ID_DISTORT2:
-		case ID_DISTORT3:
-		case ID_DISTORT4:
-		case ID_CAB1:
-		case ID_CAB2:
-		case ID_CAB3:
-		case ID_CAB4:
-		case ID_TUNER:
-		case ID_INPUT1:
-		case ID_INPUT2:
-		case ID_INPUT3:
-		case ID_INPUT4:
-		case ID_INPUT5:
-		case ID_OUTPUT1:
-		case ID_OUTPUT2:
-		case ID_OUTPUT3:
-		case ID_OUTPUT4:
-		case ID_IRCAPTURE:
-		case ID_RTA1:
-		case ID_RTA2:
-		case ID_RTA3:
-		case ID_RTA4:
-		case ID_LOOPER1:
-		case ID_LOOPER2:
-		case ID_LOOPER3:
-		case ID_LOOPER4:
-		case ID_TONEMATCH1:
-		case ID_TONEMATCH2:
-		case ID_TONEMATCH3:
-		case ID_TONEMATCH4:
-		case ID_FBSEND1:
-		case ID_FBSEND2:
-		case ID_FBSEND3:
-		case ID_FBSEND4:
-		case ID_FBRETURN1:
-		case ID_FBRETURN2:
-		case ID_FBRETURN3:
-		case ID_FBRETURN4:
-		case ID_MULTIPLEXER1:
-		case ID_MULTIPLEXER2:
-		case ID_MULTIPLEXER3:
-		case ID_MULTIPLEXER4:
-		case ID_IRPLAYER1:
-		case ID_IRPLAYER2:
-		case ID_IRPLAYER3:
-		case ID_IRPLAYER4:
-		case ID_FOOTCONTROLLER:
-		case ID_PRESET_FC:
-			return false;
-		default:
-			return true;
-	};
 }

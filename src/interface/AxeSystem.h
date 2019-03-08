@@ -36,7 +36,7 @@ class AxeSystem {
 
 		// Update preset details every millis. Don't refresh if another preset request 
 		// was received within throttle interval.
-		void enableRefresh(const millis_t millis = 500, const millis_t throttle = 100);
+		void enableRefresh(const millis_t millis = 1000, const millis_t throttle = 100);
 
 		// Remember to call this from loop(). Avoid using delay() anywhere in your code 
 		// for best results.
