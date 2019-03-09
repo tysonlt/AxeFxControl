@@ -8,10 +8,8 @@ void setup() {
 	Serial.begin(9600);
 	Axe.registerPresetChangingCallback(onPresetChanging);
 	Axe.registerPresetNameCallback(onPresetName);
-	Axe.begin(Serial1, 4);
+	Axe.begin(Serial1);
 	time = millis();
-	//Go to Axe, Setup->MIDI/Remote->Midi Channel=4 to see channel filter in action
-	//Otherwise, just remove the channel param above and it will default to OMIN
 }
 
 void loop() {
@@ -22,6 +20,8 @@ void loop() {
 	}
 
 	if (millis() - time > 1000) {	
+		Serial.print("Changing to ");
+		Serial.println(preset);
 		Axe.sendPresetChange(preset);
 		preset += 11;
 		time = millis();
