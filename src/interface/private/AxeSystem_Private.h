@@ -1,5 +1,7 @@
 #pragma once
 
+friend class AxeEffect;
+
 const static byte SYSEX_END													= 0xF7;
 const static byte MAX_SYSEX 												= 128;
 const static unsigned MIDI_BAUD											= 31250;
@@ -47,6 +49,14 @@ void parseName(const byte *sysex, const byte length, const byte offset, char *bu
 void processEffectDump(const byte *sysex, const byte length);
 void onSystemExclusive(const byte *sysex, const byte length);
 void onPresetChange(const PresetNumber number);
+
+void enableEffect(const EffectId);
+void disableEffect(const EffectId);
+void toggleEffect(const EffectId); 
+bool isEffectEnabled(const EffectId); 
+void setEffectChannel(const EffectId, const Channel);
+void sendEffectChannelIncrement(const EffectId);
+void sendEffectChannelDecrement(const EffectId);
 
 void requestPresetName(const PresetNumber number = -1);
 void requestSceneName(const SceneNumber number = -1);

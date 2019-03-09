@@ -33,7 +33,8 @@ class AxeSystem {
 
 		// Optionally set the MIDI channel. You can safely change this at any time.
 		void setMidiChannel(byte channel) { _midiChannel = channel; }		
-
+		byte getMidiChannel() { return _midiChannel; }
+		
 		// Update preset details every millis. Don't refresh if another preset request 
 		// was received within throttle interval.
 		void enableRefresh(const millis_t millis = 1000, const millis_t throttle = 100);
@@ -68,17 +69,6 @@ class AxeSystem {
 		void toggleTuner();
 		void enableTuner();
 		void disableTuner();
-
-		// You can directly control effect blocks from here, but
-		// it is more convenient to use the AxeEffect list from
-		// the current preset object.
-		void enableEffect(const EffectId);
-		void disableEffect(const EffectId);
-		void toggleEffect(const EffectId); 
-		bool isEffectEnabled(const EffectId); 
-		void setEffectChannel(const EffectId, const Channel);
-		void sendEffectChannelIncrement(const EffectId);
-		void sendEffectChannelDecrement(const EffectId);
 
 		// You can send your own command bytes to the Axe!
 		// Currently we have implemented the entire 3rd part MIDI spec,
