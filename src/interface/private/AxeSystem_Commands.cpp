@@ -34,14 +34,6 @@ void AxeSystem::requestEffectDetails() {
 void AxeSystem::sendSceneChange(const SceneNumber number) {
 	byte data[1] = { (byte) (number - 1) }; 
 	sendCommand(SYSEX_REQUEST_SCENE_NUMBER, data, 1);
-	requestSceneName(number);
-}
-
-void AxeSystem::setEffectChannel(const EffectId effectId, const Channel channel) {
-	byte data[3];
-	intToMidiBytes(effectId, &data[0], &data[1]);
-	data[2] = channel;
-	sendCommand(SYSEX_REQUEST_EFFECT_CHANNEL, data, 3);
 }
 
 void AxeSystem::requestLooperStatus() {
@@ -88,6 +80,13 @@ void AxeSystem::disableTuner() {
 	byte data[1] = {SYSEX_TUNER_OFF};
 	sendCommand(SYSEX_TUNER, data, 1);
 	callTunerStatusCallback(_tunerEngaged);
+}
+
+void AxeSystem::setEffectChannel(const EffectId effectId, const Channel channel) {
+	byte data[3];
+	intToMidiBytes(effectId, &data[0], &data[1]);
+	data[2] = channel;
+	sendCommand(SYSEX_REQUEST_EFFECT_CHANNEL, data, 3);
 }
 
 void AxeSystem::enableEffect(const EffectId effectId) {
