@@ -29,6 +29,8 @@ class AxePreset {
 		// See AxeEffect.h for what you can do with the effect object.
 		unsigned getEffectCount() { return _effectCount; }
 		AxeEffect getEffectAt(const EffectIndex index) { return _effects[index]; }
+		AxeEffect* getEffectById(const EffectId effectId); //can return null
+		bool hasEffect(EffectId effectId);
 
 		// Use to determine if the effect list has changed compared to
 		// another preset. Useful if deciding whether to reprint etc.
