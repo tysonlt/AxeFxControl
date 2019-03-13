@@ -1,3 +1,17 @@
 {
-  "name": 
+  "name": "AxeFxControl",
+  "version": "1.0.0",
+  "keywords": "midi",
+  "description": "Arduino library to interface with the AxeFX system.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tysonlt/AxeFxControl"
+  },
+  "authors": [
+    {
+      "name": "Tyson LT",
+      "email": "tysonlt@gmail.com",
+      "maintainer": true
+    }
+  ]
 }
