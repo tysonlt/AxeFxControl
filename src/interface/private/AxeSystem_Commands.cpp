@@ -150,17 +150,20 @@ void AxeSystem::sendPresetDecrement() {
   }
 }
 
-void AxeSystem::sendSceneIncrement() {
+void AxeSystem::sendSceneIncrement(bool triggerSceneNameRefresh) {
   byte number = _preset.getSceneNumber();
   if (isValidSceneNumber(number)) {
     if (++number > MAX_SCENES) {
       number = 1;
     }
     sendSceneChange(number);
+		if (triggerSceneNameRefresh) {
+			requestSceneName();
+		}
   }
 }
 
-void AxeSystem::sendSceneDecrement() {
+void AxeSystem::sendSceneDecrement(bool triggerSceneNameRefresh) {
   byte number = _preset.getSceneNumber();
   if (isValidSceneNumber(number)) {
     if (number == 1) {
@@ -169,5 +172,8 @@ void AxeSystem::sendSceneDecrement() {
       number--;
     }
     sendSceneChange(number);
+		if (triggerSceneNameRefresh) {
+			requestSceneName();
+		}
   }
 }

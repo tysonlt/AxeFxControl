@@ -79,8 +79,8 @@ class AxeSystem {
 		// Change the preset and scene.
 		void sendPresetIncrement();
 		void sendPresetDecrement();
-		void sendSceneIncrement();
-		void sendSceneDecrement();
+		void sendSceneIncrement(bool triggerSceneNameRefresh = true);
+		void sendSceneDecrement(bool triggerSceneNameRefresh = true);
 		void sendPresetChange(const PresetNumber preset);
 		void sendSceneChange(const SceneNumber scene);
 
