@@ -22,9 +22,9 @@ class AxeSystem {
 
 	public:
 
-			AxeSystem() {
-				_looper.setAxeSystem(this);
-			}
+		AxeSystem() {
+			_looper.setAxeSystem(this);
+		}
 
 		// You must call begin with a hardware serial such as Serial1. Optionally set the 
 		// MIDI channel, defaults to OMNI.
@@ -48,6 +48,12 @@ class AxeSystem {
 		// Pass true to refresh immediately, regardless of when the last sysex 
 		// message was receieved.   
 		void refresh(bool ignoreThrottle = false);
+
+		// Whether to ask for the list of effects for each preset. Defaults to false.
+		void fetchEffects(bool fetch) { _fetchEffects = fetch; }
+
+		// Whether to return all scene names for the preset. Defaults to false.
+		void fetchAllScenes(bool fetch) { _fetchAllScenes = fetch; }
 
 		// These are the commands you can send to the Axe.
 		// Notice that you cannot directly query the scene and effects. 
@@ -191,15 +197,15 @@ class AxeSystem {
 		typedef bool (*EffectFilterCallback)(const PresetNumber, const AxeEffect);
 		void registerEffectFilterCallback(EffectFilterCallback); 
 
-		//These are values supported by the AxeFX 3, and can't be changed.
-		const static byte BANK_SIZE 												= 128;
-		const static byte MAX_BANKS 												= 4;
-		const static byte MAX_SCENES 												= 8;
-		const static byte TEMPO_MIN 												= 24;
-		const static byte TEMPO_MAX 												= 250;
-		const static byte MIDI_CHANNEL_OMNI									= 0;
-		const static byte DEFAULT_MIDI_CHANNEL							= MIDI_CHANNEL_OMNI;
-		constexpr static PresetNumber MAX_PRESETS 					= (MAX_BANKS * BANK_SIZE) - 1;
+		// These are values supported by the AxeFX 3, and can't be changed.
+		const static byte BANK_SIZE 					= 128;
+		const static byte MAX_BANKS 					= 4;
+		const static byte MAX_SCENES 					= 8;
+		const static byte TEMPO_MIN 					= 24;
+		const static byte TEMPO_MAX 					= 250;
+		const static byte MIDI_CHANNEL_OMNI				= 0;
+		const static byte DEFAULT_MIDI_CHANNEL			= MIDI_CHANNEL_OMNI;
+		constexpr static PresetNumber MAX_PRESETS 		= (MAX_BANKS * BANK_SIZE) - 1;
 
 		// OK, there ends the tour! Continue on to AxePreset.h, 
 		// AxeEffect.h, and AxeLooper.h for more information.
