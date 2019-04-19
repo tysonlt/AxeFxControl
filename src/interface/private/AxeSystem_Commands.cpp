@@ -21,6 +21,12 @@ void AxeSystem::requestSceneName(const SceneNumber number) {
 	sendCommand(SYSEX_REQUEST_SCENE_INFO, data, 1);
 }
 
+void AxeSystem::requestAllSceneNames() {
+	for (SceneNumber scene = 1; scene <= 8; scene++) {
+		requestSceneName(scene);
+	}
+}
+
 void AxeSystem::requestSceneNumber() {
 	byte data[1] = {SYSEX_QUERY_BYTE};
 	sendCommand(SYSEX_REQUEST_SCENE_NUMBER, data, 1);

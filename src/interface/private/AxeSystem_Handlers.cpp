@@ -13,6 +13,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		return;
 	}
 
+	byte command = sysex[5];
 	const size_t bufferSize = 40;
 	char buffer[bufferSize];
 
@@ -23,7 +24,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 	debugSysex(sysex, length, "<- AxeSystem::onSystemExclusive(): ");
 	#endif
 
-	switch (sysex[5]) {
+	switch (command) {
 
 		case SYSEX_TAP_TEMPO_PULSE: {
 			callTapTempoCallback();
@@ -31,9 +32,11 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 		}
 
 		case SYSEX_REQUEST_PRESET_INFO: {
+
 			_lastRefresh = millis();
 			const byte max = AxePreset::MAX_PRESET_NAME + 1;
 			const PresetNumber number = midiBytesToInt(sysex[6], sysex[7]);
+			
 			if (isRequestedPreset(number)) { //drop older responses
 				parseName(sysex, length, 8, buffer, max);
 				_incomingPreset.reset(); //in case stale packets arrived from prev request
@@ -42,6 +45,9 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 				_incomingPreset.copyPresetName(buffer, max); //copy back out in case preset changed it
 				callPresetNameCallback(number, (const char*) buffer, max);
 				requestSceneName(); //next item in chain
+				if (_fetchAllScenes) {
+					requestAllSceneNames(); //TODO: test this isn't choking the input buffer
+				}
 				checkIncomingPreset();
 			} else {
 				#ifdef AXE_DEBUG
@@ -51,6 +57,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 				DEBUGGER.println(_incomingPreset.getPresetNumber());
 				#endif
 			} 
+
 			break;
 		}
 
@@ -58,13 +65,24 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 			const SceneNumber number = sysex[6] + 1;
 			const byte max = AxePreset::MAX_SCENE_NAME + 1;
 			parseName(sysex, length, 7, buffer, max);
-			_incomingPreset.setSceneNumber(number);
-			_incomingPreset.setSceneName(buffer); 
-			_incomingPreset.copySceneName(buffer, max); //copy back out in case preset changed it
-			callSceneNameCallback(number, (const char*) buffer, max);
+
 			if (!_incomingPreset.isComplete()) {
-				requestEffectDetails(); //ask here instead of in preset name to avoid filling rx buffer
-			}
+				
+				//only set these for first response, next responses will be from requestAllSceneNames()
+				_incomingPreset.setSceneNumber(number);
+				_incomingPreset.setSceneName(buffer); 
+				_incomingPreset.copySceneName(buffer, max); //copy back out in case preset changed it
+
+				if (_fetchEffects) {
+					requestEffectDetails(); //ask here instead of in preset name to avoid filling rx buffer
+				} else {
+					_incomingPreset._effectCount = 0;
+				}
+
+			} 
+			
+			callSceneNameCallback(number, (const char*) buffer, max);
+			
 			checkIncomingPreset();
 			break;
 		}
@@ -161,22 +179,20 @@ void AxeSystem::checkIncomingPreset() {
   } 
 }
 
-// TODO: need to prioritise which effects are shown in order
-// If assuming naked amps pack it gets a lot easier :)
 void AxeSystem::processEffectDump(const byte *sysex, const byte length) {
 
 	unsigned count = 0;
 	unsigned numEffects = (length -5 -1) / 3; //groups of three, minus header and checksum
 	AxeEffect effects[numEffects];
 
-  for (byte i = 6; i < length - 3 && count < AxePreset::MAX_EFFECTS; i += 3) {
+	for (byte i = 6; i < length - 3 && count < AxePreset::MAX_EFFECTS; i += 3) {
 
-    EffectId effectId = sysex[i];
-    byte msb = sysex[i + 1], status = sysex[i + 2];
-    bool bypassed = !!(status & 1); 
+		EffectId effectId = sysex[i];
+		byte msb = sysex[i + 1], status = sysex[i + 2];
+		bool bypassed = !!(status & 1); 
 		Channel channel = (status >> 1) & 0x03;
-  	byte numChannels = (status >> 4) & 0x07;
-    if (msb) effectId |= 128;
+		byte numChannels = (status >> 4) & 0x07;
+		if (msb) effectId |= 128;
 
 		AxeEffect effect;
 		effect.setAxeSystem(this);
@@ -199,11 +215,11 @@ void AxeSystem::processEffectDump(const byte *sysex, const byte length) {
 void AxeSystem::parseName(const byte *sysex, const byte length, const byte offset, char *buffer, const byte size) {
 	memset(buffer, ' ', size);
 	byte count = 0;
-  for (byte i = offset; i < length - 2 && count < size; i++) {
-    if (sysex[i] == 0) break;
+	for (byte i = offset; i < length - 2 && count < size; i++) {
+	if (sysex[i] == 0) break;
 		buffer[count++] = sysex[i];
-  }
-  buffer[size] = '\0';
+	}
+	buffer[size] = '\0';
 }
 
 bool AxeSystem::isValidPresetNumber(const PresetNumber preset) {
