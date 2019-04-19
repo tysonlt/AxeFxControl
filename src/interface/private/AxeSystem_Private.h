@@ -107,10 +107,10 @@ bool _fetchEffects = false;
 bool _fetchAllScenes = false;
 byte _sysexBuffer[MAX_SYSEX];
 byte _sysexCount;
-byte _tunerIncomingCount = 0, _tunerTriggerThreshold = 5;
+byte _tunerIncomingCount = 0, _tunerTriggerThreshold = 15;
 millis_t _startupDelay = 1000;
 millis_t _refreshRate = 0, _refreshThrottle = 500;
-millis_t _sysexTimout = 2000, _tunerTimout = 250;
+millis_t _sysexTimout = 2000, _tunerTimout = 800;
 millis_t _lastSysexResponse = 0, _lastTunerResponse = 0, _lastRefresh = 0;
 
 ConnectionStatusCallback 	_connectionStatusCallback;
