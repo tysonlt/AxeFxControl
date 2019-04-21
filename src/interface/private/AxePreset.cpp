@@ -32,18 +32,22 @@ void AxePreset::setEffects(const AxeEffect effects[], const unsigned count) {
 }
 
 bool AxePreset::hasEffect(EffectId effectId) {
-	for (unsigned i=0; i < _maxEffects; i++) {
-		if (_effects[i]._effectId == effectId) {
-			return true;
+	if (effectId >= AxeEffect::MIN_EFFECT_ID && effectId <= AxeEffect::MAX_EFFECT_ID) {
+		for (unsigned i=0; i < _maxEffects; i++) {
+			if (_effects[i]._effectId == effectId) {
+				return true;
+			}
 		}
 	}
 	return false;
 }
 
 AxeEffect* AxePreset::getEffectById(const EffectId effectId) {
-	for (unsigned i=0; i < _maxEffects; i++) {
-		if (_effects[i]._effectId == effectId) {
-			return &_effects[i];
+	if (effectId >= AxeEffect::MIN_EFFECT_ID && effectId <= AxeEffect::MAX_EFFECT_ID) {
+		for (unsigned i=0; i < _maxEffects; i++) {
+			if (_effects[i]._effectId == effectId) {
+				return &_effects[i];
+			}
 		}
 	}
 	return nullptr;

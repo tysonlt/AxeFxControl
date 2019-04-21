@@ -22,20 +22,22 @@ void loop() {
 
 void onPresetChange(AxePreset preset) {
 
-	Serial.println("\n\n=====================");
+	Serial.println("\nonPresetChange()\n=====================");
 	Serial.print("Preset: ");
-	Serial.println(preset.getPresetNumber());
+	Serial.print(preset.getPresetNumber());
+	Serial.print(" - ");
 	preset.printPresetName(Serial, true);
 
-	Serial.print("\nScene: ");
-	Serial.println(preset.getSceneNumber());
+	Serial.print("Scene: ");
+	Serial.print(preset.getSceneNumber());
+	Serial.print(" - ");
 	preset.printSceneName(Serial, true);
 	Serial.println("=====================\n\n");
 
 }
 
 void onSceneName(const SceneNumber number, const char* name, const byte length) {
-	Serial.print("Extra Scene: ");
+	Serial.print("onSceneName(): ");
 	Serial.print(number);
 	Serial.print(": ");
 	Serial.println(name);
