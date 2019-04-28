@@ -1,10 +1,18 @@
 #include "interface/AxeSystem.h"
 
-void AxeSystem::onPresetChange(const PresetNumber number) {
+void AxeSystem::onPresetChange(const PresetNumber number, bool receivedFromAxe) {
+	
+	// If we're in AUTO mode and we get a PC message from the Axe, then we
+	// know it's telling about preset changes, so OK to switch to PASSIVE.
+	if (receivedFromAxe && _updateMode == AUTO) {
+		_updateMode = PASSIVE;
+	}
+	
 	_incomingPreset.reset();
 	_incomingPreset.setPresetNumber(number);
 	requestPresetName(number);
 	callPresetChangingCallback(number);
+
 }
 
 void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {

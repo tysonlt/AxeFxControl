@@ -48,7 +48,7 @@ bool isRequestedPreset(const PresetNumber);
 void parseName(const byte *sysex, const byte length, const byte offset, char *buffer, const byte size);
 void processEffectDump(const byte *sysex, const byte length);
 void onSystemExclusive(const byte *sysex, const byte length);
-void onPresetChange(const PresetNumber number);
+void onPresetChange(const PresetNumber number, bool receivedFromAxe = true);
 
 void enableEffect(const EffectId);
 void disableEffect(const EffectId);
@@ -90,6 +90,7 @@ byte applyMidiChannel(byte midiByte, byte channel);
 void debugSysex(const byte *sysex, const byte length, const char *message);
 #endif
 
+UpdateMode _updateMode = AUTO;
 AxePreset _preset, _incomingPreset;
 AxeLooper _looper;
 Version _firmwareVersion;

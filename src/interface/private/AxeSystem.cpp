@@ -21,7 +21,7 @@ void AxeSystem::refresh(bool ignoreThrottle) {
 	unsigned long now = millis();
   if (ignoreThrottle || (!_tunerEngaged && (now - _lastRefresh) > _refreshThrottle)) {
 		_lastRefresh = now;
-		onPresetChange(_preset.getPresetNumber()); //trigger a full read
+		onPresetChange(_preset.getPresetNumber(), false); //trigger a full read
 		requestTempo();
 		requestLooperStatus();
   } else {
