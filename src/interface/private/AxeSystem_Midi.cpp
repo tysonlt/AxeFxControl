@@ -88,7 +88,7 @@ byte AxeSystem::applyMidiChannel(byte midiByte, byte channel) {
 void AxeSystem::sendPresetChange(const PresetNumber number) {
 	sendControlChange(BANK_CHANGE_CC, number / 128, _midiChannel);
 	sendProgramChange(number % 128, _midiChannel);
-	if (_updateMode != PASSIVE_WAIT_FOR_AXE) {
+	if (_updateMode != UpdateMode::PASSIVE_WAIT_FOR_AXE) {
 		// Axe PC messages are off (or we don't know yet), so kick off a state update manually.
 		// The receivedFromAxe flag tell the library that this was a manual request, so if in 
 		// AUTO mode, don't switch to PASSIVE based on this request.

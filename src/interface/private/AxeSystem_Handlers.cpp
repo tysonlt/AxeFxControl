@@ -4,8 +4,8 @@ void AxeSystem::onPresetChange(const PresetNumber number, bool receivedFromAxe) 
 	
 	// If we're in AUTO mode and we get a PC message from the Axe, then we
 	// know it's telling about preset changes, so OK to switch to PASSIVE.
-	if (receivedFromAxe && _updateMode == AUTO) {
-		_updateMode = PASSIVE;
+	if (receivedFromAxe && _updateMode == UpdateMode::AUTO) {
+		_updateMode = UpdateMode::PASSIVE_WAIT_FOR_AXE;
 	}
 	
 	_incomingPreset.reset();

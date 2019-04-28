@@ -90,7 +90,7 @@ byte applyMidiChannel(byte midiByte, byte channel);
 void debugSysex(const byte *sysex, const byte length, const char *message);
 #endif
 
-UpdateMode _updateMode = AUTO;
+UpdateMode _updateMode = UpdateMode::AUTO;
 AxePreset _preset, _incomingPreset;
 AxeLooper _looper;
 Version _firmwareVersion;

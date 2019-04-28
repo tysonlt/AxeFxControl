@@ -14,11 +14,11 @@ void AxePreset::printSceneName(Print& printer, bool newline) {
 	}
 }
 
-char* getPresetName() {
+char* AxePreset::getPresetName() {
 	return _presetName;
 }
 
-char* getSceneName() {
+char* AxePreset::getSceneName() {
 	return _sceneName;
 }
 
