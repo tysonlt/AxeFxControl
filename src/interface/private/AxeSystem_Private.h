@@ -50,19 +50,6 @@ void processEffectDump(const byte *sysex, const byte length);
 void onSystemExclusive(const byte *sysex, const byte length);
 void onPresetChange(const PresetNumber number);
 
-void enableEffect(const EffectId);
-void disableEffect(const EffectId);
-void toggleEffect(const EffectId); 
-bool isEffectEnabled(const EffectId); 
-void setEffectChannel(const EffectId, const Channel);
-void sendEffectChannelIncrement(const EffectId);
-void sendEffectChannelDecrement(const EffectId);
-
-void requestPresetName(const PresetNumber number = -1);
-void requestSceneName(const SceneNumber number = -1);
-void requestAllSceneNames();
-void requestSceneNumber();
-void requestEffectDetails();
 AxeEffect* findEffect(const EffectId);
 
 void callConnectionStatusCallback(const bool connected);	
@@ -104,7 +91,6 @@ bool _systemConnected = false;
 bool _midiReady = false;
 bool _readingSysex = false;
 bool _fetchEffects = false;
-bool _fetchAllScenes = false;
 byte _sysexBuffer[MAX_SYSEX];
 byte _sysexCount;
 byte _tunerIncomingCount = 0, _tunerTriggerThreshold = 5;

@@ -52,20 +52,13 @@ class AxeSystem {
 		// Whether to ask for the list of effects for each preset. Defaults to false.
 		void fetchEffects(bool fetch) { _fetchEffects = fetch; }
 
-		// Whether to return all scene names for the preset. Defaults to false.
-		void fetchAllScenes(bool fetch) { _fetchAllScenes = fetch; }
-
 		// These are the commands you can send to the Axe.
-		// Notice that you cannot directly query the scene and effects. 
-		// These must be fetched as part of a preset details request.
-		// This helps maintain a proper state in case of fast preset changes.
 		//
 		// To get the results back, you should register a callback.
 		// Call registerPresetChangeCallback() to be notified of preset changes.
 		//
 		// Alternatively, you can call getPreset() any time you want, but it is
 		// not guaranteed to be current. You should register a callback instead.
-		void requestPresetDetails() { requestPresetName(); }
 		void requestFirmwareVersion();		
 		void requestTempo();
 		void requestLooperStatus();
@@ -75,6 +68,20 @@ class AxeSystem {
 		void toggleTuner();
 		void enableTuner();
 		void disableTuner();
+
+		void enableEffect(const EffectId);
+		void disableEffect(const EffectId);
+		void toggleEffect(const EffectId); 
+		bool isEffectEnabled(const EffectId); 
+		void setEffectChannel(const EffectId, const Channel);
+		void sendEffectChannelIncrement(const EffectId);
+		void sendEffectChannelDecrement(const EffectId);
+		
+		void requestPresetDetails() { requestPresetName(); }
+		void requestPresetName(const PresetNumber number = -1);
+		void requestSceneName(const SceneNumber number = -1);
+		void requestSceneNumber();
+		void requestEffectDetails();
 
 		// You can send your own command bytes to the Axe!
 		// Currently we have implemented the entire 3rd part MIDI spec,

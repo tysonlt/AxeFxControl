@@ -1,18 +1,26 @@
 #include <AxeFxControl.h>
 
+#define NUM_SCENES 8
+
+//Struct to hold information about each scene
+struct SceneInfo {
+	SceneNumber number = -1;
+	const char *name;
+};
+
+//A list of all of the scenes for this preset
+SceneInfo scenes[NUM_SCENES];
+
 AxeSystem Axe;
 
-unsigned long time;
-
 void setup() {
-	
+
 	Serial.begin(9600);
-	
+
+	Axe.begin(Serial1);
 	Axe.registerPresetChangeCallback(onPresetChange);
 	Axe.registerSceneNameCallback(onSceneName);
-	Axe.fetchAllScenes(true);
-	Axe.begin(Serial1);
-	// Axe.requestPresetDetails();	
+	Axe.requestPresetDetails();	
 
 }
 
@@ -21,22 +29,33 @@ void loop() {
 }
 
 void onPresetChange(AxePreset preset) {
-
-	Serial.println("\n\n=====================");
-	Serial.print("Preset: ");
-	Serial.println(preset.getPresetNumber());
-	preset.printPresetName(Serial, true);
-
-	Serial.print("\nScene: ");
-	Serial.println(preset.getSceneNumber());
-	preset.printSceneName(Serial, true);
+	
+	Serial.println("\nonPresetChange()\n=====================");
+	Serial.printf("Preset: %d - %s\n", preset.getPresetNumber(), preset.getPresetName());
+	Serial.printf("Scene: %d - %s\n", preset.getSceneNumber(), preset.getSceneName());
 	Serial.println("=====================\n\n");
+
+	//Reset the scene list for the new preset
+	for (byte i=0; i<NUM_SCENES; i++) {
+		scenes[i].number = -1;
+	}
 
 }
 
 void onSceneName(const SceneNumber number, const char* name, const byte length) {
-	Serial.print("Extra Scene: ");
-	Serial.print(number);
-	Serial.print(": ");
-	Serial.println(name);
+
+	//Record current scene in the list
+	Serial.printf("onSceneName(): %d: %s\n", number, name);
+	scenes[number-1].number = number;
+	scenes[number-1].name = name;
+
+	//Request the first scene that we don't have yet.
+	//Only request one at a time to avoid filling up RX buffer
+	for (byte i=0; i<NUM_SCENES; i++) {
+		if (scenes[i].number == -1) {
+			Axe.requestSceneName(i+1);
+			break;
+		}
+	}
+
 }

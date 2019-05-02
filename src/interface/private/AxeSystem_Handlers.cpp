@@ -45,9 +45,6 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
 				_incomingPreset.copyPresetName(buffer, max); //copy back out in case preset changed it
 				callPresetNameCallback(number, (const char*) buffer, max);
 				requestSceneName(); //next item in chain
-				if (_fetchAllScenes) {
-					requestAllSceneNames(); //TODO: test this isn't choking the input buffer
-				}
 				checkIncomingPreset();
 			} else {
 				#ifdef AXE_DEBUG
