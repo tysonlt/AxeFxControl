@@ -7,6 +7,18 @@
 #include "AxeEffect.h"
 #include "AxePreset.h"
 
+// Determines whether to ask for a refresh after we send a preset change (ACTIVE),
+// or whether to wait for the Axe to send a PC message (PASSIVE). AUTO will start
+// off in ACTIVE mode, but switch to PASSIVE if we detect PC messages from the Axe.
+// Depends on whether you have 'Send MIDI PC' enabled in the MIDI/Remote menu. 
+// Defaults to AUTO, which will assume PASSIVE until we get a PC message, then
+// switch to ACTIVE.
+enum class UpdateMode {
+	AUTO,
+	ACTIVE_ASK_EVERY_TIME,
+	PASSIVE_WAIT_FOR_AXE
+};
+
 //
 // This is the main class you will interact with. There is no need to worry about 
 // including any other classes.

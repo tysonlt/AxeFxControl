@@ -23,6 +23,10 @@ class AxePreset {
 		void printPresetName(Print&, bool newline = false);
 		void printSceneName(Print&, bool newline = false);
 
+		// Return null-terminated name
+		char* getPresetName();
+		char* getSceneName();
+
 		// Use these methods to get a list of effects and their state.
 		// First call getEffectCount() to set up your loop, and then
 		// call getEffectAt() to retrieve an individual effect.
