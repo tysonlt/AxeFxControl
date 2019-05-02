@@ -68,6 +68,10 @@ class AxeEffect {
 		const static byte MAX_EFFECT_NAME	= 20;
 		const static byte MAX_EFFECT_TAG	= 5;
 
+		// The range of usable effects
+		const static byte MIN_EFFECT_ID		= ID_COMP1;
+		const static byte MAX_EFFECT_ID		= ID_PLEX4;
+
 	private:
 		#include "private/AxeEffect_Private.h"
 

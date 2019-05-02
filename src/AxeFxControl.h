@@ -2,6 +2,6 @@
 
 // #define AXE_DEBUG
 // #define AXE_DEBUG_SYSEX
-#define DEBUGGER 								Serial
+#define DEBUGGER Serial
 
 #include "interface/AxeSystem.h" 

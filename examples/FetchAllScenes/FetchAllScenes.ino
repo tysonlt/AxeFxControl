@@ -29,8 +29,8 @@ void loop() {
 }
 
 void onPresetChange(AxePreset preset) {
-	
-	Serial.println("\nonPresetChange()\n=====================");
+
+  Serial.println("\nonPresetChange()\n=====================");
 	Serial.printf("Preset: %d - %s\n", preset.getPresetNumber(), preset.getPresetName());
 	Serial.printf("Scene: %d - %s\n", preset.getSceneNumber(), preset.getSceneName());
 	Serial.println("=====================\n\n");
