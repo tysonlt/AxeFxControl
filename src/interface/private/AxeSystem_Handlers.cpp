@@ -136,6 +136,7 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
       byte note = sysex[6];
       byte string = sysex[7] + 1;
       byte fineTune = sysex[8];
+      //Fix #17
       if (note <= MAX_TUNER_NOTE && string <= MAX_TUNER_STRING && fineTune <= MAX_TUNER_FINETUNE) {
         callTunerDataCallback(_notes[note], string, fineTune);
       } else {
