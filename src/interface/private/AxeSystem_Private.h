@@ -31,6 +31,10 @@ const static byte SYSEX_TUNER = 0x11;
 const static byte SYSEX_EFFECT_DUMP = 0x13;
 const static byte SYSEX_REQUEST_TEMPO = 0x14;
 
+const static byte MAX_TUNER_NOTE = 11;
+const static byte MAX_TUNER_STRING = 6;
+const static byte MAX_TUNER_FINETUNE = 127;
+
 enum MidiType {
   ControlChange = 0xB0,
   ProgramChange = 0xC0,

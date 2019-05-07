@@ -136,7 +136,19 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
       byte note = sysex[6];
       byte string = sysex[7] + 1;
       byte fineTune = sysex[8];
-      callTunerDataCallback(_notes[note], string, fineTune);
+      if (note <= MAX_TUNER_NOTE && string <= MAX_TUNER_STRING && fineTune <= MAX_TUNER_FINETUNE) {
+        callTunerDataCallback(_notes[note], string, fineTune);
+      } else {
+#ifdef AXE_DEBUG_SYSEX
+        DEBUGGER.println("******* INVALID TUNER DATA: *******");
+        DEBUGGER.print(" note=");
+        DEBUGGER.print(note);
+        DEBUGGER.print(" string=");
+        DEBUGGER.print(string);
+        DEBUGGER.print(" fineTune=");
+        DEBUGGER.println(fineTune);
+#endif
+      }
     }
 
     break;
