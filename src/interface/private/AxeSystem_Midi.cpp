@@ -27,7 +27,7 @@ void AxeSystem::readMidi() {
       _sysexBuffer[_sysexCount++] = data;
       if (data == SYSEX_END) {
         _readingSysex = false;
-        if (isAxeSysEx(_sysexBuffer, _sysexCount)) {
+        if (validateSysEx(_sysexBuffer, _sysexCount)) {
           onSystemExclusive(_sysexBuffer, _sysexCount);
         } else {
           _sysexCount = 0;
@@ -141,18 +141,25 @@ void AxeSystem::sendCommand(const byte command, const byte *data, const byte par
     sysex[length++] = data[i];
   }
 
-  //checksum
-  byte sum = 0xF0;
-  for (int i = 1; i < length; i++) {
-    sum ^= sysex[i];
-  }
-
   //footer
-  sysex[length++] = (sum & 0x7F);
+  byte checksum = calculateChecksum(sysex, length);
+  sysex[length++] = checksum;
   sysex[length++] = SYSEX_END;
 
   //punch it!
   sendSysEx(sysex, length);
+}
+
+byte AxeSystem::calculateChecksum(const byte *sysex, const byte length) {
+  byte sum = 0xF0;
+  for (int i = 1; i < length; i++) {
+    sum ^= sysex[i];
+  }
+  return sum & 0x7F;
+}
+
+bool AxeSystem::validateSysEx(const byte *sysex, const byte length) {
+  return isAxeSysEx(_sysexBuffer, _sysexCount) && sysex[length - 1] == calculateChecksum(sysex, length);
 }
 
 bool AxeSystem::isAxeSysEx(const byte *sysex, const byte length) {
