@@ -76,20 +76,18 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
       // requestAllSceneNames()
       _incomingPreset.setSceneNumber(number);
       _incomingPreset.setSceneName(buffer);
-      _incomingPreset.copySceneName(
-          buffer, max); // copy back out in case preset changed it
+      _incomingPreset.copySceneName(buffer, max); // copy back out in case preset changed it
 
       if (_fetchEffects) {
-        requestEffectDetails(); // ask here instead of in preset name to avoid
-                                // filling rx buffer
+        requestEffectDetails(); // ask here instead of in preset name to avoid filling rx buffer
       } else {
         _incomingPreset._effectCount = 0;
       }
     }
 
     callSceneNameCallback(number, (const char *)buffer, max);
-
     checkIncomingPreset();
+
     break;
   }
 
