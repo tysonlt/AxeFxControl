@@ -47,7 +47,6 @@ void checkTimers();
 void checkIncomingPreset();
 void sendSysEx(const byte length, byte *sysex);
 void setSystemConnected(const bool connected);
-bool isAxeSysEx(const byte *sysex, const byte length);
 bool validateSysEx(const byte *sysex, const byte length);
 byte calculateChecksum(const byte *, const byte);
 bool isRequestedPreset(const PresetNumber);

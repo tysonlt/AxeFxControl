@@ -169,20 +169,16 @@ byte AxeSystem::calculateChecksum(const byte *sysex, const byte length) {
 
 bool AxeSystem::validateSysEx(const byte *sysex, const byte length) {
 
-  bool sysexOk = sysex[0] == 0xF0 &&
-                 sysex[length - 1] == 0xF7 &&
-                 isAxeSysEx(_sysexBuffer, _sysexCount);
+  bool sysexOk = length > 5 &&
+                 sysex[0] == 0xF0 &&
+                 sysex[1] == SYSEX_MANUFACTURER_BYTE1 &&
+                 sysex[2] == SYSEX_MANUFACTURER_BYTE2 &&
+                 sysex[3] == SYSEX_MANUFACTURER_BYTE3 &&
+                 sysex[length - 1] == 0xF7;
 
   if (sysex[5] != SYSEX_TAP_TEMPO_PULSE && sysex[5] != SYSEX_TUNER) {
     sysexOk = sysexOk && sysex[length - 2] == calculateChecksum(sysex, length - 2);
   }
 
   return sysexOk;
-}
-
-bool AxeSystem::isAxeSysEx(const byte *sysex, const byte length) {
-  return length > 4 &&
-         sysex[1] == SYSEX_MANUFACTURER_BYTE1 &&
-         sysex[2] == SYSEX_MANUFACTURER_BYTE2 &&
-         sysex[3] == SYSEX_MANUFACTURER_BYTE3;
 }
