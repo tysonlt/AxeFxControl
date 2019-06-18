@@ -30,7 +30,7 @@ void AxeSystem::readMidi() {
                 if (validateSysEx(_sysexBuffer, _sysexCount)) {
                     onSystemExclusive(_sysexBuffer, _sysexCount);
                 } else {
-#ifdef AXE_DEBUG_SYSEX
+#ifdef AXE_DEBUG
                     DEBUGGER.print(F("******** AxeSystem::readMidi(): INVALID SYSEX: "));
                     char d[100];
                     for (byte i = 0; i < _sysexCount; i++) {
@@ -168,15 +168,16 @@ byte AxeSystem::calculateChecksum(const byte *sysex, const byte length) {
 }
 
 bool AxeSystem::validateSysEx(const byte *sysex, const byte length) {
-#ifdef AXE_DEBUG_SYSEX
-    DEBUGGER.printf("-------- CHECKSUM IS 0x%02X\n", sysex[length - 2]);
-    DEBUGGER.printf("-------- EXPECTING:  0x%02X\n", calculateChecksum(sysex, length - 2));
-#endif
-    //calculate expected sysex of
-    return sysex[0] == 0xF0 &&
-           sysex[length - 1] == 0xF7 &&
-           isAxeSysEx(_sysexBuffer, _sysexCount) &&
-           sysex[length - 2] == calculateChecksum(sysex, length - 2);
+
+    bool sysexOk = sysex[0] == 0xF0 &&
+                   sysex[length - 1] == 0xF7 &&
+                   isAxeSysEx(_sysexBuffer, _sysexCount);
+
+    if (sysex[5] != SYSEX_TAP_TEMPO_PULSE && sysex[5] != SYSEX_TUNER) {
+        sysexOk = sysexOk && sysex[length - 2] == calculateChecksum(sysex, length - 2);
+    }
+
+    return sysexOk;
 }
 
 bool AxeSystem::isAxeSysEx(const byte *sysex, const byte length) {
