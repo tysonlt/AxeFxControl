@@ -12,21 +12,21 @@ typedef unsigned long millis_t;
 typedef byte LooperStatus;
 
 struct EffectLabel {
-    const char *name;
-    const char *tag;
+  const char *name;
+  const char *tag;
 };
 
 struct Version {
-    byte major, minor;
+  byte major, minor;
 };
 
 enum LooperButton {
-    LooperRecord,
-    LooperPlay,
-    LooperUndo,
-    LooperOnce,
-    LooperReverse,
-    LooperHalfSpeed
+  LooperRecord,
+  LooperPlay,
+  LooperUndo,
+  LooperOnce,
+  LooperReverse,
+  LooperHalfSpeed
 };
 
 class AxeEffect;
@@ -36,5 +36,5 @@ class AxeSystem;
 
 template <typename T, size_t N>
 size_t arraySize(T (&)[N]) {
-    return N;
+  return N;
 }

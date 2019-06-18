@@ -9,6 +9,6 @@ void AxeLooper::reverse() { pressButton(LooperReverse); }
 void AxeLooper::halfSpeed() { pressButton(LooperHalfSpeed); }
 
 void AxeLooper::pressButton(LooperButton button) {
-    _axe->pressLooperButton(button);
-    _axe->requestLooperStatus();
+  _axe->pressLooperButton(button);
+  _axe->requestLooperStatus();
 }
