@@ -36,9 +36,9 @@ const static byte MAX_TUNER_STRING = 6;
 const static byte MAX_TUNER_FINETUNE = 127;
 
 enum MidiType {
-  ControlChange = 0xB0,
-  ProgramChange = 0xC0,
-  SystemExclusive = 0xF0
+    ControlChange = 0xB0,
+    ProgramChange = 0xC0,
+    SystemExclusive = 0xF0
 };
 
 void readMidi();
