@@ -34,7 +34,9 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
   switch (command) {
 
   case SYSEX_TAP_TEMPO_PULSE: {
-    callTapTempoCallback();
+    if (!_tunerEngaged) {
+      callTapTempoCallback();
+    }
     break;
   }
 
@@ -138,8 +140,8 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
       if (note <= MAX_TUNER_NOTE && string <= MAX_TUNER_STRING && fineTune <= MAX_TUNER_FINETUNE) {
         callTunerDataCallback(_notes[note], string, fineTune);
       } else {
-#ifdef AXE_DEBUG_SYSEX
-        DEBUGGER.println("******* INVALID TUNER DATA: *******");
+#ifdef AXE_DEBUG
+        DEBUGGER.print("******** INVALID TUNER DATA: ");
         DEBUGGER.print(" note=");
         DEBUGGER.print(note);
         DEBUGGER.print(" string=");

@@ -23,10 +23,6 @@ void AxeSystem::refresh(bool ignoreThrottle) {
     onPresetChange(_preset.getPresetNumber(), false); //trigger a full read
     requestTempo();
     requestLooperStatus();
-  } else {
-#ifdef AXE_DEBUG
-    DEBUGGER.println(F("refresh(): too soon or tuner engaged, ignoring refresh request"));
-#endif
   }
 }
 

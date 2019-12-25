@@ -27,9 +27,18 @@ void AxeSystem::readMidi() {
       _sysexBuffer[_sysexCount++] = data;
       if (data == SYSEX_END) {
         _readingSysex = false;
-        if (isAxeSysEx(_sysexBuffer, _sysexCount)) {
+        if (validateSysEx(_sysexBuffer, _sysexCount)) {
           onSystemExclusive(_sysexBuffer, _sysexCount);
         } else {
+#ifdef AXE_DEBUG
+          DEBUGGER.print(F("******** AxeSystem::readMidi(): INVALID SYSEX: "));
+          char d[100];
+          for (byte i = 0; i < _sysexCount; i++) {
+            snprintf(d, 6, "0x%02X ", _sysexBuffer[i]);
+            DEBUGGER.print(d);
+          }
+          DEBUGGER.println();
+#endif
           _sysexCount = 0;
         }
       }
@@ -141,23 +150,35 @@ void AxeSystem::sendCommand(const byte command, const byte *data, const byte par
     sysex[length++] = data[i];
   }
 
-  //checksum
-  byte sum = 0xF0;
-  for (int i = 1; i < length; i++) {
-    sum ^= sysex[i];
-  }
-
   //footer
-  sysex[length++] = (sum & 0x7F);
+  byte checksum = calculateChecksum(sysex, length);
+  sysex[length++] = checksum;
   sysex[length++] = SYSEX_END;
 
   //punch it!
   sendSysEx(sysex, length);
 }
 
-bool AxeSystem::isAxeSysEx(const byte *sysex, const byte length) {
-  return length > 4 &&
-         sysex[1] == SYSEX_MANUFACTURER_BYTE1 &&
-         sysex[2] == SYSEX_MANUFACTURER_BYTE2 &&
-         sysex[3] == SYSEX_MANUFACTURER_BYTE3;
+byte AxeSystem::calculateChecksum(const byte *sysex, const byte length) {
+  byte sum = sysex[0];
+  for (int i = 1; i < length; i++) {
+    sum ^= sysex[i];
+  }
+  return sum & 0x7F;
+}
+
+bool AxeSystem::validateSysEx(const byte *sysex, const byte length) {
+
+  bool sysexOk = length > 5 &&
+                 sysex[0] == 0xF0 &&
+                 sysex[1] == SYSEX_MANUFACTURER_BYTE1 &&
+                 sysex[2] == SYSEX_MANUFACTURER_BYTE2 &&
+                 sysex[3] == SYSEX_MANUFACTURER_BYTE3 &&
+                 sysex[length - 1] == 0xF7;
+
+  if (sysex[5] != SYSEX_TAP_TEMPO_PULSE && sysex[5] != SYSEX_TUNER) {
+    sysexOk = sysexOk && sysex[length - 2] == calculateChecksum(sysex, length - 2);
+  }
+
+  return sysexOk;
 }
