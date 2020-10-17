@@ -23,10 +23,13 @@ void AxeSystem::readMidi() {
     byte data = SER_READ;
 
     if (_readingSysex) {
+      if (data == SystemExclusive)
+        _sysexCount = 0;
 
       _sysexBuffer[_sysexCount++] = data;
       if (data == SYSEX_END) {
         _readingSysex = false;
+
         if (validateSysEx(_sysexBuffer, _sysexCount)) {
           onSystemExclusive(_sysexBuffer, _sysexCount);
         } else {
