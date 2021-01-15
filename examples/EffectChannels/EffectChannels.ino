@@ -9,6 +9,9 @@ void setup() {
 
 	Axe.begin(Serial1);
 
+	//ask for effects to be fetched with preset
+	Axe.fetchEffects(true);
+	
 	Axe.registerPresetChangeCallback(onPresetChange);
 	Axe.requestPresetDetails();
 
