@@ -12,6 +12,8 @@ void setup() {
 	Axe.registerEffectsReceivedCallback(onEffectsReceived);
 
 	Axe.enableRefresh(3000);
+	Axe.fetchEffects(true);
+
 	Axe.requestPresetDetails();
 	
 }
