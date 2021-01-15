@@ -15,6 +15,9 @@ void setup() {
 
 	//ask for details to be refreshed every 3 seconds
 	Axe.enableRefresh();
+	
+	//ask for effects to be fetched as well
+	Axe.fetchEffects(true);
 
 	//request current preset
 	Axe.requestPresetDetails();
