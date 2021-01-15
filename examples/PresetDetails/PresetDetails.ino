@@ -13,6 +13,9 @@ void setup() {
 	//register a callback so we know when preset details are available
 	Axe.registerPresetChangeCallback(onPresetChange);
 
+	//ask for effects to be fetched with preset
+	Axe.fetchEffects(true);
+	
 	//request current preset
 	Axe.requestPresetDetails();
 
