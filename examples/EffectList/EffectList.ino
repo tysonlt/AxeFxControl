@@ -17,6 +17,9 @@ void setup() {
 	//ask for refresh call
 	Axe.enableRefresh(5000);
 
+	//ask for effects to be fetched with preset
+	Axe.fetchEffects(true);
+	
 	//request current preset
 	Axe.requestPresetDetails();
 
