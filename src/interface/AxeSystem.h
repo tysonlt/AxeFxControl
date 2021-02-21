@@ -33,7 +33,11 @@ enum class UpdateMode {
 class AxeSystem {
 
 public:
-  AxeSystem(byte sysexFractalVersion = SYSEX_AXE_VERSION) {
+
+  const static byte FRACTAL_PRODUCT_AXEFX3 = 0x10;
+  const static byte FRACTAL_PRODUCT_FM3 = 0x11;
+
+  AxeSystem(byte sysexFractalVersion = FRACTAL_PRODUCT_AXEFX3) {
     _sysexFractalVersion = sysexFractalVersion;
     _looper.setAxeSystem(this);
   }
