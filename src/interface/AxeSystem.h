@@ -34,6 +34,12 @@ class AxeSystem {
 
 public:
   AxeSystem() {
+    _sysexAxeVersion = SYSEX_AXE_VERSION;
+    _looper.setAxeSystem(this);
+  }
+
+  AxeSystem(byte sysexFractalVersion) {
+    _sysexFractalVersion = sysexFractalVersion;
     _looper.setAxeSystem(this);
   }
 

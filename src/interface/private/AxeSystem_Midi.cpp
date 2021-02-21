@@ -145,7 +145,7 @@ void AxeSystem::sendCommand(const byte command, const byte *data, const byte par
   sysex[length++] = SYSEX_MANUFACTURER_BYTE1;
   sysex[length++] = SYSEX_MANUFACTURER_BYTE2;
   sysex[length++] = SYSEX_MANUFACTURER_BYTE3;
-  sysex[length++] = SYSEX_AXE_VERSION;
+  sysex[length++] = _sysexFractalVersion;
   sysex[length++] = command;
 
   //optional data

@@ -90,6 +90,7 @@ AxeLooper _looper;
 Version _firmwareVersion;
 Version _usbVersion;
 HardwareSerial *_serial = nullptr;
+byte _sysexFractalVersion;
 byte _tempo;
 byte _bank;
 byte _midiChannel;
