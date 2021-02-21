@@ -68,12 +68,11 @@ the library.
 		// Declare an instance of this class above your setup() function.
 		// Optionally register a notification callback, optionally turn on auto-refresh, 
 		// and then just call Axe.update() in the main loop and you are ready to roll.
-		AxeSystem();
 
 		// By default AxeFxIII will be assumed. This constructor allows another product such as FM3 to be used
-		// For AxeFx3 pass 0x10 (default)
-		// For FM3 pass 0x11		
-		AxeSystem(byte sysexFractalVersion);
+		// For AxeFx3 pass FRACTAL_PRODUCT_AXEFX3 (default)
+		// For FM3 pass FRACTAL_PRODUCT_FM3		
+		AxeSystem(byte sysexFractalVersion = FRACTAL_PRODUCT_AXEFX3);
 
 		// You must call begin with a hardware serial such as Serial1. Optionally set the 
 		// MIDI channel, defaults to OMNI.
