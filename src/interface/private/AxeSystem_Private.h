@@ -15,7 +15,6 @@ const static byte SYSEX_EFFECT_ENABLE = 0x00;
 const static byte SYSEX_MANUFACTURER_BYTE1 = 0x00;
 const static byte SYSEX_MANUFACTURER_BYTE2 = 0x01;
 const static byte SYSEX_MANUFACTURER_BYTE3 = 0x74;
-const static byte SYSEX_AXE_VERSION = 0x10;
 const static byte SYSEX_QUERY_BYTE = 0x7F;
 const static byte SYSEX_CHECKSUM_PLACEHOLDER = 0x00;
 
@@ -90,6 +89,7 @@ AxeLooper _looper;
 Version _firmwareVersion;
 Version _usbVersion;
 HardwareSerial *_serial = nullptr;
+byte _sysexFractalVersion;
 byte _tempo;
 byte _bank;
 byte _midiChannel;

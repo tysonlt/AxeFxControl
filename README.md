@@ -70,6 +70,11 @@ the library.
 		// and then just call Axe.update() in the main loop and you are ready to roll.
 		AxeSystem();
 
+		// By default AxeFxIII will be assumed. This constructor allows another product such as FM3 to be used
+		// For AxeFx3 pass 0x10 (default)
+		// For FM3 pass 0x11		
+		AxeSystem(byte sysexFractalVersion);
+
 		// You must call begin with a hardware serial such as Serial1. Optionally set the 
 		// MIDI channel, defaults to OMNI.
 		// You cannot call this more than once. (Well you can, but it will be ignored.)
