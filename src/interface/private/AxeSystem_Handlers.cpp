@@ -56,12 +56,9 @@ void AxeSystem::onSystemExclusive(const byte *sysex, const byte length) {
       requestSceneName(); // next item in chain
       checkIncomingPreset();
     } else {
-#ifdef AXE_DEBUG
-      DEBUGGER.print("Dropping stale preset name packet ");
-      DEBUGGER.print(number);
-      DEBUGGER.print(", waiting for ");
-      DEBUGGER.println(_incomingPreset.getPresetNumber());
-#endif
+      // We aren't updating current preset, just firing callback
+      parseName(sysex, length, 8, buffer, max);
+      callPresetNameCallback(number, (const char *)buffer, max);
     }
 
     break;
