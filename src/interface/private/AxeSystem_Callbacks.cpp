@@ -12,6 +12,10 @@ void AxeSystem::registerPresetNameCallback(PresetNameCallback func) {
   _presetNameCallback = func;
 }
 
+void void AxeSystem::registerStalePresetNameCallback(PresetNameCallback func) {
+  _stalePresetNameCallback = func;
+}
+
 void AxeSystem::registerSceneNameCallback(SceneNameCallback func) {
   _sceneNameCallback = func;
 }
@@ -75,6 +79,12 @@ void AxeSystem::callPresetChangingCallback(const PresetNumber number) {
 void AxeSystem::callPresetNameCallback(const PresetNumber number, const char *name, const byte length) {
   if (NULL != _presetNameCallback) {
     (_presetNameCallback)(number, name, length);
+  }
+}
+
+void AxeSystem::callStalePresetNameCallback(const PresetNumber number, const char *name, const byte length) {
+  if (NULL != _stalePresetNameCallback) {
+    (_stalePresetNameCallback)(number, name, length);
   }
 }
 

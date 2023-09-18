@@ -171,6 +171,13 @@ public:
   typedef void (*PresetNameCallback)(const PresetNumber, const char *name, const byte length);
   void registerPresetNameCallback(PresetNameCallback);
 
+  // This we be called if we get a preset message for a preset other than the current one.
+  // Use this if you want to read all preset names. If not set, stale preset messages are dropped.
+  void registerStalePresetNameCallback(PresetNameCallback);
+
+  // We won't bother parsing the name if a callback is not registered
+  bool shouldParseStalePresets() { return _stalePresetNameCallback != NULL; }
+
   // Called when the scene name is received
   typedef void (*SceneNameCallback)(const SceneNumber, const char *name, const byte length);
   void registerSceneNameCallback(SceneNameCallback);
