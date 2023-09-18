@@ -21,6 +21,7 @@ void AxeSystem::readMidi() {
   if (SER_AVLB) {
 
     byte data = SER_READ;
+    callMidiByteCallback(data);
 
     if (_readingSysex) {
       if (data == SystemExclusive)
@@ -55,9 +56,12 @@ void AxeSystem::readMidi() {
         if (filterMidiChannel(data)) {
           while (SER_AVLB < 2)
             ; //assume rest of message is in buffer or coming
-          if (BANK_CHANGE_CC == SER_READ) {
-            _bank = SER_READ;
-          }
+          byte cc_control = SER_READ;
+          byte cc_value = SER_READ;
+          if (BANK_CHANGE_CC == cc_control) {
+            _bank = cc_value;
+          } 
+          callControlChangeCallback(cc_control, cc_value);
         }
         break;
       }

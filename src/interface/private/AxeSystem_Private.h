@@ -71,6 +71,8 @@ void callTunerStatusCallback(bool enabled);
 void callLooperStatusCallback(AxeLooper *);
 bool callSysexPluginCallback(const byte *, const byte);
 bool callEffectFilterCallback(const PresetNumber, AxeEffect);
+void callControlChangeCallback(const byte control, const byte value);
+void callMidiByteCallback(const byte data);
 
 bool isValidPresetNumber(const PresetNumber preset);
 bool isValidSceneNumber(const SceneNumber scene);
@@ -120,6 +122,8 @@ TunerDataCallback _tunerDataCallback;
 LooperStatusCallback _looperStatusCallback;
 SysexPluginCallback _sysexPluginCallback;
 EffectFilterCallback _effectFilterCallback;
+ControlChangeCallback _controlChangeCallback;
+MidiByteCallback _midiByteCallback;
 
 const char *_notes[12] = {"A ", "Bb", "B ", "C ", "C#", "D ",
                           "Eb", "E ", "F ", "F#", "G ", "Ab"};

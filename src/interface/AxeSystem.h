@@ -220,6 +220,14 @@ public:
   typedef bool (*EffectFilterCallback)(const PresetNumber, const AxeEffect);
   void registerEffectFilterCallback(EffectFilterCallback);
 
+  // Listen for control changes if you are interested.
+  typedef void (*ControlChangeCallback)(const byte control, const byte value);
+  void registerControlChangeCallback(ControlChangeCallback);
+
+  // Listen to the raw MIDI bytes.
+  typedef void (*MidiByteCallback)(const byte);
+  void registerMidiByteCallback(MidiByteCallback);
+
   // These are values supported by the AxeFX 3, and can't be changed.
   const static byte BANK_SIZE = 128;
   const static byte MAX_BANKS = 4;

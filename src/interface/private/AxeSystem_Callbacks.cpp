@@ -52,6 +52,14 @@ void AxeSystem::registerEffectFilterCallback(EffectFilterCallback func) {
   _effectFilterCallback = func;
 }
 
+void AxeSystem::registerControlChangeCallback(ControlChangeCallback func) {
+  _controlChangeCallback = func;
+}
+
+void AxeSystem::registerMidiByteCallback(MidiByteCallback func) {
+  _midiByteCallback = func;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 void AxeSystem::callConnectionStatusCallback(const bool connected) {
@@ -133,5 +141,17 @@ bool AxeSystem::callEffectFilterCallback(const PresetNumber number, AxeEffect ef
     return (_effectFilterCallback)(number, effect);
   } else {
     return AxeEffect::defaultEffectFilter(number, effect); //use default filter
+  }
+}
+
+void AxeSystem::callControlChangeCallback(const byte control, const byte value) {
+  if (NULL != _controlChangeCallback) {
+    (_controlChangeCallback)(control, value);
+  }
+}
+
+void AxeSystem::callMidiByteCallback(const byte data) {
+  if (NULL != _midiByteCallback) {
+    (_midiByteCallback)(data);
   }
 }
