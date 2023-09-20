@@ -12,7 +12,7 @@ void AxeSystem::registerPresetNameCallback(PresetNameCallback func) {
   _presetNameCallback = func;
 }
 
-void void AxeSystem::registerStalePresetNameCallback(PresetNameCallback func) {
+void AxeSystem::registerStalePresetNameCallback(PresetNameCallback func) {
   _stalePresetNameCallback = func;
 }
 
