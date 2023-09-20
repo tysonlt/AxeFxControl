@@ -75,6 +75,15 @@ int AxeSystem::midiBytesToInt(const byte lsb, const byte msb) {
   return lsb + (msb * BANK_SIZE);
 }
 
+void AxeSystem::setMaxBanks(const byte max) {
+  _maxBanks = max;
+  _maxPresets = (_maxBanks * BANK_SIZE) - 1;
+}
+
+PresetNumber AxeSystem::maxPresets() {
+  return _maxPresets;
+}
+
 #ifdef AXE_DEBUG_SYSEX
 void AxeSystem::debugSysex(const byte *sysex, const byte length, const char *message) {
   char buf[6];

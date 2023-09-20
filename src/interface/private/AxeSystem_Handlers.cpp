@@ -242,7 +242,7 @@ void AxeSystem::parseName(const byte *sysex, const byte length, const byte offse
 }
 
 bool AxeSystem::isValidPresetNumber(const PresetNumber preset) {
-  return preset >= 0 && preset <= MAX_PRESETS;
+  return preset >= 0 && preset <= maxPresets();
 }
 
 bool AxeSystem::isValidSceneNumber(const SceneNumber scene) {

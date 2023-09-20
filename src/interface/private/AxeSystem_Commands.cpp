@@ -131,7 +131,7 @@ void AxeSystem::sendEffectChannelDecrement(const EffectId effectId) {
 void AxeSystem::sendPresetIncrement() {
   int number = _preset.getPresetNumber();
   if (isValidPresetNumber(number)) {
-    if (++number > MAX_PRESETS) {
+    if (++number > maxPresets()) {
       number = 0;
     }
     sendPresetChange(number);
@@ -142,7 +142,7 @@ void AxeSystem::sendPresetDecrement() {
   int number = _preset.getPresetNumber();
   if (isValidPresetNumber(number)) {
     if (number == 0) {
-      number = MAX_PRESETS;
+      number = maxPresets();
     } else {
       number--;
     }
