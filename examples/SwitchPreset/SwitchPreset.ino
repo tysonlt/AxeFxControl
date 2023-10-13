@@ -15,7 +15,7 @@ void setup() {
 void loop() {
 
 	static PresetNumber preset = 0;
-	if (preset >= AxeSystem::MAX_PRESETS) {
+	if (preset >= AxeSystem::maxPresets()) {
 		preset = 0;
 	}
 

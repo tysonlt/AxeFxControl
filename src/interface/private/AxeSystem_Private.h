@@ -94,6 +94,8 @@ byte _sysexFractalVersion;
 byte _tempo;
 byte _bank;
 byte _midiChannel;
+byte _maxBanks = 4; //default to MkI
+PresetNumber _maxPresets = (4 * BANK_SIZE) - 1; //default to MkI
 bool _firmwareRequested = false;
 bool _tunerEngaged = false;
 bool _systemConnected = false;

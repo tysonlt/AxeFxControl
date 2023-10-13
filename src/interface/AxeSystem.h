@@ -120,6 +120,13 @@ public:
   void sendProgramChange(byte value, byte channel);
   void sendSysEx(const byte *sysex, const byte length);
 
+  // Used to calculate max presets. Defaults to 4.
+  // You can set this at any time.
+  void setMaxBanks(const byte max);
+
+  // Max presets depending on how many banks we have
+  PresetNumber maxPresets();
+
   // Well is it, or isn't it? As far as we know! This is pretty accurate
   // even if you enable/disable the tuner from the front panel.
   bool isTunerEngaged() { return _tunerEngaged; }
@@ -229,12 +236,14 @@ public:
 
   // These are values supported by the AxeFX 3, and can't be changed.
   const static byte BANK_SIZE = 128;
-  const static byte MAX_BANKS = 4;
   const static byte MAX_SCENES = 8;
   const static byte TEMPO_MIN = 24;
   const static byte TEMPO_MAX = 250;
   const static byte MIDI_CHANNEL_OMNI = 0;
   const static byte DEFAULT_MIDI_CHANNEL = MIDI_CHANNEL_OMNI;
+
+  // These are deprecated but still here in case old code is using them
+  const static byte MAX_BANKS = 4;
   constexpr static PresetNumber MAX_PRESETS = (MAX_BANKS * BANK_SIZE) - 1;
 
   // OK, there ends the tour! Continue on to AxePreset.h,
